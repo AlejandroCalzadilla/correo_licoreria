@@ -1,0 +1,28 @@
+package org.bebidas.service.impl;
+
+import org.bebidas.dao.interfaces.UsuarioDAO;
+import org.bebidas.model.Usuario;
+import org.bebidas.service.interfaces.UsuarioService;
+
+import java.util.Optional;
+
+
+public class UsuarioServiceImpl extends GenericServiceImpl<Usuario, Long> implements UsuarioService {
+
+    private final UsuarioDAO usuarioDAO;
+
+    public UsuarioServiceImpl(UsuarioDAO usuarioDAO) {
+        super(usuarioDAO);
+        this.usuarioDAO = usuarioDAO;
+    }
+
+    @Override
+    public Optional<Usuario> findByCorreo(String correo) {
+        return usuarioDAO.findByCorreo(correo);
+    }
+
+    @Override
+    public boolean existsByCorreo(String correo) {
+        return usuarioDAO.existsByCorreo(correo);
+    }
+}

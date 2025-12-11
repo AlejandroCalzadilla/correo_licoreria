@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Configuración de la base de datos -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/bebidas_db?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+        
+        <!-- Dialecto de MySQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        
+        <!-- Pool de conexiones -->
+        <property name="hibernate.connection.pool_size">10</property>
+        
+        <!-- Mostrar SQL en consola -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        
+        <!-- Auto crear/actualizar esquema de BD -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        
+        <!-- Context de sesión actual -->
+        <property name="hibernate.current_session_context_class">thread</property>
+        
+        <!-- Mapeo de entidades -->
+        <mapping class="org.bebidas.model.BaseEntity"/>
+        <mapping class="org.bebidas.model.Carrito"/>
+        <mapping class="org.bebidas.model.Categoria"/>
+        <mapping class="org.bebidas.model.Cliente"/>
+        <mapping class="org.bebidas.model.Contador"/>
+        <mapping class="org.bebidas.model.Credito"/>
+        <mapping class="org.bebidas.model.DetalleVenta"/>
+        <mapping class="org.bebidas.model.Inventario"/>
+        <mapping class="org.bebidas.model.ItemCarrito"/>
+        <mapping class="org.bebidas.model.Pago"/>
+        <mapping class="org.bebidas.model.Producto"/>
+        <mapping class="org.bebidas.model.Proveedor"/>
+        <mapping class="org.bebidas.model.Rol"/>
+        <mapping class="org.bebidas.model.Usuario"/>
+        <mapping class="org.bebidas.model.Vendedor"/>
+        <mapping class="org.bebidas.model.Venta"/>
+        
+    </session-factory>
+</hibernate-configuration>

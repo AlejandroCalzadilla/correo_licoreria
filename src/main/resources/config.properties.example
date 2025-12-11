@@ -1,0 +1,5 @@
+# Configuración de base de datos - EJEMPLO
+# Copia este archivo como config.properties y configura tus valores reales
+db.url=jdbc:postgresql://localhost:5432/tu_base_de_datos
+db.user=tu_usuario
+db.password=tu_password

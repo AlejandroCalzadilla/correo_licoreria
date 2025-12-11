@@ -1,0 +1,24 @@
+package org.bebidas.mapper;
+
+import org.bebidas.model.Producto;
+import org.bebidas.util.TableMapper;
+
+import java.util.List;
+
+public class ProductoMapper {
+    
+    private static final TableMapper<Producto> tableMapper = new TableMapper<>(Producto.class)
+            .addColumn("id", "ID", 10)
+            .addColumn("nombre", "Nombre", 30)
+            .addColumn("descripcion", "Descripción", 40)
+            .addColumn("precio", "Precio", 12)
+            .addColumn("stock", "Stock", 10);
+    
+    public static String obtenerTodosTable(List<Producto> productos) {
+        return tableMapper.obtenerTodosTable(productos);
+    }
+    
+    public static String obtenerUnoTable(Producto producto) {
+        return tableMapper.obtenerUnoTable(producto);
+    }
+}
