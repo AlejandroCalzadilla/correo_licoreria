@@ -1,7 +1,7 @@
 package org.bebidas.mapper;
 
-import org.bebidas.model.Producto;
-import org.bebidas.util.TableMapper;
+import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.inventario.Producto;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package org.bebidas.mapper;
 
 import java.util.List;
 
-import org.bebidas.model.Usuario;
-import org.bebidas.util.TableMapper;
+import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.usuarios.Usuario;
 
 public class UsuarioMapper {
     

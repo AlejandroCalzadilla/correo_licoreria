@@ -2,8 +2,8 @@ package org.bebidas.mapper;
 
 import java.util.List;
 
-import org.bebidas.model.ItemCarrito;
-import org.bebidas.util.TableMapper;
+import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.carrito.ItemCarrito;
 
 public class ItemCarritoMapper {
     

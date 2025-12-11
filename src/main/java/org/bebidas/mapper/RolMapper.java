@@ -2,8 +2,8 @@ package org.bebidas.mapper;
 
 import java.util.List;
 
-import org.bebidas.model.Rol;
-import org.bebidas.util.TableMapper;
+import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.model.Rol;
 
 public class RolMapper {
     

@@ -2,8 +2,8 @@ package org.bebidas.mapper;
 
 import java.util.List;
 
-import org.bebidas.model.DetalleCompra;
-import org.bebidas.util.TableMapper;
+import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.compras.DetalleCompra;
 
 public class DetalleCompraMapper {
     
