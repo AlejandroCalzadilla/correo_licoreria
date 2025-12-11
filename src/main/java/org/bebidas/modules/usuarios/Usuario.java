@@ -2,8 +2,7 @@ package org.bebidas.modules.usuarios;
 
 import java.time.LocalDateTime;
 
-import org.bebidas.modules.model.BaseEntity;
-import org.bebidas.modules.model.Rol;
+import org.bebidas.core.util.BaseEntity;
 
 public class Usuario extends BaseEntity {
     private String nombre;

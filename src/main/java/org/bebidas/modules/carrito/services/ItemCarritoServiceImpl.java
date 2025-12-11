@@ -1,14 +1,14 @@
 package org.bebidas.modules.carrito.services;
 
+import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.ItemCarrito;
 import org.bebidas.modules.carrito.services.interfaces.CarritoService;
 import org.bebidas.modules.carrito.services.interfaces.ItemCarritoService;
 import org.bebidas.modules.dao.interfaces.ItemCarritoDAO;
 import org.bebidas.modules.inventario.Inventario;
+import org.bebidas.modules.inventario.InventarioServiceImpl;
 import org.bebidas.modules.inventario.Producto;
-import org.bebidas.modules.service.impl.GenericServiceImpl;
-import org.bebidas.modules.service.impl.InventarioServiceImpl;
 import org.bebidas.modules.service.interfaces.ProductoService;
 
 import java.math.BigDecimal;

@@ -3,7 +3,7 @@ package org.bebidas.modules.ventas;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.bebidas.modules.model.BaseEntity;
+import org.bebidas.core.util.BaseEntity;
 
 public class Pago extends BaseEntity {
     private Venta venta;

@@ -1,7 +1,7 @@
 package org.bebidas.modules.usuarios.services;
 
+import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.dao.interfaces.UsuarioDAO;
-import org.bebidas.modules.service.impl.GenericServiceImpl;
 import org.bebidas.modules.usuarios.services.interfaces.UsuarioService;
 import org.bebidas.modules.usuarios.Usuario;
 

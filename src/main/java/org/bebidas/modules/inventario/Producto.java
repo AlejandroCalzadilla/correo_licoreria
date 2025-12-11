@@ -2,8 +2,8 @@ package org.bebidas.modules.inventario;
 
 import java.math.BigDecimal;
 
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.categorias.Categoria;
-import org.bebidas.modules.model.BaseEntity;
 
 public class Producto extends BaseEntity {
     private String codigo;

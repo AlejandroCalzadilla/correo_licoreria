@@ -1,6 +1,6 @@
 package org.bebidas.modules.categorias;
 
-import org.bebidas.modules.model.BaseEntity;
+import org.bebidas.core.util.BaseEntity;
 
 public class Categoria extends BaseEntity {
     private String nombre;

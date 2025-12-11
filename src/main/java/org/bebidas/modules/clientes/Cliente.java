@@ -2,7 +2,7 @@ package org.bebidas.modules.clientes;
 
 import java.time.LocalDateTime;
 
-import org.bebidas.modules.model.BaseEntity;
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.usuarios.Usuario;
 
 public class Cliente extends BaseEntity {

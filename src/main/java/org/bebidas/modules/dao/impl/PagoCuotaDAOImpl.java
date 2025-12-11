@@ -1,9 +1,9 @@
 package org.bebidas.modules.dao.impl;
 
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
+import org.bebidas.modules.creditos.PagoCuota;
 import org.bebidas.modules.dao.impl.GenericDAOImpl;
 import org.bebidas.modules.dao.interfaces.PagoCuotaDAO;
-import org.bebidas.modules.model.PagoCuota;
 
 import java.sql.Connection;
 import java.sql.Date;

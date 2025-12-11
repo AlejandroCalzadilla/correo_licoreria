@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.bebidas.modules.model.BaseEntity;
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.ventas.Pago;
 import org.bebidas.modules.ventas.Venta;
 

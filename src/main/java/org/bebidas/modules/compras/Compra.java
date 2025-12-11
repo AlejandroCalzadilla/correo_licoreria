@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.bebidas.modules.model.BaseEntity;
-import org.bebidas.modules.model.Proveedor;
+import org.bebidas.core.util.BaseEntity;
+import org.bebidas.modules.proveedor.Proveedor;
 
 public class Compra extends BaseEntity {
     private String nroCompra;

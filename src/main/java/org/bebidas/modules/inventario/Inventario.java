@@ -2,8 +2,8 @@ package org.bebidas.modules.inventario;
 
 import java.time.LocalDate;
 
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.compras.DetalleCompra;
-import org.bebidas.modules.model.BaseEntity;
 import org.bebidas.modules.usuarios.Usuario;
 import org.bebidas.modules.ventas.DetalleVenta;
 

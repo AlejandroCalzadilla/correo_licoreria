@@ -3,7 +3,7 @@ package org.bebidas.modules.dao.impl;
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
 import org.bebidas.modules.compras.Compra;
 import org.bebidas.modules.dao.interfaces.CompraDAO;
-import org.bebidas.modules.model.Proveedor;
+import org.bebidas.modules.proveedor.Proveedor;
 import org.bebidas.modules.usuarios.Usuario;
 
 import java.math.BigDecimal;

@@ -3,8 +3,8 @@ package org.bebidas.modules.carrito;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.inventario.Producto;
-import org.bebidas.modules.model.BaseEntity;
 
 public class ItemCarrito extends BaseEntity {
     private Carrito carrito;

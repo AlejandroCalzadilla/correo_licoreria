@@ -2,8 +2,8 @@ package org.bebidas.modules.compras;
 
 import java.math.BigDecimal;
 
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.inventario.Producto;
-import org.bebidas.modules.model.BaseEntity;
 
 public class DetalleCompra extends BaseEntity {
     private Compra compra;

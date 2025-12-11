@@ -2,7 +2,7 @@ package org.bebidas.modules.service.interfaces;
 
 import java.util.List;
 
-import org.bebidas.modules.model.Vendedor;
+import org.bebidas.modules.vendedores.Vendedor;
 
 public interface VendedorService extends GenericService<Vendedor, Long> {
     List<Vendedor> buscarPorNombre(String nombre);

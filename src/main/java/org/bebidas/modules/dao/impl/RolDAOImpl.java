@@ -2,7 +2,7 @@ package org.bebidas.modules.dao.impl;
 
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
 import org.bebidas.modules.dao.interfaces.RolDAO;
-import org.bebidas.modules.model.Rol;
+import org.bebidas.modules.usuarios.Rol;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.bebidas.core.util.BaseEntity;
 import org.bebidas.modules.clientes.Cliente;
-import org.bebidas.modules.model.BaseEntity;
 import org.bebidas.modules.usuarios.Usuario;
 
 public class Venta extends BaseEntity {

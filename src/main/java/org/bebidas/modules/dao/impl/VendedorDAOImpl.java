@@ -2,8 +2,8 @@ package org.bebidas.modules.dao.impl;
 
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
 import org.bebidas.modules.dao.interfaces.VendedorDAO;
-import org.bebidas.modules.model.Vendedor;
 import org.bebidas.modules.usuarios.Usuario;
+import org.bebidas.modules.vendedores.Vendedor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
