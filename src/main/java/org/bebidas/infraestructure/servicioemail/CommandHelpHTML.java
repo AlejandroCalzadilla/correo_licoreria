@@ -26,124 +26,149 @@ public class CommandHelpHTML {
     static {
         // CREATE commands
         COMMANDS.add(new CommandExample(
-                "CREATE", "CATEGORIAS",
-                "Crear una nueva categoría",
-                "nombre, descripcion",
-                "CREATECATEGORIAS[Shampoo, Productos para el cuidado del cabello]"));
+                "CREATE", "ROLES",
+                "Crear un nuevo rol",
+                "nombre, descripcion, [activo]",
+                "CREATEROLES[Administrador, Rol de administrador, true]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "CLIENTES",
-                "Crear un nuevo cliente",
-                "id_usuario, fecha_nacimiento, ci",
-                "CREATECLIENTES[1, 1990-01-01, 12345678]"));
+                "CREATE", "USUARIOS",
+                "Crear un nuevo usuario",
+                "nombre, correo, clave, estado, rolId",
+                "CREATEUSUARIOS[Juan Perez, juan@email.com, pass123, activo, 1]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "VENDEDORES",
+                "Crear un nuevo vendedor",
+                "ci, nombre, [usuarioId]",
+                "CREATEVENDEDORES[12345678, Carlos Lopez, 2]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "CATEGORIAS",
+                "Crear una nueva categoría",
+                "nombre",
+                "CREATECATEGORIAS[Cervezas]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "PRODUCTOS",
                 "Crear un nuevo producto",
-                "id_categoria, codigo, nombre, descripcion, precio_compra, precio_venta, stock_actual, stock_minimo, imagenurl, unidad_medida",
-                "CREATEPRODUCTOS[1, SHP001, Shampoo, Shampoo para perros, 15.99, 25.99, 100, 20, https://example.com/shampoo.jpg, Litros]"));
+                "nombre, precio, codigo, categoriaId, descripcion",
+                "CREATEPRODUCTOS[Cerveza Pilsen, 25.50, CER001, 1, Cerveza pilsen premium]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "BARBEROS",
-                "Crear un nuevo barbero",
-                "id_usuario, especialidad, foto_perfil",
-                "CREATEBARBEROS[1, Corte de cabello,perfiljuan.jpg]"));
+                "CREATE", "INVENTARIO",
+                "Crear un movimiento de inventario",
+                "productoId, cantidad, [tipoMovimiento], glosa",
+                "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "SERVICIOS",
-                "Crear un nuevo servicio",
-                "nombre, descripcion,duracion_minutos_aprox, precio,imagenurl",
-                "CREATESERVICIOS[Corte de cabello, Servicio profesional, 50, 45.00, imagencorte.jpg]"));
+                "CREATE", "CARRITOS",
+                "Crear un nuevo carrito de compras",
+                "usuarioId, [sessionId]",
+                "CREATECARRITOS[1, session123]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "USUARIOS",
-                "Crear un nuevo Usuario",
-                "nombre, apellido, email, telefono, direccion, username, password",
-                "CREATEUSUARIOS[juan, perez, juanperez@gmail.com, 79845888, calle falsa 123, juanp, password]"));
+                "CREATE", "COMPRAS",
+                "Crear una nueva compra a proveedor",
+                "proveedorId, descripcion, estado",
+                "CREATECOMPRAS[1, Compra de cervezas, PENDIENTE]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "HORARIOS",
-                "Crear un nuevo horario para un barbero",
-                "id_barbero, dia_semana, hora_inicio, hora_fin",
-                "CREATEHORARIOS[1, lunes, 10:30, 11:30]"));
+                "CREATE", "PROVEEDORES",
+                "Crear un nuevo proveedor",
+                "nombre, telefono, direccion, nit, correo",
+                "CREATEPROVEEDORES[Cerveceria Nacional, 555-1234, Calle Principal 123, 123456789, proveedor@email.com]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "SERVICIOSPRODUCTOS",
-                "Crear un nuevo servicio producto",
-                "id_servicio, id_producto, cantidad",
-                "CREATESERVICIOPRODUCTOS[1, 1, 2]"));
+                "CREATE", "CLIENTES",
+                "Crear un nuevo cliente",
+                "ci, nombre, telefono, direccion, estado, usuarioId",
+                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, A, 3]"));
 
         COMMANDS.add(new CommandExample(
-                "CREATE", "RESERVAS",
-                "Crear una nueva reserva (valida barbero activo y horario)",
-                "id_cliente, id_barbero, id_servicio, fecha_reserva(YYYY-MM-DD), hora_inicio(HH:MM), notas",
-                "CREATERESERVAS[1, 1, 1, 2024-12-01, 10:00, reserva para corte de cabello]"));
+                "CREATE", "VENTAS",
+                "Crear una nueva venta",
+                "clienteId, usuarioId, montoTotal, saldo, estado",
+                "CREATEVENTAS[1, 2, 50.00, 0.00, COMPLETADA]"));
+
         COMMANDS.add(new CommandExample(
-                "CREATE", "PAGOS",
-                "Crear un nuevo pago",
-                "id_reserva,monto, metodo_pago(efectivo, tarjeta,transferencia, otro), tipo_pago(anticipo, pago_final, pago_completo), notas",
-                "CREATEPAGOS[1, 50.00, tarjeta, anticipo, pago por corte de cabello]"));        
+                "CREATE", "CREDITOS",
+                "Crear un nuevo crédito",
+                "ventaId, montoTotal, [numeroCuotas], [estado]",
+                "CREATECREDITOS[1, 100.00, 3, ACTIVO]"));
 
         // UPDATE commands
         COMMANDS.add(new CommandExample(
-                "UPDATE", "CATEGORIAS",
-                "Actualiza una categoría",
-                "id_categoria, nombre, descripcion",
-                "UPDATECATEGORIAS[1, Shampoo, Productos para el cuidado del cabello]"));
+                "UPDATE", "ROLES",
+                "Actualizar un rol",
+                "id, nombre, descripcion, [activo]",
+                "UPDATEROLES[1, Administrador, Rol administrativo, true]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "CLIENTES",
-                "Actualizar un cliente",
-                "id_cliente, id_usuario, fecha_nacimiento, ci",
-                "UPDATECLIENTES[1, 1, 1990-01-01, 12345678]"));
+                "UPDATE", "USUARIOS",
+                "Actualizar un usuario",
+                "id, nombre, correo, clave, estado, rolId",
+                "UPDATEUSUARIOS[1, Juan Perez, juan@email.com, newpass, activo, 1]"));
+
+        COMMANDS.add(new CommandExample(
+                "UPDATE", "VENDEDORES",
+                "Actualizar un vendedor",
+                "id, ci, nombre, [usuarioId]",
+                "UPDATEVENDEDORES[1, 12345678, Carlos Lopez, 2]"));
+
+        COMMANDS.add(new CommandExample(
+                "UPDATE", "CATEGORIAS",
+                "Actualizar una categoría",
+                "id, nombre",
+                "UPDATECATEGORIAS[1, Vinos]"));
 
         COMMANDS.add(new CommandExample(
                 "UPDATE", "PRODUCTOS",
                 "Actualizar un producto",
-                "id_producto, id_categoria, codigo, nombre, descripcion, precio_compra, precio_venta, stock_actual, stock_minimo, imagenurl, unidad_medida",
-                "UPDATEPRODUCTOS[1, 1, SHP001, Shampoo, Shampoo para perros, 15.99, 25.99, 100, 20, https://example.com/shampoo.jpg, Litros]"));
+                "id, nombre, precio, codigo, categoriaId, descripcion",
+                "UPDATEPRODUCTOS[1, Cerveza Lager, 28.00, CER002, 1, Cerveza lager premium]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "BARBEROS",
-                "Actualizar un barbero",
-                "id_barbero, id_usuario, especialidad, foto_perfil,estado (disponible/nodisponible)",
-                "UPDATEBARBEROS[1, 1, Corte de cabello, juanperezperfil.jpg, disponible]"));
+                "UPDATE", "INVENTARIO",
+                "Actualizar un movimiento de inventario",
+                "id, productoId, cantidad, [tipoMovimiento], glosa",
+                "UPDATEINVENTARIO[1, 1, 150, ENTRADA, Actualización de stock]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "SERVICIOS",
-                "Actualizar un servicio",
-                "id_servicio, nombre, descripcion, precio",
-                "UPDATESERVICIOS[1, Corte de cabello, Servicio de corte de cabello, 20.00]"));
+                "UPDATE", "CARRITOS",
+                "Actualizar un carrito",
+                "id, usuarioId, sessionId",
+                "UPDATECARRITOS[1, 1, session456]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "USUARIOS",
-                "Actualizar un Usuario",
-                "id_usuario, nombre, apellido, email, telefono, direccion, username, password",
-                "UPDATEUSUARIOS[1, juan, perez, juanperez@gmail.com, 79845888, calle falsa 123, juanp, password]"));
+                "UPDATE", "COMPRAS",
+                "Actualizar una compra",
+                "id, proveedorId, descripcion, estado",
+                "UPDATECOMPRAS[1, 1, Compra de vinos, COMPLETADA]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "HORARIOS",
-                "Actualizar un horario para un barbero",
-                "id_horario, id_barbero, dia_semana, hora_inicio, hora_fin",
-                "UPDATEHORARIOS[1, 1, lunes, 10:30, 11:30]"));
+                "UPDATE", "PROVEEDORES",
+                "Actualizar un proveedor",
+                "id, nombre, telefono, direccion, nit, correo",
+                "UPDATEPROVEEDORES[1, Cerveceria Nacional, 555-1234, Calle Nueva 789, 123456789, nuevo@email.com]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "SERVICIOSPRODUCTOS",
-                "Actualizar un servicio producto",
-                "id_servicio, id_producto, cantidad",
-                "UPDATESERVICIOPRODUCTOS[1, 1, 2]"));
+                "UPDATE", "CLIENTES",
+                "Actualizar un cliente",
+                "id, ci, nombre, telefono, direccion, estado, usuarioId",
+                "UPDATECLIENTES[1, 87654321, Maria Garcia, 555-5678, Calle Actualizada 101, A, 3]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "RESERVAS",
-                "Actualizar una reserva (valida barbero activo y horario si cambian)",
-                "id_reserva, id_cliente, id_barbero, id_servicio, fecha_reserva(YYYY-MM-DD), hora_inicio(HH:MM), notas, estado",
-                "UPDATERESERVAS[1, 1, 1, 1, 2024-12-01, 10:00, reserva para corte de cabello, completada]"));
+                "UPDATE", "VENTAS",
+                "Actualizar una venta",
+                "id, clienteId, usuarioId, montoTotal, saldo, estado",
+                "UPDATEVENTAS[1, 1, 2, 75.00, 25.00, PENDIENTE]"));
 
         COMMANDS.add(new CommandExample(
-                "UPDATE", "PAGOS",
-                "Actualizar un pago",
-                "id_pago, id_reserva,monto, metodo_pago(efectivo, tarjeta,transferencia, otro), tipo_pago(anticipo, pago_final, pago_completo),notas,estado( pendiente, pagado, cancelado, reembolsado)",
-                "UPDATEPAGOS[1, 1,50.00,tarjeta, pago_final, pago por corte de cabello, pagado]"));
+                "UPDATE", "CREDITOS",
+                "Actualizar un crédito",
+                "id, ventaId, montoTotal, numeroCuotas, estado",
+                "UPDATECREDITOS[1, 1, 150.00, 4, ACTIVO]"));
     }
 
     public static String obtenerComandosDisponibles() {
@@ -179,7 +204,7 @@ public class CommandHelpHTML {
         html.append("<div class='container'>\n");
 
         // Encabezado
-        html.append("<h1>📋 COMANDOS DISPONIBLES DEL SISTEMA</h1>\n");
+        html.append("<h1>📋 COMANDOS DISPONIBLES DEL SISTEMA DE LICORERÍA</h1>\n");
 
         // Comandos generales
         html.append("<h2>⚙️ COMANDOS GENERALES</h2>\n");
@@ -235,12 +260,8 @@ public class CommandHelpHTML {
         // Entidades disponibles
         html.append("<h2>🗂️ ENTIDADES DISPONIBLES</h2>\n");
         html.append("<div class='entity-list'>\n");
-        html.append("<strong>USUARIOS</strong>, <strong>CLIENTES</strong>, <strong>BARBEROS</strong>, <strong>CATEGORIAS</strong>, <strong>PRODUCTOS</strong>, <strong>SERVICIOS</strong>, <strong>HORARIOS</strong>, <strong>SERVICIOPRODUCTOS</strong>, <strong>RESERVAS</strong>, <strong>PAGOS</strong>\n");
+        html.append("<strong>ROLES</strong>, <strong>USUARIOS</strong>, <strong>VENDEDORES</strong>, <strong>CATEGORIAS</strong>, <strong>PRODUCTOS</strong>, <strong>INVENTARIO</strong>, <strong>CARRITOS</strong>, <strong>COMPRAS</strong>, <strong>PROVEEDORES</strong>, <strong>CLIENTES</strong>, <strong>VENTAS</strong>, <strong>CREDITOS</strong>\n");
         html.append("</div>\n");
-
-        // Comandos de reportes
-        html.append("<h2>📊 COMANDOS DE REPORTES</h2>\n");
-        html.append(obtenerComandosReportesHTML());
 
         // Comandos CREATE
         html.append("<h2>➕ COMANDOS CREATE</h2>\n");
@@ -298,111 +319,7 @@ public class CommandHelpHTML {
     }
 
     private static String obtenerComandosReportesHTML() {
-        StringBuilder html = new StringBuilder();
-
-        html.append("<table>\n");
-        html.append("<thead>\n");
-        html.append("<tr>\n");
-        html.append("<th>Comando</th>\n");
-        html.append("<th>Descripción</th>\n");
-        html.append("<th>Parámetros</th>\n");
-        html.append("<th>Ejemplo</th>\n");
-        html.append("</tr>\n");
-        html.append("</thead>\n");
-        html.append("<tbody>\n");
-
-        // Dashboard
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>📈 REPORTEDASHBOARD</td>\n");
-        html.append("<td>Dashboard general del mes actual con todas las estadísticas</td>\n");
-        html.append("<td>Ninguno</td>\n");
-        html.append("<td><span class='example-code'>REPORTEDASHBOARD</span></td>\n");
-        html.append("</tr>\n");
-
-        // Ingresos
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>💰 REPORTEINGRESOS</td>\n");
-        html.append("<td>Obtiene los ingresos totales de un mes específico</td>\n");
-        html.append("<td>año, mes</td>\n");
-        html.append("<td><span class='example-code'>REPORTEINGRESOS[2025, 10]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Ranking Barberos
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>🏆 REPORTERANKINGBARBEROS</td>\n");
-        html.append("<td>Ranking de barberos por ingresos en un período</td>\n");
-        html.append("<td>fecha_inicio (YYYY-MM-DD), fecha_fin (YYYY-MM-DD)</td>\n");
-        html.append("<td><span class='example-code'>REPORTERANKINGBARBEROS[2025-10-01, 2025-10-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Servicios Populares
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>⭐ REPORTESERVICIOSPOPULARES</td>\n");
-        html.append("<td>Top de servicios más solicitados en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin, limite</td>\n");
-        html.append("<td><span class='example-code'>REPORTESERVICIOSPOPULARES[2025-01-01, 2025-12-31, 5]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Clientes Frecuentes
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>👥 REPORTECLIENTESFRECUENTES</td>\n");
-        html.append("<td>Top de clientes con más visitas en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin, limite</td>\n");
-        html.append("<td><span class='example-code'>REPORTECLIENTESFRECUENTES[2025-01-01, 2025-12-31, 10]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Distribución Estados
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>📊 REPORTEDISTRIBUCIONESTADOS</td>\n");
-        html.append("<td>Distribución de reservas por estado en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTEDISTRIBUCIONESTADOS[2025-07-01, 2025-09-30]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Horas Pico
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>⏰ REPORTEHORASPICO</td>\n");
-        html.append("<td>Horas del día con más actividad en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTEHORASPICO[2025-10-01, 2025-10-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Días Ocupados
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>📅 REPORTEDIASOCUPADOS</td>\n");
-        html.append("<td>Días de la semana con más reservas en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTEDIASOCUPADOS[2025-10-01, 2025-10-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Métodos de Pago
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>💳 REPORTEMETODOSPAGO</td>\n");
-        html.append("<td>Distribución de pagos por método en un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTEMETODOSPAGO[2025-01-01, 2025-12-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Consumo Productos
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>📦 REPORTECONSUMOPRODUCTOS</td>\n");
-        html.append("<td>Consumo de productos en servicios durante un período</td>\n");
-        html.append("<td>fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTECONSUMOPRODUCTOS[2025-10-01, 2025-10-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        // Estadísticas Barbero
-        html.append("<tr>\n");
-        html.append("<td class='entity-name'>👨‍💼 REPORTEESTADISTICASBARBERO</td>\n");
-        html.append("<td>Estadísticas detalladas de un barbero específico</td>\n");
-        html.append("<td>id_barbero, fecha_inicio, fecha_fin</td>\n");
-        html.append("<td><span class='example-code'>REPORTEESTADISTICASBARBERO[1, 2025-10-01, 2025-10-31]</span></td>\n");
-        html.append("</tr>\n");
-
-        html.append("</tbody>\n");
-        html.append("</table>\n");
-
-        return html.toString();
+        return ""; // Reportes no implementados en este sistema
     }
 
     private static String formatCommandHTML(CommandExample cmd) {
