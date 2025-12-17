@@ -3,10 +3,10 @@ package org.bebidas.modules.carrito.services;
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.ItemCarrito;
+import org.bebidas.modules.carrito.repositories.interfaces.CarritoDAO;
 import org.bebidas.modules.carrito.services.interfaces.CarritoService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.services.interfaces.ClienteService;
-import org.bebidas.modules.dao.interfaces.CarritoDAO;
 import org.bebidas.modules.dao.interfaces.ItemCarritoDAO;
 
 import java.math.BigDecimal;

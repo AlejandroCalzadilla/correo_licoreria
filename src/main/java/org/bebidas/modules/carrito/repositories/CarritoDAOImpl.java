@@ -1,8 +1,9 @@
-package org.bebidas.modules.dao.impl;
+package org.bebidas.modules.carrito.repositories;
 
 import org.bebidas.infraestructure.conexion.*;
 import org.bebidas.modules.carrito.Carrito;
-import org.bebidas.modules.dao.interfaces.CarritoDAO;
+import org.bebidas.modules.carrito.repositories.interfaces.CarritoDAO;
+import org.bebidas.modules.dao.impl.GenericDAOImpl;
 
 import java.sql.*;
 import java.util.ArrayList;

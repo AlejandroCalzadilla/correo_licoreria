@@ -28,19 +28,7 @@ public class ProveedorDAOImpl extends GenericDAOImpl<Proveedor, Long> implements
         proveedor.setNit(rs.getString("nit"));
         proveedor.setCorreo(rs.getString("correo"));
         proveedor.setDireccion(rs.getString("direccion"));
-       
-        
-        // Usuario relationship - assuming usuario_id column
-        Long usuarioId = rs.getLong("usuario_id");
-        if (rs.wasNull()) {
-            usuarioId = null;
-        }
-        if (usuarioId != null) {
-            Usuario usuario = new Usuario();
-            usuario.setId(usuarioId);
-            proveedor.setUsuario(usuario);
-        }
-        
+    
         return proveedor;
     }
 
@@ -93,7 +81,7 @@ public class ProveedorDAOImpl extends GenericDAOImpl<Proveedor, Long> implements
     }
 
     private Proveedor insert(Proveedor proveedor) {
-        String sql = "INSERT INTO proveedor (nombre, telefono, nit, correo, direccion, usuario_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO proveedor (nombre, telefono, nit, correo, direccion) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -104,11 +92,6 @@ public class ProveedorDAOImpl extends GenericDAOImpl<Proveedor, Long> implements
             stmt.setString(4, proveedor.getCorreo());
             stmt.setString(5, proveedor.getDireccion());
  
-            if (proveedor.getUsuario() != null) {
-                stmt.setLong(6, proveedor.getUsuario().getId());
-            } else {
-                stmt.setNull(6, java.sql.Types.BIGINT);
-            }
             
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -126,7 +109,7 @@ public class ProveedorDAOImpl extends GenericDAOImpl<Proveedor, Long> implements
     }
 
     private Proveedor update(Proveedor proveedor) {
-        String sql = "UPDATE proveedor SET nombre = ?, telefono = ?, nit = ?, correo = ?, direccion = ?, usuario_id = ? WHERE id = ?";
+        String sql = "UPDATE proveedor SET nombre = ?, telefono = ?, nit = ?, correo = ?, direccion = ? WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -136,12 +119,7 @@ public class ProveedorDAOImpl extends GenericDAOImpl<Proveedor, Long> implements
             stmt.setString(3, proveedor.getNit());
             stmt.setString(4, proveedor.getCorreo());
             stmt.setString(5, proveedor.getDireccion());
-            if (proveedor.getUsuario() != null) {
-                stmt.setLong(6, proveedor.getUsuario().getId());
-            } else {
-                stmt.setNull(6, java.sql.Types.BIGINT);
-            }
-            stmt.setLong(7, proveedor.getId());
+            stmt.setLong(6, proveedor.getId());
             
             stmt.executeUpdate();
         } catch (SQLException e) {

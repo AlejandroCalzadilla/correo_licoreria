@@ -2,8 +2,8 @@ package org.bebidas.modules.compras.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.compras.services.interfaces.CompraService;
-import org.bebidas.modules.dao.interfaces.CompraDAO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -9,6 +9,5 @@ import org.bebidas.modules.service.interfaces.GenericService;
 public interface CategoriaService extends GenericService<Categoria, Long> {
     Optional<Categoria> buscarPorNombre(String nombre);
    
-    void desactivarCategoria(Long id);
-    void activarCategoria(Long id);
+   
 }

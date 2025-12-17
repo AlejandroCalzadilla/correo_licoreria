@@ -4,21 +4,26 @@ import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.ItemCarrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.carrito.mappers.ItemCarritoMapper;
+import org.bebidas.modules.carrito.repositories.CarritoDAOImpl;
+import org.bebidas.modules.carrito.repositories.interfaces.CarritoDAO;
 import org.bebidas.modules.carrito.services.CarritoServiceImpl;
 import org.bebidas.modules.carrito.services.ItemCarritoServiceImpl;
 import org.bebidas.modules.carrito.services.interfaces.CarritoService;
 import org.bebidas.modules.carrito.services.interfaces.ItemCarritoService;
 import org.bebidas.modules.categorias.Categoria;
 import org.bebidas.modules.categorias.mappers.CategoriaMapper;
+import org.bebidas.modules.categorias.repositories.interfaces.CategoriaDAO;
 import org.bebidas.modules.categorias.services.CategoriaServiceImpl;
 import org.bebidas.modules.categorias.services.interfaces.CategoriaService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
+import org.bebidas.modules.clientes.repositories.interfaces.ClienteDAO;
 import org.bebidas.modules.clientes.services.ClienteServiceImpl;
 import org.bebidas.modules.clientes.services.interfaces.ClienteService;
 import org.bebidas.modules.compras.Compra;
 import org.bebidas.modules.compras.DetalleCompra;
 import org.bebidas.modules.compras.mappers.DetalleCompraMapper;
+import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.compras.services.CompraServiceImpl;
 import org.bebidas.modules.compras.services.DetalleCompraServiceImpl;
 import org.bebidas.modules.compras.services.interfaces.CompraService;
@@ -26,10 +31,6 @@ import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.PagoCuotaServiceImpl;
 import org.bebidas.modules.creditos.services.CreditoServiceImpl;
 import org.bebidas.modules.dao.impl.*;
-import org.bebidas.modules.dao.interfaces.CarritoDAO;
-import org.bebidas.modules.dao.interfaces.CategoriaDAO;
-import org.bebidas.modules.dao.interfaces.ClienteDAO;
-import org.bebidas.modules.dao.interfaces.CompraDAO;
 import org.bebidas.modules.dao.interfaces.DetalleCompraDAO;
 import org.bebidas.modules.dao.interfaces.DetalleVentaDAO;
 import org.bebidas.modules.dao.interfaces.InventarioDAO;
@@ -46,7 +47,7 @@ import org.bebidas.modules.inventario.Producto;
 import org.bebidas.modules.inventario.mappers.InventarioMapper;
 import org.bebidas.modules.inventario.mappers.ProductoMapper;
 import org.bebidas.modules.inventario.services.ProductoServiceImpl;
-import org.bebidas.modules.model.*;
+
 import org.bebidas.modules.proveedor.Proveedor;
 import org.bebidas.modules.proveedor.mappers.ProveedorMapper;
 import org.bebidas.modules.proveedor.services.ProveedorServiceImpl;
@@ -113,7 +114,7 @@ public class TestServices {
         RolService rolService = new RolServiceImpl(rolDAO);
         UsuarioService usuarioService = new UsuarioServiceImpl(usuarioDAO);
         VendedorService vendedorService = new VendedorServiceImpl(vendedorDAO);
-        CreditoService creditoService = new CreditoServiceImpl();
+        CreditoServiceImpl creditoService = new CreditoServiceImpl();
         PagoCuotaService pagoCuotaService = new PagoCuotaServiceImpl();
         PagoService pagoService = new PagoServiceImpl(pagoDAO);
         VentaService ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService, creditoService, pagoCuotaService);
@@ -269,15 +270,15 @@ public class TestServices {
             // Crear dos categorías
             Categoria categoriaTemp1 = new Categoria();
             categoriaTemp1.setNombre("Bebidas Alcohólicas");
-            categoriaTemp1.setActivo(true);
-            categoriaTemp1.setTipo("ALCOHOL");
+           /*  categoriaTemp1.setActivo(true);
+            categoriaTemp1.setTipo("ALCOHOL"); */
             categoria1 = categoriaService.save(categoriaTemp1);
             System.out.println("Categoría 1 creada con ID: " + categoria1.getId());
 
             Categoria categoria2 = new Categoria();
             categoria2.setNombre("Bebidas No Alcohólicas");
-            categoria2.setActivo(true);
-            categoria2.setTipo("NO_ALCOHOL");
+            /* categoria2.setActivo(true);
+            categoria2.setTipo("NO_ALCOHOL"); */
             categoria2 = categoriaService.save(categoria2);
             System.out.println("Categoría 2 creada con ID: " + categoria2.getId());
 
@@ -333,7 +334,7 @@ public class TestServices {
             clienteTemp1.setUsuario(usuario1); // Asumiendo usuario1 existe
             clienteTemp1.setCreditoAprobado(false);
             clienteTemp1.setLimiteCredito(0.0);
-            clienteTemp1.setEstadoVerificacion("aprobado");
+            
             cliente1 = clienteService.save(clienteTemp1);
             System.out.println("Cliente 1 creado con ID: " + cliente1.getId());
 
@@ -346,7 +347,7 @@ public class TestServices {
             cliente2.setUsuario(usuario1);
             cliente2.setCreditoAprobado(false);
             cliente2.setLimiteCredito(0.0);
-            cliente2.setEstadoVerificacion("aprobado");
+          /*  */
             cliente2 = clienteService.save(cliente2);
             System.out.println("Cliente 2 creado con ID: " + cliente2.getId());
 

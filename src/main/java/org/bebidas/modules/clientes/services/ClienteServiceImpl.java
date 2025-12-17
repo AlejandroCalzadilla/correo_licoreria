@@ -2,8 +2,8 @@ package org.bebidas.modules.clientes.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.clientes.Cliente;
+import org.bebidas.modules.clientes.repositories.interfaces.ClienteDAO;
 import org.bebidas.modules.clientes.services.interfaces.ClienteService;
-import org.bebidas.modules.dao.interfaces.ClienteDAO;
 import org.bebidas.modules.dao.interfaces.UsuarioDAO;
 import org.bebidas.modules.usuarios.Usuario;
 
@@ -72,9 +72,6 @@ public class ClienteServiceImpl extends GenericServiceImpl<Cliente, Long> implem
             .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
         Usuario usuario = usuarioDAO.findById(usuarioId)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));        
-        cliente.setEstadoVerificacion(estado);
-        cliente.setObservacionesVerificacion(observaciones);
-        cliente.setFechaVerificacion(LocalDateTime.now());
         cliente.setVerificadoPor(usuario);
         save(cliente);
     }

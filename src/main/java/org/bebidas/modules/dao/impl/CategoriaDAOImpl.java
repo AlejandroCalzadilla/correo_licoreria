@@ -2,7 +2,7 @@ package org.bebidas.modules.dao.impl;
 
 import org.bebidas.infraestructure.conexion.*;
 import org.bebidas.modules.categorias.Categoria;
-import org.bebidas.modules.dao.interfaces.CategoriaDAO;
+import org.bebidas.modules.categorias.repositories.interfaces.CategoriaDAO;
 
 import java.sql.*;
 import java.util.ArrayList;

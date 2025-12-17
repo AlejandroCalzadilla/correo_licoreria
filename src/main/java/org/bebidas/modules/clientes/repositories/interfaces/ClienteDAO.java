@@ -1,8 +1,9 @@
-package org.bebidas.modules.dao.interfaces;
+package org.bebidas.modules.clientes.repositories.interfaces;
 
 import java.util.List;
 
 import org.bebidas.modules.clientes.Cliente;
+import org.bebidas.modules.dao.interfaces.GenericDAO;
 
 public interface ClienteDAO extends GenericDAO<Cliente, Long> {
     List<Cliente> buscarPorNombre(String nombre);

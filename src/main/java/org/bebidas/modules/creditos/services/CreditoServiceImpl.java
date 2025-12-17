@@ -11,4 +11,6 @@ public class CreditoServiceImpl extends GenericServiceImpl<Credito, Long> implem
     public CreditoServiceImpl() {
         super(new CreditoDAOImpl());
     }
+
+    
 }
