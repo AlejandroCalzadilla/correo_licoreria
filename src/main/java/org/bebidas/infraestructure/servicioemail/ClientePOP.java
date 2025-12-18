@@ -12,8 +12,8 @@ import java.sql.Statement;
 public class ClientePOP {
     static final String HOST = "mail.tecnoweb.org.bo";
     static final int PORT = 110;
-    static final String USER = "grupo11sa";
-    static final String PASS = "grup011grup011*";
+    static final String USER = "grupo12sa";
+    static final String PASS = "grup012grup012*";
     static final String DB_URL = "jdbc:postgresql://mail.tecnoweb.org.bo/db_agenda";
     static final String DB_USER = "agenda";
     static final String DB_PASS = "agendaagenda";
@@ -163,4 +163,37 @@ public class ClientePOP {
             return null;
         }
     }
+
+    public void eliminarTodosLosCorreos() throws IOException {
+        try {
+            conectar();
+            int totalCorreos = obtenerTotalDeCorreos();
+            System.out.println("Marcando " + totalCorreos + " correos para eliminación...");
+
+            for (int i = 1; i <= totalCorreos; i++) {
+                enviarComando(salida, entrada, "DELE " + i + "\r\n");
+                System.out.println("Correo " + i + " marcado para eliminación");
+            }
+
+            desconectar();
+            System.out.println("Todos los correos han sido marcados para eliminación y la conexión cerrada.");
+        } catch (IOException e) {
+            System.out.println("Error al eliminar todos los correos: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public static void main(String[] args) {
+        ClientePOP cliente = new ClientePOP();
+
+        try {
+            System.out.println("Iniciando eliminación de todos los correos...");
+            cliente.eliminarTodosLosCorreos();
+            System.out.println("Eliminación completada exitosamente.");
+        } catch (IOException e) {
+            System.err.println("Error durante la eliminación: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }

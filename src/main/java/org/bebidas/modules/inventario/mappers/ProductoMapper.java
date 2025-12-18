@@ -11,8 +11,8 @@ public class ProductoMapper {
             .addColumn("id", "ID", 10)
             .addColumn("nombre", "Nombre", 30)
             .addColumn("descripcion", "Descripción", 40)
-            .addColumn("precio", "Precio", 12)
-            .addColumn("stock", "Stock", 10);
+            .addColumn("marca", "Marca", 20)
+            .addColumn("precio", "Precio", 12);
     
     public static String obtenerTodosTable(List<Producto> productos) {
         return tableMapper.obtenerTodosTable(productos);

@@ -68,7 +68,7 @@ public class ServiceProvider {
     private final ProductoService productoService;
     private final ItemCarritoService itemCarritoService;
     private final ProveedorService proveedorService;
-    private final RolService rolService;
+    private final RolServiceImpl rolService;
     private final UsuarioService usuarioService;
     private final VendedorService vendedorService;
     private final CreditoService creditoService;
@@ -105,7 +105,7 @@ public class ServiceProvider {
         this.compraService = new CompraServiceImpl(compraDAO);
         this.detalleCompraService = new DetalleCompraServiceImpl(detalleCompraDAO, inventarioService);
         this.detalleVentaService = new DetalleVentaServiceImpl(detalleVentaDAO, inventarioService);
-        this.productoService = new ProductoServiceImpl(productoDAO);
+        this.productoService = new ProductoServiceImpl(productoDAO, categoriaService);
         this.itemCarritoService = new ItemCarritoServiceImpl(itemCarritoDAO, carritoService, productoService,
                 (InventarioServiceImpl) inventarioService);
         this.proveedorService = new ProveedorServiceImpl(proveedorDAO);
@@ -116,7 +116,7 @@ public class ServiceProvider {
         this.pagoCuotaService = new PagoCuotaServiceImpl();
         this.pagoService = new PagoServiceImpl(pagoDAO);
         this.ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService,
-                (CreditoServiceImpl) creditoService, pagoCuotaService);
+                creditoService, pagoCuotaService);
         ((PagoServiceImpl) pagoService).setVentaService(ventaService);
     }
 
@@ -168,7 +168,7 @@ public class ServiceProvider {
         return proveedorService;
     }
 
-    public RolService getRolService() {
+    public RolServiceImpl getRolService() {
         return rolService;
     }
 

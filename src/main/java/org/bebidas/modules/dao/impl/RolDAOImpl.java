@@ -31,7 +31,7 @@ public class RolDAOImpl extends GenericDAOImpl<Rol, Long> implements RolDAO {
 
     @Override
     public Optional<Rol> findById(Long id) {
-        String sql = "SELECT * FROM rolWHERE id = ?";
+        String sql = "SELECT * FROM rol WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

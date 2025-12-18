@@ -39,9 +39,9 @@ public class CommandHelpHTML {
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "VENDEDORES",
-                "Crear un nuevo vendedor",
-                "ci, nombre, [usuarioId]",
-                "CREATEVENDEDORES[12345678, Carlos Lopez, 2]"));
+                "Crear un nuevo vendedor con usuario",
+                "ci, nombre, nombreUsuario, correoUsuario, claveUsuario, rolId",
+                "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CATEGORIAS",
@@ -52,13 +52,13 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "CREATE", "PRODUCTOS",
                 "Crear un nuevo producto",
-                "nombre, precio, codigo, categoriaId, descripcion",
-                "CREATEPRODUCTOS[Cerveza Pilsen, 25.50, CER001, 1, Cerveza pilsen premium]"));
+                "categoriaId,nombre, precio, codigo, descripcion, marca",
+                "CREATEPRODUCTOS[1, Cerveza Pilsen, 25.50, CER001, Cerveza pilsen premium, Pilsen]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "INVENTARIO",
                 "Crear un movimiento de inventario",
-                "productoId, cantidad, [tipoMovimiento], glosa",
+                "productoId, cantidad, tipoMovimiento(ENTRADA/ SALIDA), glosa",
                 "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial]"));
 
         COMMANDS.add(new CommandExample(
@@ -68,10 +68,16 @@ public class CommandHelpHTML {
                 "CREATECARRITOS[1, session123]"));
 
         COMMANDS.add(new CommandExample(
+                "CREATE", "ITEMCARRITOS",
+                "Crear un item en el carrito de compras",
+                "carritoId, productoId, cantidad, precio",
+                "CREATEITEMCARRITOS[1, 1, 2, 25.50]"));
+
+        COMMANDS.add(new CommandExample(
                 "CREATE", "COMPRAS",
                 "Crear una nueva compra a proveedor",
-                "proveedorId, descripcion, estado",
-                "CREATECOMPRAS[1, Compra de cervezas, PENDIENTE]"));
+                "proveedorId, descripcion",
+                "CREATECOMPRAS[1, Compra de cervezas]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "PROVEEDORES",
@@ -81,21 +87,51 @@ public class CommandHelpHTML {
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CLIENTES",
-                "Crear un nuevo cliente",
-                "ci, nombre, telefono, direccion, estado, usuarioId",
-                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, A, 3]"));
+                "Crear un nuevo cliente con usuario",
+                "ci, nombre, telefono, direccion, estado, nombreUsuario, correoUsuario, claveUsuario, [rolId]",
+                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, A, maria, maria@email.com, pass123, 1]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "VENTAS",
                 "Crear una nueva venta",
-                "clienteId, usuarioId, montoTotal, saldo, estado",
-                "CREATEVENTAS[1, 2, 50.00, 0.00, COMPLETADA]"));
+                "clienteId, tipo(credito/contado), [numeroCuotas], [metodoPago]",
+                "CREATEVENTAS[1, contado, , efectivo]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "VENTASCONDETALLE",
+                "Crear venta con detalles desde carrito",
+                "clienteId, tipo(credito/contado), carritoId, [numeroCuotas], [metodoPago]",
+                "CREATEVENTASCONDETALLE[1, contado, 5, , efectivo]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CREDITOS",
                 "Crear un nuevo crédito",
                 "ventaId, montoTotal, [numeroCuotas], [estado]",
                 "CREATECREDITOS[1, 100.00, 3, ACTIVO]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "DETALLECOMPRAS",
+                "Crear un detalle de compra",
+                "compraId, productoId, cantidad, precioUnitario",
+                "CREATEDETALLECOMPRAS[1, 1, 10, 25.50]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "DETALLEVENTAS",
+                "Crear un detalle de venta",
+                "ventaId, productoId, cantidad, precioUnitario",
+                "CREATEDETALLEVENTAS[1, 1, 5, 30.00]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "PAGOS",
+                "Crear un pago de venta",
+                "ventaId, tipoPago, monto, nombrePersona, email",
+                "CREATEPAGOS[1, efectivo, 100.00, Juan Perez, juan@email.com]"));
+
+        COMMANDS.add(new CommandExample(
+                "CREATE", "VENTA_COMPLETA",
+                "Crear venta completa con detalle, crédito y pago",
+                "clienteId, tipo, numeroCuotas, metodoPago, productoId, cantidad, precioUnitario, tipoPago, montoPago",
+                "CREATEVENTA_COMPLETA[1, contado, , efectivo, 1, 2, 50.00, efectivo, 100.00]"));
 
         // UPDATE commands
         COMMANDS.add(new CommandExample(
@@ -113,8 +149,8 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "UPDATE", "VENDEDORES",
                 "Actualizar un vendedor",
-                "id, ci, nombre, [usuarioId]",
-                "UPDATEVENDEDORES[1, 12345678, Carlos Lopez, 2]"));
+                "id, ci, nombre",
+                "UPDATEVENDEDORES[1, 12345678, Carlos Lopez]"));
 
         COMMANDS.add(new CommandExample(
                 "UPDATE", "CATEGORIAS",
@@ -155,8 +191,8 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "UPDATE", "CLIENTES",
                 "Actualizar un cliente",
-                "id, ci, nombre, telefono, direccion, estado, usuarioId",
-                "UPDATECLIENTES[1, 87654321, Maria Garcia, 555-5678, Calle Actualizada 101, A, 3]"));
+                "id, ci, nombre, telefono, direccion, estado",
+                "UPDATECLIENTES[1, 87654321, Maria Garcia, 555-5678, Calle Actualizada 101, A]"));
 
         COMMANDS.add(new CommandExample(
                 "UPDATE", "VENTAS",

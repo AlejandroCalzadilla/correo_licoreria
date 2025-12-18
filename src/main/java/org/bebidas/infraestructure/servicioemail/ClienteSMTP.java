@@ -11,7 +11,7 @@ public class ClienteSMTP {
 
     private static final String SERVIDOR = "mail.tecnoweb.org.bo";
     private static final int PUERTO = 25;
-    private static final String EMISOR = "grupo11sa@tecnoweb.org.bo";
+    private static final String EMISOR = "grupo12sa@tecnoweb.org.bo";
 
     private static void enviarComando(OutputStreamWriter salida, BufferedReader entrada, String comando)
             throws IOException {

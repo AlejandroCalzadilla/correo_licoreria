@@ -29,9 +29,14 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
         Compra compra = new Compra();
         compra.setId(rs.getLong("id"));
         compra.setNroCompra(rs.getString("nro_compra"));
-        compra.setFecha(LocalDate.from(rs.getTimestamp("fecha").toInstant()));
+        
+        Timestamp ts = rs.getTimestamp("fecha");
+        if (ts != null) {
+            compra.setFecha(ts.toLocalDateTime().toLocalDate());
+        }
         
         compra.setEstado(rs.getString("estado"));
+        compra.setDescripcion(rs.getString("descripcion"));
 
         // Proveedor relationship
         Long proveedorId = rs.getLong("proveedor_id");

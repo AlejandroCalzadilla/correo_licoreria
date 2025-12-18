@@ -69,7 +69,7 @@ public class ServicioEmail {
 
         // Programar el apagado automático después de 15 segundos
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.schedule(servicioEmail::detener, 320, TimeUnit.SECONDS);
+        scheduler.schedule(servicioEmail::detener, 600, TimeUnit.SECONDS);
         while (servicioEmail.conectado) {
             servicioEmail.revisarCorreos();
 

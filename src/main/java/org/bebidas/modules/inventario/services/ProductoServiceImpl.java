@@ -1,6 +1,7 @@
 package org.bebidas.modules.inventario.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
+import org.bebidas.modules.categorias.services.interfaces.CategoriaService;
 import org.bebidas.modules.dao.interfaces.ProductoDAO;
 import org.bebidas.modules.inventario.Producto;
 import org.bebidas.modules.service.interfaces.ProductoService;
@@ -11,10 +12,23 @@ import java.util.List;
 public class ProductoServiceImpl extends GenericServiceImpl<Producto, Long> implements ProductoService {
 
     private final ProductoDAO productoDAO;
+    private final CategoriaService categoriaService;
 
-    public ProductoServiceImpl(ProductoDAO productoDAO) {
+    public ProductoServiceImpl(ProductoDAO productoDAO, CategoriaService categoriaService) {
         super(productoDAO);
         this.productoDAO = productoDAO;
+        this.categoriaService = categoriaService;
+    }
+
+    @Override
+    public Producto save(Producto producto) {
+        // Validar que la categoría existe si está asignada
+        if (producto.getCategoria() != null && producto.getCategoria().getId() != null) {
+            categoriaService.findById(producto.getCategoria().getId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + producto.getCategoria().getId()));
+        }
+        
+        return super.save(producto);
     }
 
     @Override

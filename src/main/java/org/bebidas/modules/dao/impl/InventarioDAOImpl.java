@@ -61,7 +61,7 @@ public class InventarioDAOImpl extends GenericDAOImpl<Inventario, Long> implemen
 
     @Override
     public Optional<Inventario> findById(Long id) {
-        String sql = "SELECT * FROM inventarios WHERE id = ?";
+        String sql = "SELECT * FROM inventario WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -82,7 +82,7 @@ public class InventarioDAOImpl extends GenericDAOImpl<Inventario, Long> implemen
     @Override
     public List<Inventario> findAll() {
         List<Inventario> inventarios = new ArrayList<>();
-        String sql = "SELECT * FROM inventarios ORDER BY fecha DESC";
+        String sql = "SELECT * FROM inventario ORDER BY fecha DESC";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

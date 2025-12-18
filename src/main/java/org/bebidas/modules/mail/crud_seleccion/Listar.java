@@ -24,10 +24,13 @@ public class Listar {
         try {
             switch (entidad) {
                 case "ROLES":
+                    System.out.println("LLEGUE A LISTAR ROLES" +services.getRolService().findAll());
                     respuesta = RolMapper.obtenerTodosTable(services.getRolService().findAll());
+                    
                     break;
 
                 case "USUARIOS":
+                    System.out.println("LLEGUE A LISTAR USUARIOS" +services.getUsuarioService().findAll());
                     respuesta = UsuarioMapper.obtenerTodosTable(services.getUsuarioService().findAll());
                     break;
                 case "VENDEDORES":

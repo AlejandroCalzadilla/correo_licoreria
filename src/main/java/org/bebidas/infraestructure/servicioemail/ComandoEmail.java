@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bebidas.modules.mail.crud_seleccion.Crear;
+import org.bebidas.modules.mail.crud_seleccion.Listar;
 
 public class ComandoEmail {
     // private CommandHelp commandHelp = new CommandHelp();
@@ -219,7 +220,8 @@ public class ComandoEmail {
     private String ejecutarConsultaListar(String entidad) throws SQLException {
         String respuesta = "";
         try {
-            return respuesta;
+            Listar listar = new Listar();
+            return listar.ejecutarConsultaListar(entidad);
         } catch (Exception e) {
             return "Error al obtener listado de " + entidad + ": " + e.getMessage();
         }
