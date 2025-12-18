@@ -28,8 +28,8 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "CREATE", "ROLES",
                 "Crear un nuevo rol",
-                "nombre, descripcion, [activo]",
-                "CREATEROLES[Administrador, Rol de administrador, true]"));
+                "nombre, descripcion",
+                "CREATEROLES[Administrador, Rol de administrador]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "USUARIOS",
@@ -41,7 +41,7 @@ public class CommandHelpHTML {
                 "CREATE", "VENDEDORES",
                 "Crear un nuevo vendedor con usuario",
                 "ci, nombre, nombreUsuario, correoUsuario, claveUsuario, rolId",
-                "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1"));
+                "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CATEGORIAS",

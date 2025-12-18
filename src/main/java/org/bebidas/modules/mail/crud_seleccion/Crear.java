@@ -152,14 +152,13 @@ public class Crear {
 
     private String crearRol(String[] params) {
         try {
-            if (params.length < 2)
-                return "Se requieren: nombre, descripcion, [activo]";
+            if (params.length < 1)
+                return "Se requieren: nombre, descripcion";
 
             Rol rol = new Rol();
             rol.setNombre(params[0]);
             rol.setDescripcion(params[1]);
-            rol.setActivo(params.length > 2 ? Boolean.parseBoolean(params[2]) : true);
-
+        
             Rol rolCreado = services.getRolService().save(rol);
             return "Rol creado correctamente con ID: " + rolCreado.getId();
         } catch (Exception e) {
@@ -497,6 +496,8 @@ public class Crear {
 
     private String crearVentaConDetalle(String[] params) {
         try {
+            System.out.println("DEBUG: crearVentaConDetalle - Parámetros recibidos: " + String.join(",", params));
+            
             if (params.length < 3)
                 return "Se requieren: clienteId, tipo, carritoId, [numeroCuotas], [metodoPago]";
 
@@ -519,6 +520,7 @@ public class Crear {
             venta.setCliente(cliente);
 
             String tipo = params[1].toLowerCase();
+            System.out.println("DEBUG: Tipo de venta configurado: " + tipo);
             if (!tipo.equals("credito") && !tipo.equals("contado")) {
                 return "Tipo debe ser 'credito' o 'contado'";
             }
@@ -531,7 +533,9 @@ public class Crear {
             }
 
             if (tipo.equals("contado")) {
-              venta.setMetodoPago("qr");    
+                if (params.length < 5)
+                    return "Se requiere metodoPago para tipo contado";
+                venta.setMetodoPago(params[4]);
             }
 
             venta.setEstado("pendiente");
@@ -555,28 +559,36 @@ public class Crear {
                 BigDecimal subtotal = item.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad()));
                 montoTotal = montoTotal.add(subtotal);
             }
+            
+            System.out.println("DEBUG: Monto total calculado: " + montoTotal + ", Items procesados: " + items.size());
 
             // Actualizar venta con monto total
             ventaCreada.setMontoTotal(montoTotal);
             ventaCreada.setSaldo(montoTotal);
-            services.getVentaService().save(ventaCreada);
+            Venta ventaActualizada = services.getVentaService().save(ventaCreada);
 
             // Si es crédito, crear crédito
             if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
+                System.out.println("DEBUG: Creando crédito para venta tipo: " + venta.getTipo());
+                System.out.println("DEBUG: Venta ID: " + ventaActualizada.getId() + ", MontoTotal: " + montoTotal);
+                
                 Credito credito = new Credito();
-                credito.setVenta(ventaCreada);
+                credito.setVenta(ventaActualizada);
                 credito.setMontoTotal(montoTotal);
                 credito.setSaldo(montoTotal);
-                credito.setNumeroCuotas(ventaCreada.getNumeroCuotas() != null ? ventaCreada.getNumeroCuotas() : "1");
+                credito.setNumeroCuotas(ventaActualizada.getNumeroCuotas() != null ? ventaActualizada.getNumeroCuotas() : "1");
                 credito.setEstado("ACTIVO");
                 credito.setFechaInicio(LocalDate.now());
-                services.getCreditoService().save(credito);
+                
+                System.out.println("DEBUG: Guardando crédito...");
+                Credito creditoCreado = services.getCreditoService().save(credito);
+                System.out.println("DEBUG: Crédito creado con ID: " + (creditoCreado != null ? creditoCreado.getId() : "NULL"));
+            } else {
+                System.out.println("DEBUG: No se crea crédito - Tipo de venta: " + venta.getTipo());
             }
 
-            return "Venta con detalle creada correctamente con ID: " + ventaCreada.getId() +
-                    "\nNúmero de venta: " + nroVenta +
-                    "\nMonto Total: " + montoTotal +
-                    "\nDetalles procesados: " + items.size();
+            return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaActualizada) +
+                   "\nDetalles procesados: " + items.size();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

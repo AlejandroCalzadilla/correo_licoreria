@@ -12,9 +12,8 @@ public class ClienteMapper {
             .addColumn("nombre", "Nombre", 30)
             .addColumn("telefono", "Teléfono", 15)
             .addColumn("direccion", "Dirección", 35)
-            .addColumn("estado", "Estado", 10)
-            .addColumn("estadoVerificacion", "Verificación", 20);
-    
+            .addColumn("estado", "Estado", 10);
+         
     public static String obtenerTodosTable(List<Cliente> clientes) {
         return tableMapper.obtenerTodosTable(clientes);
     }

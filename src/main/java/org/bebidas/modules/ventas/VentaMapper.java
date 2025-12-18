@@ -10,8 +10,8 @@ public class VentaMapper {
             .addColumn("fecha", "Fecha", 12)
             .addColumn("estado", "Estado", 12)
             .addColumn("montoTotal", "Monto Total", 15)
-            .addColumn("saldo", "Saldo", 15);
-    
+            .addColumn("saldo", "Saldo", 15)
+            .addColumn("numeroCuotas", "Número de Cuotas", 15);
     public static String obtenerTodosTable(List<Venta> ventas) {
         return tableMapper.obtenerTodosTable(ventas);
     }
