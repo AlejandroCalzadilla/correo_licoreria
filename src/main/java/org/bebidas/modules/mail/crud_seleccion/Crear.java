@@ -463,21 +463,17 @@ public class Crear {
                 return "Se requieren: clienteId, tipo, [numeroCuotas], [metodoPago]";
 
             Venta venta = new Venta();
-
-            // Generar número de venta
+            
             String nroVenta = generarSiguienteNroVenta();
             venta.setNroVenta(nroVenta);
-
             Cliente cliente = new Cliente();
             cliente.setId(Long.parseLong(params[0]));
             venta.setCliente(cliente);
-
             String tipo = params[1].toLowerCase();
             if (!tipo.equals("credito") && !tipo.equals("contado")) {
                 return "Tipo debe ser 'credito' o 'contado'";
             }
             venta.setTipo(tipo);
-
             if (tipo.equals("credito")) {
                 if (params.length < 3)
                     return "Se requiere numeroCuotas para tipo credito";
@@ -489,11 +485,9 @@ public class Crear {
                     return "Se requiere metodoPago para tipo contado";
                 venta.setMetodoPago(params[3]);
             }
-
             venta.setEstado("pendiente");
             venta.setEstadoPago("pendiente");
             venta.setFecha(LocalDate.now());
-
             Venta ventaCreada = services.getVentaService().save(venta);
             return "Venta creada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaCreada);
         } catch (Exception e) {
@@ -537,9 +531,7 @@ public class Crear {
             }
 
             if (tipo.equals("contado")) {
-                if (params.length < 5)
-                    return "Se requiere metodoPago para tipo contado";
-                venta.setMetodoPago(params[4]);
+              venta.setMetodoPago("qr");    
             }
 
             venta.setEstado("pendiente");

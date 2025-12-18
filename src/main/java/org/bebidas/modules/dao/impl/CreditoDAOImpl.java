@@ -48,7 +48,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
 
     @Override
     public Optional<Credito> findById(Long id) {
-        String sql = "SELECT * FROM creditos WHERE id = ?";
+        String sql = "SELECT * FROM credito WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -69,7 +69,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> findAll() {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT * FROM creditos";
+        String sql = "SELECT * FROM credito";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -95,7 +95,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     }
 
     private Credito insert(Credito credito) {
-        String sql = "INSERT INTO creditos (monto_total, saldo, numero_cuotas, estado, fecha_inicio, venta_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO credito (monto_total, saldo, numero_cuotas, estado, fecha_inicio, venta_id) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -127,7 +127,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     }
 
     private Credito update(Credito credito) {
-        String sql = "UPDATE creditos SET monto_total = ?, saldo = ?, numero_cuotas = ?, estado = ?, fecha_inicio = ?, venta_id = ? WHERE id = ?";
+        String sql = "UPDATE credito SET monto_total = ?, saldo = ?, numero_cuotas = ?, estado = ?, fecha_inicio = ?, venta_id = ? WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -154,7 +154,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
 
     @Override
     public void delete(Long id) {
-        String sql = "DELETE FROM creditos WHERE id = ?";
+        String sql = "DELETE FROM credito WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -189,7 +189,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> buscarPorVenta(Long ventaId) {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT * FROM creditos WHERE venta_id = ?";
+        String sql = "SELECT * FROM credito WHERE venta_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -210,7 +210,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> buscarPorEstado(String estado) {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT * FROM creditos WHERE estado = ?";
+        String sql = "SELECT * FROM credito WHERE estado = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -231,7 +231,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> buscarPorCliente(Long clienteId) {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT c.* FROM creditos c JOIN ventas v ON c.venta_id = v.id WHERE v.cliente_id = ?";
+        String sql = "SELECT c.* FROM credito c JOIN ventas v ON c.venta_id = v.id WHERE v.cliente_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -252,7 +252,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> buscarPorRangoFechas(LocalDate inicio, LocalDate fin) {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT * FROM creditos WHERE fecha_inicio BETWEEN ? AND ?";
+        String sql = "SELECT * FROM credito WHERE fecha_inicio BETWEEN ? AND ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -294,7 +294,7 @@ public class CreditoDAOImpl extends GenericDAOImpl<Credito, Long> implements Cre
     @Override
     public List<Credito> buscarCreditosVencidos() {
         List<Credito> creditos = new ArrayList<>();
-        String sql = "SELECT c.* FROM creditos c JOIN ventas v ON c.venta_id = v.id WHERE c.estado = 'PENDIENTE' AND v.fecha_vencimiento < CURDATE()";
+        String sql = "SELECT c.* FROM credito c JOIN ventas v ON c.venta_id = v.id WHERE c.estado = 'PENDIENTE' AND v.fecha_vencimiento < CURDATE()";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

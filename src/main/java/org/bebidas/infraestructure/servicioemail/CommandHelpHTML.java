@@ -94,8 +94,8 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "CREATE", "VENTAS",
                 "Crear una nueva venta",
-                "clienteId, tipo(credito/contado), [numeroCuotas], [metodoPago]",
-                "CREATEVENTAS[1, contado, , efectivo]"));
+                "clienteId, tipo(credito/contado), [numeroCuotas]",
+                "CREATEVENTAS[1, contado,2]"));
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "VENTASCONDETALLE",
