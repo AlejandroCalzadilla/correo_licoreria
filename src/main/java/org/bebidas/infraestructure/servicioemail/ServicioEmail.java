@@ -1,10 +1,14 @@
 package org.bebidas.infraestructure.servicioemail;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServicioEmail {
     private boolean conectado;
@@ -85,13 +89,18 @@ public class ServicioEmail {
     private void evaluarYResponderCorreo(String correo) throws SQLException {
         String subject = extraerSubject(correo);
         String remitente = extraerRemitente(correo);
-        if (subject != null && remitente != null) {
+        if (subject != null && !subject.isEmpty() && remitente != null) {
             System.out.println("S : Procesando correo con subject: " + subject + " de: " + remitente);
+            System.out.println("Evaluando subject: " + subject);
             String respuesta = procesarCorreo(subject);
-            if (!respuesta.isEmpty()) {
-                System.out.println(respuesta);
+            if (respuesta != null && !respuesta.isEmpty()) {
+                System.out.println("Respuesta consulta: " + respuesta);
                 clienteSMTP.enviarCorreo(remitente, "Resultado de la Consulta", respuesta);
+            } else {
+                System.out.println("No se generó respuesta para el subject: " + subject);
             }
+        } else {
+            System.out.println("S : Correo ignorado - Subject vacío o sin remitente válido");
         }
     }
 
@@ -101,7 +110,7 @@ public class ServicioEmail {
 
         for (String line : correo.split("\n")) {
             if (line.startsWith("Subject:")) {
-                subjectBuilder.append(line.substring(9).trim());
+                subjectBuilder.append(line.substring(8).trim());
                 subjectFound = true;
             } else if (subjectFound && (line.startsWith(" ") || line.startsWith("\t"))) {
                 subjectBuilder.append(" ").append(line.trim());
@@ -109,7 +118,84 @@ public class ServicioEmail {
                 break;
             }
         }
-        return subjectBuilder.toString();
+        
+        String rawSubject = subjectBuilder.toString();
+        String decodedSubject = decodificarMIME(rawSubject);
+        System.out.println("Subject decodificado: " + decodedSubject);
+        return decodedSubject;
+    }
+
+    /**
+     * Decodifica subjects codificados en formato MIME (RFC 2047)
+     * Soporta Base64 (=?charset?B?...?=) y Quoted-Printable (=?charset?Q?...?=)
+     */
+    private String decodificarMIME(String encoded) {
+        if (encoded == null || encoded.isEmpty()) {
+            return encoded;
+        }
+        
+        // Patrón para detectar encoded-words: =?charset?encoding?encoded_text?=
+        Pattern pattern = Pattern.compile("=\\?([^?]+)\\?([BbQq])\\?([^?]*)\\?=");
+        Matcher matcher = pattern.matcher(encoded);
+        StringBuffer decoded = new StringBuffer();
+        
+        while (matcher.find()) {
+            String charset = matcher.group(1);
+            String encoding = matcher.group(2).toUpperCase();
+            String text = matcher.group(3);
+            
+            String decodedText;
+            try {
+                if ("B".equals(encoding)) {
+                    // Base64 decoding
+                    byte[] bytes = Base64.getDecoder().decode(text);
+                    decodedText = new String(bytes, charset);
+                } else if ("Q".equals(encoding)) {
+                    // Quoted-Printable decoding
+                    decodedText = decodeQuotedPrintable(text, charset);
+                } else {
+                    decodedText = text;
+                }
+            } catch (Exception e) {
+                System.out.println("Error decodificando MIME: " + e.getMessage());
+                decodedText = text;
+            }
+            
+            matcher.appendReplacement(decoded, Matcher.quoteReplacement(decodedText));
+        }
+        matcher.appendTail(decoded);
+        
+        // Eliminar espacios entre encoded-words consecutivos
+        return decoded.toString().replaceAll("\\s+", " ").trim();
+    }
+    
+    /**
+     * Decodifica texto en formato Quoted-Printable
+     */
+    private String decodeQuotedPrintable(String text, String charset) throws UnsupportedEncodingException {
+        // En QP para headers, los underscores representan espacios
+        text = text.replace("_", " ");
+        
+        StringBuilder result = new StringBuilder();
+        byte[] bytes = new byte[text.length()];
+        int byteIndex = 0;
+        
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '=' && i + 2 < text.length()) {
+                try {
+                    int hex = Integer.parseInt(text.substring(i + 1, i + 3), 16);
+                    bytes[byteIndex++] = (byte) hex;
+                    i += 2;
+                } catch (NumberFormatException e) {
+                    bytes[byteIndex++] = (byte) c;
+                }
+            } else {
+                bytes[byteIndex++] = (byte) c;
+            }
+        }
+        
+        return new String(bytes, 0, byteIndex, charset);
     }
 
     private String extraerSubjectOld(String correo) {
