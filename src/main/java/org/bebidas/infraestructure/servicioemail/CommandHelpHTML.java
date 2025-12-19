@@ -127,12 +127,12 @@ public class CommandHelpHTML {
                 "ventaId, tipoPago(qr,efectivo), monto, nombrePersona, email",
                 "CREATEPAGOS[1, efectivo, 100.00, Juan Perez, juan@email.com]"));
 
-        COMMANDS.add(new CommandExample(
+        /* COMMANDS.add(new CommandExample(
                 "CREATE", "VENTA_COMPLETA",
                 "Crear venta completa con detalle, crédito y pago",
                 "clienteId, tipo, numeroCuotas, metodoPago, productoId, cantidad, precioUnitario, tipoPago, montoPago",
                 "CREATEVENTA_COMPLETA[1, contado, , efectivo, 1, 2, 50.00, efectivo, 100.00]"));
-
+ */
         // UPDATE commands
         COMMANDS.add(new CommandExample(
                 "UPDATE", "ROLES",
