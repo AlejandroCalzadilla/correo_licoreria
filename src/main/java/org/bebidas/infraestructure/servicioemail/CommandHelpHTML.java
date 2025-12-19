@@ -124,7 +124,7 @@ public class CommandHelpHTML {
         COMMANDS.add(new CommandExample(
                 "CREATE", "PAGOS",
                 "Crear un pago de venta",
-                "ventaId, tipoPago, monto, nombrePersona, email",
+                "ventaId, tipoPago(qr,efectivo), monto, nombrePersona, email",
                 "CREATEPAGOS[1, efectivo, 100.00, Juan Perez, juan@email.com]"));
 
         COMMANDS.add(new CommandExample(

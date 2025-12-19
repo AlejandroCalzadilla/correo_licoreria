@@ -645,6 +645,8 @@ public class Crear {
 
     private String crearDetalleVenta(String[] params) {
         try {
+            System.out.println("DEBUG: crearDetalleVenta - Parámetros recibidos: " + String.join(",", params));
+            
             if (params.length < 4)
                 return "Se requieren: ventaId, productoId, cantidad, precioUnitario";
 
@@ -654,6 +656,15 @@ public class Crear {
             if (venta == null)
                 return "Venta no encontrada con ID: " + ventaId;
 
+            // Verificar si ya hay pagos para esta venta
+            boolean tienePagos = services.getPagoService().findAll().stream()
+                    .anyMatch(p -> p.getVenta().getId().equals(ventaId));
+            if (tienePagos) {
+                return "No se puede crear detalle de venta: ya existen pagos asociados a esta venta";
+            }
+
+            System.out.println("DEBUG: Venta encontrada - Tipo: " + venta.getTipo() + ", MontoTotal actual: " + venta.getMontoTotal());
+            
             DetalleVenta detalle = new DetalleVenta();
             detalle.setVenta(venta);
 
@@ -673,21 +684,45 @@ public class Crear {
             BigDecimal montoActual = venta.getMontoTotal() != null ? venta.getMontoTotal() : BigDecimal.ZERO;
             BigDecimal nuevoMonto = montoActual.add(subtotal);
 
+            System.out.println("DEBUG: Subtotal calculado: " + subtotal + ", Nuevo monto total: " + nuevoMonto);
+            
             venta.setMontoTotal(nuevoMonto);
             venta.setSaldo(nuevoMonto); // Saldo igual a monto total inicialmente
 
             services.getVentaService().save(venta);
 
-            // Si es crédito, crear crédito
+            // Si es crédito, gestionar crédito
             if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
-                Credito credito = new Credito();
-                credito.setVenta(venta);
-                credito.setMontoTotal(nuevoMonto);
-                credito.setSaldo(nuevoMonto);
-                credito.setNumeroCuotas(venta.getNumeroCuotas() != null ? venta.getNumeroCuotas() : "1");
-                credito.setEstado("ACTIVO");
-                credito.setFechaInicio(LocalDate.now());
-                services.getCreditoService().save(credito);
+                // Verificar si ya existe un crédito para esta venta
+                Credito creditoExistente = services.getCreditoService().findAll().stream()
+                        .filter(c -> c.getVenta().getId().equals(venta.getId()))
+                        .findFirst()
+                        .orElse(null);
+                
+                if (creditoExistente != null) {
+                    System.out.println("DEBUG: Crédito ya existe para venta ID: " + venta.getId() + ", actualizando montos");
+                    creditoExistente.setMontoTotal(nuevoMonto);
+                    creditoExistente.setSaldo(nuevoMonto);
+                    services.getCreditoService().save(creditoExistente);
+                    System.out.println("DEBUG: Crédito actualizado con nuevo monto: " + nuevoMonto);
+                } else {
+                    System.out.println("DEBUG: Creando crédito para venta tipo: " + venta.getTipo());
+                    System.out.println("DEBUG: Venta ID: " + venta.getId() + ", NuevoMonto: " + nuevoMonto);
+                    
+                    Credito credito = new Credito();
+                    credito.setVenta(venta);
+                    credito.setMontoTotal(nuevoMonto);
+                    credito.setSaldo(nuevoMonto);
+                    credito.setNumeroCuotas(venta.getNumeroCuotas() != null ? venta.getNumeroCuotas() : "1");
+                    credito.setEstado("ACTIVO");
+                    credito.setFechaInicio(LocalDate.now());
+                    
+                    System.out.println("DEBUG: Guardando crédito...");
+                    Credito creditoCreado = services.getCreditoService().save(credito);
+                    System.out.println("DEBUG: Crédito creado con ID: " + (creditoCreado != null ? creditoCreado.getId() : "NULL"));
+                }
+            } else {
+                System.out.println("DEBUG: No se crea crédito - Tipo de venta: " + venta.getTipo());
             }
 
             return "DetalleVenta creado correctamente con ID: " + detalleCreado.getId() +
@@ -709,11 +744,22 @@ public class Crear {
 
             BigDecimal monto = new BigDecimal(params[2]);
 
-            // Restricción: Si es crédito, no permite pagos >= al monto total
+            // Restricción: Si es crédito, solo permite pagos por cuota completa
             if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
-                if (venta.getMontoTotal() != null && monto.compareTo(venta.getMontoTotal()) >= 0) {
-                    return "RESTRICCIÓN: Para ventas a crédito, el pago no puede ser igual o mayor al monto total ("
-                            + venta.getMontoTotal() + ")";
+                Credito credito = services.getCreditoService().findAll().stream()
+                        .filter(c -> c.getVenta().getId().equals(ventaId))
+                        .findFirst()
+                        .orElse(null);
+                
+                if (credito != null) {
+                    int cuotasRestantes = Integer.parseInt(credito.getNumeroCuotas());
+                    BigDecimal montoCuota = credito.getMontoTotal().divide(BigDecimal.valueOf(cuotasRestantes), 2, java.math.RoundingMode.HALF_UP);
+                    
+                    if (monto.compareTo(montoCuota) != 0) {
+                        return "RESTRICCIÓN: Para ventas a crédito, el pago debe ser exactamente el monto de la cuota (" + montoCuota + ")";
+                    }
+                } else {
+                    return "Crédito no encontrado para la venta";
                 }
             }
 
@@ -739,7 +785,7 @@ public class Crear {
             venta.setSaldo(nuevoSaldo);
             services.getVentaService().save(venta);
 
-            // Actualizar saldo de crédito si existe
+            // Actualizar saldo y cuotas de crédito si existe
             if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
                 Credito credito = services.getCreditoService().findAll().stream()
                         .filter(c -> c.getVenta().getId().equals(ventaId))
@@ -747,8 +793,21 @@ public class Crear {
                         .orElse(null);
 
                 if (credito != null) {
-                    credito.setSaldo(nuevoSaldo);
+                    // Actualizar saldo
+                    credito.setSaldo(credito.getSaldo().subtract(monto));
+                    
+                    // Disminuir cuotas restantes
+                    /* int cuotasRestantes = Integer.parseInt(credito.getNumeroCuotas()) - 1;
+                    credito.setNumeroCuotas(String.valueOf(cuotasRestantes)); */
+                    
                     services.getCreditoService().save(credito);
+                    
+                    // Si no quedan cuotas, marcar venta como completada
+                    if (Integer.parseInt(credito.getNumeroCuotas()) == 0) {
+                        venta.setEstado("completado");
+                        venta.setEstadoPago("completado");
+                        services.getVentaService().save(venta);
+                    }
                 }
             }
 
