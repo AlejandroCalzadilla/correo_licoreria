@@ -97,11 +97,11 @@ public class CommandHelpHTML {
                 "clienteId, tipo(credito/contado), [numeroCuotas]",
                 "CREATEVENTAS[1, contado,2]"));
 
-        COMMANDS.add(new CommandExample(
+       /*  COMMANDS.add(new CommandExample(
                 "CREATE", "VENTASCONDETALLE",
                 "Crear venta con detalles desde carrito",
                 "clienteId, tipo(credito/contado), carritoId, [numeroCuotas], [metodoPago]",
-                "CREATEVENTASCONDETALLE[1, contado, 5, , efectivo]"));
+                "CREATEVENTASCONDETALLE[1, contado, 5, , efectivo]")); */
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CREDITOS",
