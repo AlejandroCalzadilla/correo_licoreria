@@ -2,8 +2,8 @@ package org.bebidas.modules.inventario.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.categorias.services.interfaces.CategoriaService;
-import org.bebidas.modules.dao.interfaces.ProductoDAO;
 import org.bebidas.modules.inventario.Producto;
+import org.bebidas.modules.inventario.repositories.interfaces.ProductoDAO;
 import org.bebidas.modules.service.interfaces.ProductoService;
 
 import java.math.BigDecimal;
@@ -61,10 +61,8 @@ public class ProductoServiceImpl extends GenericServiceImpl<Producto, Long> impl
         if (nuevoPrecio.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El precio debe ser mayor a cero");
         }
-
         Producto producto = findById(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + productoId));
-
         producto.setPrecio(nuevoPrecio);
         save(producto);
     }

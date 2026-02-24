@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.creditos.Credito;
-import org.bebidas.modules.dao.impl.CreditoDAOImpl;
+import org.bebidas.modules.creditos.repositories.CreditoDAOImpl;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
 
 public class CreditoServiceImpl extends GenericServiceImpl<Credito, Long> implements CreditoService {

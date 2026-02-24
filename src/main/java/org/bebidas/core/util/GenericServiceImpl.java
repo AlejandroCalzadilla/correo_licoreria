@@ -1,6 +1,5 @@
 package org.bebidas.core.util;
 
-import org.bebidas.modules.dao.interfaces.GenericDAO;
 import org.bebidas.modules.service.interfaces.GenericService;
 
 import java.util.List;

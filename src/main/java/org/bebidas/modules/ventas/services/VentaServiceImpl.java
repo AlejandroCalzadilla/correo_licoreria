@@ -6,14 +6,13 @@ import org.bebidas.modules.carrito.ItemCarrito;
 import org.bebidas.modules.carrito.services.interfaces.CarritoService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.creditos.Credito;
-import org.bebidas.modules.dao.interfaces.VentaDAO;
-
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
 import org.bebidas.modules.service.PagoCuotaService;
 import org.bebidas.modules.service.interfaces.*;
 import org.bebidas.modules.ventas.DetalleVenta;
 import org.bebidas.modules.ventas.Pago;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.modules.ventas.repositories.VentaDAO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

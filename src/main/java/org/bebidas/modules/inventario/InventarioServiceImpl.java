@@ -1,8 +1,8 @@
 package org.bebidas.modules.inventario;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.InventarioDAO;
-import org.bebidas.modules.dao.interfaces.ProductoDAO;
+import org.bebidas.modules.inventario.repositories.interfaces.InventarioDAO;
+import org.bebidas.modules.inventario.repositories.interfaces.ProductoDAO;
 import org.bebidas.modules.service.interfaces.InventarioService;
 
 import java.time.LocalDate;

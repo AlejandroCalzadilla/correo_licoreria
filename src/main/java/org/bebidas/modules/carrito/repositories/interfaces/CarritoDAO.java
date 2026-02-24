@@ -2,8 +2,8 @@ package org.bebidas.modules.carrito.repositories.interfaces;
 
 import java.util.List;
 
+import org.bebidas.core.util.GenericDAO;
 import org.bebidas.modules.carrito.Carrito;
-import org.bebidas.modules.dao.interfaces.GenericDAO;
 
 public interface CarritoDAO extends GenericDAO<Carrito, Long> {
     List<Carrito> buscarPorCliente(Long clienteId);

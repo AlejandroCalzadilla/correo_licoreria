@@ -1,9 +1,9 @@
 package org.bebidas.modules.usuarios.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.RolDAO;
 import org.bebidas.modules.usuarios.services.interfaces.RolService;
 import org.bebidas.modules.usuarios.Rol;
+import org.bebidas.modules.usuarios.repositories.RolDAO;
 
 import java.util.List;
 import java.util.Optional;

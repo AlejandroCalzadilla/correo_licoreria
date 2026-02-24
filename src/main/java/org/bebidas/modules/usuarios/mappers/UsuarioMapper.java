@@ -8,6 +8,7 @@ import org.bebidas.modules.usuarios.Usuario;
 public class UsuarioMapper {
     
      private static final TableMapper<Usuario> tableMapper = new TableMapper<>(Usuario.class)
+            .addColumn("id", "ID", 10)
             .addColumn("nombre", "Nombre", 25)
             .addColumn("correo", "Correo", 30)
             .addColumn("estado", "Estado", 10);

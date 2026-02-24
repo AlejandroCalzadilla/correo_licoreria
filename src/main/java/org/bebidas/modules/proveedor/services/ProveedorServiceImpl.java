@@ -1,8 +1,8 @@
 package org.bebidas.modules.proveedor.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.ProveedorDAO;
 import org.bebidas.modules.proveedor.Proveedor;
+import org.bebidas.modules.proveedor.repositories.ProveedorDAO;
 import org.bebidas.modules.service.interfaces.ProveedorService;
 
 import java.util.List;

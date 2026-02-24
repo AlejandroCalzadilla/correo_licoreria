@@ -4,11 +4,10 @@ import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.repositories.interfaces.ClienteDAO;
 import org.bebidas.modules.clientes.services.interfaces.ClienteService;
-import org.bebidas.modules.dao.interfaces.UsuarioDAO;
 import org.bebidas.modules.usuarios.Usuario;
+import org.bebidas.modules.usuarios.repositories.UsuarioDAO;
 
-import java.time.LocalDateTime;
-import java.util.List;
+
 
 public class ClienteServiceImpl extends GenericServiceImpl<Cliente, Long> implements ClienteService {
 
@@ -23,34 +22,12 @@ public class ClienteServiceImpl extends GenericServiceImpl<Cliente, Long> implem
     }
 
     @Override
-    public List<Cliente> buscarPorNombre(String nombre) {
-        return clienteDAO.buscarPorNombre(nombre);
-    }
-
-    @Override
-    public List<Cliente> buscarPorCi(String ci) {
-        return clienteDAO.buscarPorCi(ci);
-    }
-
-    @Override
-    public List<Cliente> buscarPorEstadoVerificacion(String estado) {
-        return clienteDAO.buscarPorEstadoVerificacion(estado);
-    }
-
-    @Override
-    public List<Cliente> buscarConCreditoAprobado() {
-        return clienteDAO.buscarConCreditoAprobado();
-    }
-
-    @Override
     public void aprobarCredito(Long clienteId, double montoAprobado) {
         Cliente cliente = findById(clienteId)
             .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
-        
         if (montoAprobado <= 0) {
             throw new IllegalArgumentException("El monto aprobado debe ser mayor a cero");
         }
-        
         cliente.setCreditoAprobado(true);
         cliente.setLimiteCredito(montoAprobado);
         save(cliente);

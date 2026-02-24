@@ -8,6 +8,7 @@ import org.bebidas.modules.clientes.Cliente;
 public class ClienteMapper {
     
      private static final TableMapper<Cliente> tableMapper = new TableMapper<>(Cliente.class)
+            .addColumn("id", "ID", 10)
             .addColumn("ci", "CI", 15)
             .addColumn("nombre", "Nombre", 30)
             .addColumn("telefono", "Teléfono", 15)

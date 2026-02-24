@@ -1,11 +1,11 @@
 package org.bebidas.modules.ventas.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.PagoDAO;
 import org.bebidas.modules.service.interfaces.PagoService;
 import org.bebidas.modules.service.interfaces.VentaService;
 import org.bebidas.modules.ventas.Pago;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.modules.ventas.repositories.PagoDAO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

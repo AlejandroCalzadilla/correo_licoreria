@@ -3,7 +3,6 @@ package org.bebidas.modules.mail.crud_seleccion;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.Categoria;
@@ -11,7 +10,6 @@ import org.bebidas.modules.categorias.mappers.CategoriaMapper;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
 import org.bebidas.modules.compras.Compra;
-import org.bebidas.modules.compras.DetalleCompra;
 import org.bebidas.modules.compras.mappers.CompraMapper;
 import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.mappers.CreditoMapper;
@@ -28,7 +26,6 @@ import org.bebidas.modules.vendedores.Vendedor;
 import org.bebidas.modules.vendedores.mappers.VendedorMapper;
 import org.bebidas.modules.ventas.Venta;
 import org.bebidas.modules.ventas.VentaMapper;
-import org.bebidas.modules.ventas.DetalleVenta;
 
 public class Actualizar {
     
@@ -45,44 +42,34 @@ public class Actualizar {
             for (int i = 0; i < params.length; i++) {
                 params[i] = params[i].trim();
             }
-
             switch (entidad) {
                 case "ROLES":
                     respuesta = actualizarRol(params);
                     break;
-
                 case "USUARIOS":
                     respuesta = actualizarUsuario(params);
                     break;
-
                 case "VENDEDORES":
                     respuesta = actualizarVendedor(params);
                     break;
-
                 case "CATEGORIAS":
                     respuesta = actualizarCategoria(params);
                     break;
-
                 case "PRODUCTOS":
                     respuesta = actualizarProducto(params);
                     break;
-
                 case "INVENTARIO":
                     respuesta = actualizarInventario(params);
                     break;
-
                 case "CARRITOS":
                     respuesta = actualizarCarrito(params);
                     break;
-
                 case "COMPRAS":
                     respuesta = actualizarCompra(params);
                     break;
-
                 case "PROVEEDORES":
                     respuesta = actualizarProveedor(params);
                     break;
-
                 case "CLIENTES":
                     respuesta = actualizarCliente(params);
                     break;
@@ -107,15 +94,12 @@ public class Actualizar {
     private String actualizarRol(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Rol rol = services.getRolService().findById(id).orElse(null);
             if (rol == null) return "Rol no encontrado con ID: " + id;
-
             if (params.length > 1) rol.setNombre(params[1]);
             if (params.length > 2) rol.setDescripcion(params[2]);
             if (params.length > 3) rol.setActivo(Boolean.parseBoolean(params[3]));
-
             Rol rolActualizado = services.getRolService().save(rol);
             return "Rol actualizado correctamente con ID: " + rolActualizado.getId();
         } catch (Exception e) {
@@ -126,11 +110,9 @@ public class Actualizar {
     private String actualizarUsuario(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Usuario usuario = services.getUsuarioService().findById(id).orElse(null);
             if (usuario == null) return "Usuario no encontrado con ID: " + id;
-
             if (params.length > 1) usuario.setNombre(params[1]);
             if (params.length > 2) usuario.setCorreo(params[2]);
             if (params.length > 3) usuario.setClave(params[3]);
@@ -140,7 +122,6 @@ public class Actualizar {
                 if (rol == null) return "Rol no encontrado con ID: " + params[5];
                 usuario.setRol(rol);
             }
-
             Usuario usuarioActualizado = services.getUsuarioService().save(usuario);
             return "Usuario actualizado correctamente con ID: \n" + UsuarioMapper.obtenerUnoTable(usuarioActualizado);
         } catch (Exception e) {
@@ -151,11 +132,9 @@ public class Actualizar {
     private String actualizarVendedor(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Vendedor vendedor = services.getVendedorService().findById(id).orElse(null);
             if (vendedor == null) return "Vendedor no encontrado con ID: " + id;
-
             if (params.length > 1) vendedor.setCi(params[1]);
             if (params.length > 2) vendedor.setNombre(params[2]);
             if (params.length > 3) {
@@ -163,7 +142,6 @@ public class Actualizar {
                 usuario.setId(Long.parseLong(params[3]));
                 vendedor.setUsuario(usuario);
             }
-
             Vendedor vendedorActualizado = services.getVendedorService().save(vendedor);
             return "Vendedor actualizado correctamente con ID: \n" + VendedorMapper.obtenerUnoTable(vendedorActualizado);
         } catch (Exception e) {
@@ -221,7 +199,6 @@ public class Actualizar {
             Long id = Long.parseLong(params[0]);
             Inventario inventario = services.getInventarioService().findById(id).orElse(null);
             if (inventario == null) return "Inventario no encontrado con ID: " + id;
-
             if (params.length > 1) {
                 Producto producto = new Producto();
                 producto.setId(Long.parseLong(params[1]));
@@ -236,16 +213,11 @@ public class Actualizar {
                 }
             }
             if (params.length > 4) inventario.setGlosa(params[4]);
-
             // Verificar que al menos uno de idDetalleCompra o idDetalleVenta esté presente si se pasan parámetros
             if (params.length > 5 && (params[5].isEmpty() && (params.length <= 6 || params[6].isEmpty()))) {
                 return "Se requiere al menos uno de: idDetalleCompra o idDetalleVenta";
             }
-
-           
-
             // Manejar idDetalleVenta opcional
-
             Inventario inventarioActualizado = services.getInventarioService().save(inventario);
             return "Inventario actualizado correctamente con ID: \n" + InventarioMapper.obtenerUnoTable(inventarioActualizado);
         } catch (Exception e) {
@@ -279,11 +251,9 @@ public class Actualizar {
     private String actualizarCompra(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Compra compra = services.getCompraService().findById(id).orElse(null);
             if (compra == null) return "Compra no encontrada con ID: " + id;
-
             if (params.length > 1) {
                 Proveedor proveedor = new Proveedor();
                 proveedor.setId(Long.parseLong(params[1]));
@@ -291,7 +261,6 @@ public class Actualizar {
             }
             if (params.length > 2) compra.setDescripcion(params[2]);
             if (params.length > 3) compra.setEstado(params[3]);
-
             Compra compraActualizada = services.getCompraService().save(compra);
             return "Compra actualizada correctamente con ID: \n" + CompraMapper.obtenerUnoTable(compraActualizada);
         } catch (Exception e) {
@@ -302,17 +271,14 @@ public class Actualizar {
     private String actualizarProveedor(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Proveedor proveedor = services.getProveedorService().findById(id).orElse(null);
             if (proveedor == null) return "Proveedor no encontrado con ID: " + id;
-
             if (params.length > 1) proveedor.setNombre(params[1]);
             if (params.length > 2) proveedor.setTelefono(params[2]);
             if (params.length > 3) proveedor.setDireccion(params[3]);
             if (params.length > 4) proveedor.setNit(params[4]);
             if (params.length > 5) proveedor.setCorreo(params[5]);
-
             Proveedor proveedorActualizado = services.getProveedorService().save(proveedor);
             return "Proveedor actualizado correctamente con ID: \n" + ProveedorMapper.obtenerUnoTable(proveedorActualizado);
         } catch (Exception e) {
@@ -351,11 +317,9 @@ public class Actualizar {
     private String actualizarVenta(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Venta venta = services.getVentaService().findById(id).orElse(null);
             if (venta == null) return "Venta no encontrada con ID: " + id;
-
             if (params.length > 1) {
                 Cliente cliente = new Cliente();
                 cliente.setId(Long.parseLong(params[1]));
@@ -369,7 +333,6 @@ public class Actualizar {
             if (params.length > 3) venta.setMontoTotal(new BigDecimal(params[3]));
             if (params.length > 4) venta.setSaldo(new BigDecimal(params[4]));
             if (params.length > 5) venta.setEstado(params[5]);
-
             Venta ventaActualizada = services.getVentaService().save(venta);
             return "Venta actualizada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaActualizada);
         } catch (Exception e) {
@@ -380,11 +343,9 @@ public class Actualizar {
     private String actualizarCredito(String[] params) {
         try {
             if (params.length < 1) return "Se requiere: id";
-
             Long id = Long.parseLong(params[0]);
             Credito credito = services.getCreditoService().findById(id).orElse(null);
             if (credito == null) return "Crédito no encontrado con ID: " + id;
-
             if (params.length > 1) {
                 Venta venta = new Venta();
                 venta.setId(Long.parseLong(params[1]));
@@ -394,7 +355,6 @@ public class Actualizar {
             if (params.length > 3) credito.setSaldo(new BigDecimal(params[3]));
             if (params.length > 4) credito.setNumeroCuotas(params[4]);
             if (params.length > 5) credito.setEstado(params[5]);
-
             Credito creditoActualizado = services.getCreditoService().save(credito);
             return "Crédito actualizado correctamente con ID: \n" + CreditoMapper.obtenerUnoTable(creditoActualizado);
         } catch (Exception e) {

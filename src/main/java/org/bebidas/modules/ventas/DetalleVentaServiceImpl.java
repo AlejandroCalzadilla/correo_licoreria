@@ -1,10 +1,10 @@
 package org.bebidas.modules.ventas;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.DetalleVentaDAO;
 import org.bebidas.modules.inventario.Inventario;
 import org.bebidas.modules.service.interfaces.DetalleVentaService;
 import org.bebidas.modules.service.interfaces.InventarioService;
+import org.bebidas.modules.ventas.repositories.DetalleVentaDAO;
 
 import java.math.BigDecimal;
 import java.util.List;

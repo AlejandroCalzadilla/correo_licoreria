@@ -9,10 +9,8 @@ public class CategoriaMapper {
     
     private static final TableMapper<Categoria> tableMapper = new TableMapper<>(Categoria.class)
             .addColumn("id", "ID", 10)
-            .addColumn("nombre", "Nombre", 25)
-            .addColumn("descripcion", "Descripción", 35)
-            .addColumn("activo", "Activo", 10)
-            .addColumn("tipo", "Tipo", 15);
+            .addColumn("nombre", "Nombre", 25);
+         
     
     public static String obtenerTodosTable(List<Categoria> categorias) {
         return tableMapper.obtenerTodosTable(categorias);

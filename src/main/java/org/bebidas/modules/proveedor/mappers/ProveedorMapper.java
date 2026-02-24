@@ -8,6 +8,7 @@ import org.bebidas.modules.proveedor.Proveedor;
 public class ProveedorMapper {
     
      private static final TableMapper<Proveedor> tableMapper = new TableMapper<>(Proveedor.class)
+            .addColumn("id", "ID", 10)
             .addColumn("nombre", "Nombre", 30)
             .addColumn("telefono", "Teléfono", 15)
             .addColumn("direccion", "Dirección", 35);

@@ -1,9 +1,9 @@
 package org.bebidas.modules.vendedores.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.dao.interfaces.VendedorDAO;
 import org.bebidas.modules.service.interfaces.VendedorService;
 import org.bebidas.modules.vendedores.Vendedor;
+import org.bebidas.modules.vendedores.repositories.VendedorDAO;
 
 import java.util.List;
 
