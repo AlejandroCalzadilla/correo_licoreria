@@ -3,20 +3,19 @@ package org.bebidas.modules.ventas.services;
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.ItemCarrito;
+import org.bebidas.modules.carrito.services.ItemCarritoServiceImpl;
 import org.bebidas.modules.carrito.services.interfaces.CarritoService;
+import org.bebidas.modules.carrito.services.interfaces.ItemCarritoService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
 import org.bebidas.modules.service.PagoCuotaService;
 import org.bebidas.modules.service.interfaces.*;
 import org.bebidas.modules.ventas.DetalleVenta;
-import org.bebidas.modules.ventas.Pago;
 import org.bebidas.modules.ventas.Venta;
 import org.bebidas.modules.ventas.repositories.VentaDAO;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -28,10 +27,11 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     private final PagoService pagoService;
     private final CreditoService creditoService;
     private final PagoCuotaService pagoCuotaService;
+    private final ItemCarritoService itemCarritoService;
 
     public VentaServiceImpl(VentaDAO ventaDAO, CarritoService carritoService, 
                            DetalleVentaService detalleVentaService, PagoService pagoService,
-                           CreditoService creditoService, PagoCuotaService pagoCuotaService) {
+                           CreditoService creditoService, PagoCuotaService pagoCuotaService, ItemCarritoService itemCarritoService) {
         super(ventaDAO);
         this.ventaDAO = ventaDAO;
         this.carritoService = carritoService;
@@ -39,13 +39,10 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
         this.pagoService = pagoService;
         this.creditoService = creditoService;
         this.pagoCuotaService = pagoCuotaService;
+        this.itemCarritoService = itemCarritoService;
     }
 
-    @Override
-    public List<Venta> buscarPorFecha(LocalDate fecha) {
-        return ventaDAO.buscarPorFecha(fecha);
-    }
-
+   
     @Override
     public List<Venta> buscarPorCliente(Long clienteId) {
         return ventaDAO.buscarPorCliente(clienteId);
@@ -57,57 +54,16 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     }
 
     @Override
-    public List<Venta> buscarPorRangoFechas(LocalDate inicio, LocalDate fin) {
-        return ventaDAO.buscarPorRangoFechas(inicio, fin);
-    }
-
-    @Override
-    public List<Venta> buscarPorUsuario(Long usuarioId) {
-        return ventaDAO.buscarPorUsuario(usuarioId);
-    }
-
-    @Override
-    public Venta crearVenta(Venta venta) {
-        // Lógica para crear una nueva venta
-        venta.setFecha(LocalDate.now());
-        venta.setEstado("PENDIENTE");
-        // Calcular totales, actualizar inventario, etc.
-        return save(venta);
-    }
-
-    @Override
-    public void anularVenta(Long ventaId, String motivo) {
-        Venta venta = findById(ventaId).orElseThrow(() -> 
-            new RuntimeException("Venta no encontrada con ID: " + ventaId));
-        
-        // Validar que la venta se pueda anular
-        if ("ANULADA".equals(venta.getEstado())) {
-            throw new IllegalStateException("La venta ya está anulada");
-        }
-        
-        // Actualizar estado y motivo de anulación
-        venta.setEstado("ANULADA");
-        // Agregar motivo de anulación (podrías tener un campo para esto en el modelo)
-        
-        save(venta);
-        
-        // Aquí podrías agregar lógica para revertir el inventario si es necesario
-    }
-
-    @Override
     public Venta completarVenta(Long ventaId) {
         Venta venta = findById(ventaId).orElseThrow(() -> 
             new RuntimeException("Venta no encontrada con ID: " + ventaId));
-        
         // Validar que la venta se pueda completar
         if (!"PENDIENTE".equals(venta.getEstado())) {
             throw new IllegalStateException("La venta no puede ser completada desde el estado actual: " + venta.getEstado());
         }
-        
         // Actualizar estado a completada
         venta.setEstado("COMPLETADA");
         venta.setSaldo(BigDecimal.ZERO); // Asumiendo que se paga completamente
-        
         return save(venta);
     }
 
@@ -135,131 +91,134 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
         return buscarPorEstado("ANULADA");
     }
 
-    // Método para crear venta desde carrito (al contado)
-    public Venta crearVentaDesdeCarrito(Long carritoId, Long clienteId) {
-        // Obtener carrito
-        Carrito carrito = carritoService.findById(carritoId)
-            .orElseThrow(() -> new RuntimeException("Carrito no encontrado con ID: " + carritoId));
-
-        // Verificar que el carrito tenga items
-        List<ItemCarrito> items = carrito.getItems();
-        if (items == null || items.isEmpty()) {
-            throw new IllegalArgumentException("El carrito está vacío");
+    @Override
+    public Venta crearVentaConDetalle(Long clienteId, String tipo, Long carritoId, String numeroCuotas, String metodoPago) {
+        try {
+            Carrito carrito = carritoService.findById(carritoId).orElse(null);
+            if (carrito == null)
+                throw new RuntimeException("Carrito no encontrado con ID: " + carritoId);
+            System.out.println("el caroooooo"+carrito);
+            List<ItemCarrito> items = itemCarritoService.buscarPorCarrito(carritoId);
+            System.out.println("los items"+items);
+            if (items == null || items.isEmpty())
+                throw new RuntimeException("El carrito no tiene items");
+            Venta venta = new Venta();
+            String nroVenta = generarSiguienteNroVenta();
+            venta.setNroVenta(nroVenta);
+            Cliente cliente = new Cliente();
+            cliente.setId(clienteId);
+            venta.setCliente(cliente);
+            tipo = tipo.toLowerCase();
+            System.out.println("DEBUG: Tipo de venta configurado: " + tipo);
+            if (!tipo.equals("credito") && !tipo.equals("contado")) {
+                throw new IllegalArgumentException("Tipo debe ser 'credito' o 'contado'");
+            }
+            venta.setTipo(tipo);
+            if (tipo.equals("credito")) {
+                if (numeroCuotas == null)
+                    throw new IllegalArgumentException("Se requiere numeroCuotas para tipo credito");
+                venta.setNumeroCuotas(numeroCuotas);
+            }
+            if (tipo.equals("contado")) {
+                if (metodoPago == null)
+                    throw new IllegalArgumentException("Se requiere metodoPago para tipo contado");
+                venta.setMetodoPago(metodoPago);
+            }
+            venta.setEstado("pendiente");
+            venta.setEstadoPago("pendiente");
+            venta.setFecha(LocalDate.now());
+            Venta ventaCreada = save(venta);
+            // Procesar items del carrito y crear detalles
+            BigDecimal montoTotal = BigDecimal.ZERO;
+            for (ItemCarrito item : items) {
+                DetalleVenta detalle = new DetalleVenta();
+                detalle.setVenta(ventaCreada);
+                detalle.setProducto(item.getProducto());
+                detalle.setCantidad(item.getCantidad());
+                detalle.setPrecioUnitario(item.getPrecio());
+                detalleVentaService.save(detalle);
+                // Sumar monto
+                BigDecimal subtotal = item.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad()));
+                montoTotal = montoTotal.add(subtotal);
+            }
+            ventaCreada.setMontoTotal(montoTotal);
+            ventaCreada.setSaldo(montoTotal);
+            Venta ventaActualizada = save(ventaCreada);
+            // Si es crédito, crear crédito
+            if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
+                Credito credito = new Credito();
+                credito.setVenta(ventaActualizada);
+                credito.setMontoTotal(montoTotal);
+                credito.setSaldo(montoTotal);
+                credito.setNumeroCuotas(
+                        ventaActualizada.getNumeroCuotas() != null ? ventaActualizada.getNumeroCuotas() : "1");
+                credito.setEstado("ACTIVO");
+                credito.setFechaInicio(LocalDate.now());
+                 creditoService.save(credito);
+            } else {
+                System.out.println("DEBUG: No se crea crédito - Tipo de venta: " + venta.getTipo());
+            }
+            return ventaActualizada;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear venta con detalle: " + e.getMessage());
         }
-
-        // Crear venta
-        Venta venta = new Venta();
-        Cliente cliente = new Cliente();
-        cliente.setId(clienteId);
-        venta.setCliente(cliente);
-        venta.setUsuario(carrito.getUsuario());
-        venta.setFecha(LocalDate.now());
-        venta.setEstado("PENDIENTE");
-
-        // Calcular total y crear detalles
-        BigDecimal total = BigDecimal.ZERO;
-        for (ItemCarrito item : items) {
-            DetalleVenta detalle = new DetalleVenta();
-            detalle.setVenta(venta);
-            detalle.setProducto(item.getProducto());
-            detalle.setCantidad(item.getCantidad());
-            detalle.setPrecioUnitario(item.getProducto().getPrecio());
-            detalle.setSubtotal(item.getProducto().getPrecio().multiply(BigDecimal.valueOf(item.getCantidad())));
-            
-            venta.getDetalles().add(detalle);
-            total = total.add(detalle.getSubtotal());
-        }
-        venta.setMontoTotal(total);
-        venta.setSaldo(total);
-
-        // Guardar venta y detalles
-        Venta ventaGuardada = save(venta);
-        for (DetalleVenta detalle : venta.getDetalles()) {
-            detalleVentaService.save(detalle);
-        }
-
-        // Procesar pago al contado
-        Pago pago = new Pago();
-        pago.setVenta(ventaGuardada);
-        pago.setFechaPago(java.time.LocalDateTime.now());
-        pago.setMonto(total);
-        pago.setTipoPago("EFECTIVO"); // O como se determine
-        pagoService.save(pago);
-
-        // Completar venta
-        ventaGuardada.setEstado("COMPLETADA");
-        ventaGuardada.setSaldo(BigDecimal.ZERO);
-        save(ventaGuardada);
-
-        // Limpiar carrito (eliminar items)
-        // Asumiendo que hay un método para eliminar items
-        // carritoService.eliminarItems(carritoId);
-
-        return ventaGuardada;
     }
 
-    // Método para venta directa al contado
-    public Venta procesarVentaAlContado(Venta venta, List<DetalleVenta> detalles) {
-        // Calcular totales
-        BigDecimal total = detalles.stream()
-            .map(DetalleVenta::getSubtotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        venta.setMontoTotal(total);
-        venta.setSaldo(BigDecimal.ZERO);
-        venta.setEstado("COMPLETADA");
-        venta.setFecha(LocalDate.now());
-
-        // Guardar venta
-        Venta ventaGuardada = save(venta);
-
-        // Guardar detalles
-        for (DetalleVenta detalle : detalles) {
-            detalle.setVenta(ventaGuardada);
-            detalleVentaService.save(detalle);
+    @Override
+    public Venta crearVentaBasica(Long clienteId, String tipo, String numeroCuotas, String metodoPago) {
+        try {
+            Venta venta = new Venta();
+            String nroVenta = generarSiguienteNroVenta();
+            venta.setNroVenta(nroVenta);
+            Cliente cliente = new Cliente();
+            cliente.setId(clienteId);
+            venta.setCliente(cliente);
+            tipo = tipo.toLowerCase();
+            if (!tipo.equals("credito") && !tipo.equals("contado")) {
+                throw new IllegalArgumentException("Tipo debe ser 'credito' o 'contado'");
+            }
+            venta.setTipo(tipo);
+            if (tipo.equals("credito")) {
+                if (numeroCuotas == null)
+                    throw new IllegalArgumentException("Se requiere numeroCuotas para tipo credito");
+                venta.setNumeroCuotas(numeroCuotas);
+            }
+            if (tipo.equals("contado")) {
+                if (metodoPago == null)
+                    throw new IllegalArgumentException("Se requiere metodoPago para tipo contado");
+                venta.setMetodoPago(metodoPago);
+            }
+            venta.setEstado("pendiente");
+            venta.setEstadoPago("pendiente");
+            venta.setFecha(LocalDate.now());
+            return save(venta);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear venta básica: " + e.getMessage());
         }
-
-        // Crear pago
-        Pago pago = new Pago();
-        pago.setVenta(ventaGuardada);
-        pago.setFechaPago(java.time.LocalDateTime.now());
-        pago.setMonto(total);
-        pago.setTipoPago("EFECTIVO"); // O parámetro
-        pagoService.save(pago);
-
-        return ventaGuardada;
     }
 
-    // Método para venta directa por cuotas
-    public Venta procesarVentaPorCuotas(Venta venta, List<DetalleVenta> detalles, Credito credito) {
-        // Calcular totales
-        BigDecimal total = detalles.stream()
-            .map(DetalleVenta::getSubtotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        venta.setMontoTotal(total);
-        venta.setSaldo(total);
-        venta.setEstado("PENDIENTE");
-        venta.setFecha(LocalDate.now());
 
-        // Guardar venta
-        Venta ventaGuardada = save(venta);
-
-        // Guardar detalles
-        for (DetalleVenta detalle : detalles) {
-            detalle.setVenta(ventaGuardada);
-            detalleVentaService.save(detalle);
+    private String generarSiguienteNroVenta() {
+        try {
+            List<Venta> ventas = this.findAll();
+            int maxNumero = 0;
+            for (Venta v : ventas) {
+                if (v.getNroVenta() != null && v.getNroVenta().startsWith("V-")) {
+                    try {
+                        int numero = Integer.parseInt(v.getNroVenta().substring(2));
+                        if (numero > maxNumero) {
+                            maxNumero = numero;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar si no es válido
+                    }
+                }
+            }
+            int siguiente = maxNumero + 1;
+            return "V-" + String.format("%06d", siguiente);
+        } catch (Exception e) {
+            // En caso de error, usar un número por defecto
+            return "V-000001";
         }
-
-        // Crear crédito
-        credito.setVenta(ventaGuardada);
-        credito.setMontoTotal(total);
-        credito.setSaldo(total);
-        credito.setFechaInicio(LocalDate.now());
-        credito.setEstado("ACTIVO");
-        Credito creditoGuardado = creditoService.save(credito);
-
-        // Crear pagos de cuotas programados (opcional, dependiendo de numeroCuotas)
-        // Por simplicidad, no crearlos aquí, se pueden crear después
-
-        return ventaGuardada;
     }
 }

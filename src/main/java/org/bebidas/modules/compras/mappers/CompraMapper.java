@@ -10,7 +10,7 @@ public class CompraMapper {
     private static final TableMapper<Compra> tableMapper = new TableMapper<>(Compra.class)
             .addColumn("id", "ID", 10)
             .addColumn("proveedor", "Proveedor", 25)
-            .addColumn("nroCompra", "Nro. Compra", 15)
+            .addColumn("nro_compra", "Nro. Compra", 15)
             .addColumn("fecha", "Fecha", 12)
             .addColumn("estado", "Estado", 12)
             .addColumn("descripcion", "Descripción", 40);

@@ -105,7 +105,7 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+            System.out.println("llega el numero de compra: " + compra.getNroCompra());
             stmt.setString(1, compra.getNroCompra());
             stmt.setTimestamp(2, Timestamp.valueOf(compra.getFecha().atStartOfDay()));
            
@@ -117,7 +117,7 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
                 stmt.setNull(4, java.sql.Types.BIGINT);
             }
             stmt.setString(5, compra.getDescripcion());
-           
+            
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {

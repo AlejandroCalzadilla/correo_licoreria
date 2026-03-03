@@ -1,23 +1,44 @@
 package org.bebidas.modules.ventas;
 
 import org.bebidas.core.util.GenericServiceImpl;
+import org.bebidas.modules.creditos.services.interfaces.CreditoService;
+import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.inventario.Inventario;
+import org.bebidas.modules.inventario.Producto;
 import org.bebidas.modules.service.interfaces.DetalleVentaService;
 import org.bebidas.modules.service.interfaces.InventarioService;
+import org.bebidas.modules.service.interfaces.PagoService;
+import org.bebidas.modules.service.interfaces.VentaService;
 import org.bebidas.modules.ventas.repositories.DetalleVentaDAO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Long> implements DetalleVentaService {
 
     private final DetalleVentaDAO detalleVentaDAO;
     private final InventarioService inventarioService;
+    private VentaService ventaService;
+    private PagoService pagoService;
+    private CreditoService creditoService;
 
     public DetalleVentaServiceImpl(DetalleVentaDAO detalleVentaDAO, InventarioService inventarioService) {
         super(detalleVentaDAO);
         this.detalleVentaDAO = detalleVentaDAO;
         this.inventarioService = inventarioService;
+    }
+
+    public void setVentaService(VentaService ventaService) {
+        this.ventaService = ventaService;
+    }
+
+    public void setPagoService(PagoService pagoService) {
+        this.pagoService = pagoService;
+    }
+
+    public void setCreditoService(CreditoService creditoService) {
+        this.creditoService = creditoService;
     }
 
     @Override
@@ -94,5 +115,63 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
         inventarioService.registrarEntrada(inventario);
 
         detalleVentaDAO.delete(id);
+    }
+
+    @Override
+    public Venta procesarCreacionDetalleVenta(Long ventaId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
+        if (ventaService == null || pagoService == null || creditoService == null) {
+            throw new IllegalStateException("Dependencias de negocio no configuradas en DetalleVentaService");
+        }
+
+        Venta venta = ventaService.findById(ventaId).orElse(null);
+        if (venta == null) {
+            throw new IllegalArgumentException("Venta no encontrada con ID: " + ventaId);
+        }
+
+        boolean tienePagos = pagoService.findAll().stream()
+                .anyMatch(p -> p.getVenta().getId().equals(ventaId));
+        if (tienePagos) {
+            throw new IllegalStateException("No se puede crear detalle de venta: ya existen pagos asociados a esta venta");
+        }
+
+        DetalleVenta detalle = new DetalleVenta();
+        detalle.setVenta(venta);
+        Producto producto = new Producto();
+        producto.setId(productoId);
+        detalle.setProducto(producto);
+        detalle.setCantidad(cantidad);
+        detalle.setPrecioUnitario(precioUnitario);
+        save(detalle);
+
+        BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
+        BigDecimal montoActual = venta.getMontoTotal() != null ? venta.getMontoTotal() : BigDecimal.ZERO;
+        BigDecimal nuevoMonto = montoActual.add(subtotal);
+        venta.setMontoTotal(nuevoMonto);
+        venta.setSaldo(nuevoMonto);
+        ventaService.save(venta);
+
+        if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
+            Credito creditoExistente = creditoService.findAll().stream()
+                    .filter(c -> c.getVenta().getId().equals(venta.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (creditoExistente != null) {
+                creditoExistente.setMontoTotal(nuevoMonto);
+                creditoExistente.setSaldo(nuevoMonto);
+                creditoService.save(creditoExistente);
+            } else {
+                Credito credito = new Credito();
+                credito.setVenta(venta);
+                credito.setMontoTotal(nuevoMonto);
+                credito.setSaldo(nuevoMonto);
+                credito.setNumeroCuotas(venta.getNumeroCuotas() != null ? venta.getNumeroCuotas() : "1");
+                credito.setEstado("ACTIVO");
+                credito.setFechaInicio(LocalDate.now());
+                creditoService.save(credito);
+            }
+        }
+
+        return venta;
     }
 }

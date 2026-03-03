@@ -4,6 +4,7 @@ import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.*;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.repositories.interfaces.ClienteDAO;
+import org.bebidas.modules.usuarios.Usuario;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -214,7 +215,9 @@ public class ClienteDAOImpl extends GenericDAOImpl<Cliente, Long> implements Cli
         cliente.setNombre(rs.getString("nombre"));
         cliente.setTelefono(rs.getString("telefono"));
         cliente.setDireccion(rs.getString("direccion"));
-
+         Usuario usuario = new Usuario();
+        usuario.setId(rs.getLong("usuario_id"));
+        cliente.setUsuario(usuario);
         String estado = rs.getString("estado");
         if (estado != null && !estado.isEmpty()) {
             cliente.setEstado(estado.charAt(0));

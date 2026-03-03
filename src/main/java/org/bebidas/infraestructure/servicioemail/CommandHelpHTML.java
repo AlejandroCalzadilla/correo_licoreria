@@ -37,11 +37,11 @@ public class CommandHelpHTML {
                 "nombre, correo, clave, estado, rolId",
                 "CREATEUSUARIOS[Juan Perez, juan@email.com, pass123, activo, 1]"));
 
-        COMMANDS.add(new CommandExample(
+       /*  COMMANDS.add(new CommandExample(
                 "CREATE", "VENDEDORES",
                 "Crear un nuevo vendedor con usuario",
                 "ci, nombre, nombreUsuario, correoUsuario, claveUsuario, rolId",
-                "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1]"));
+                "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1]")); */
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "CATEGORIAS",
@@ -78,6 +78,12 @@ public class CommandHelpHTML {
                 "Crear una nueva compra a proveedor",
                 "proveedorId, descripcion",
                 "CREATECOMPRAS[1, Compra de cervezas]"));
+                
+          COMMANDS.add(new CommandExample(
+                "CREATE", "DETALLECOMPRAS",
+                "Crear un detalle de compra",
+                "compraId, productoId, cantidad, precioUnitario",
+                "CREATEDETALLECOMPRAS[1, 1, 10, 25.50]"));        
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "PROVEEDORES",
@@ -103,17 +109,13 @@ public class CommandHelpHTML {
                 "clienteId, tipo(credito/contado), carritoId, [numeroCuotas], [metodoPago]",
                 "CREATEVENTASCONDETALLE[1, contado, 5, , efectivo]")); */
 
-        COMMANDS.add(new CommandExample(
+        /* COMMANDS.add(new CommandExample(
                 "CREATE", "CREDITOS",
                 "Crear un nuevo crédito",
                 "ventaId, montoTotal, [numeroCuotas], [estado]",
-                "CREATECREDITOS[1, 100.00, 3, ACTIVO]"));
+                "CREATECREDITOS[1, 100.00, 3, ACTIVO]")); */
 
-        COMMANDS.add(new CommandExample(
-                "CREATE", "DETALLECOMPRAS",
-                "Crear un detalle de compra",
-                "compraId, productoId, cantidad, precioUnitario",
-                "CREATEDETALLECOMPRAS[1, 1, 10, 25.50]"));
+      
 
         COMMANDS.add(new CommandExample(
                 "CREATE", "DETALLEVENTAS",
@@ -200,11 +202,11 @@ public class CommandHelpHTML {
                 "id, clienteId, usuarioId, montoTotal, saldo, estado",
                 "UPDATEVENTAS[1, 1, 2, 75.00, 25.00, PENDIENTE]"));
 
-        COMMANDS.add(new CommandExample(
+        /* COMMANDS.add(new CommandExample(
                 "UPDATE", "CREDITOS",
                 "Actualizar un crédito",
                 "id, ventaId, montoTotal, numeroCuotas, estado",
-                "UPDATECREDITOS[1, 1, 150.00, 4, ACTIVO]"));
+                "UPDATECREDITOS[1, 1, 150.00, 4, ACTIVO]")); */
     }
 
     public static String obtenerComandosDisponibles() {

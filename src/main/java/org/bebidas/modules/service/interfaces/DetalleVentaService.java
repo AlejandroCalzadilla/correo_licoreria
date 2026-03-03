@@ -3,6 +3,7 @@ package org.bebidas.modules.service.interfaces;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.bebidas.modules.ventas.Venta;
 import org.bebidas.modules.ventas.DetalleVenta;
 
 public interface DetalleVentaService extends GenericService<DetalleVenta, Long> {
@@ -14,4 +15,5 @@ public interface DetalleVentaService extends GenericService<DetalleVenta, Long> 
     DetalleVenta insertar(DetalleVenta detalle);
     DetalleVenta actualizar(DetalleVenta detalle);
     void eliminar(Long id);
+    Venta procesarCreacionDetalleVenta(Long ventaId, Long productoId, Integer cantidad, BigDecimal precioUnitario);
 }

@@ -109,8 +109,9 @@ public class InventarioDAOImpl extends GenericDAOImpl<Inventario, Long> implemen
     }
 
     private Inventario insert(Inventario inventario) {
+        System.out.println("esta llegando al repo");
         String sql = "INSERT INTO inventario (tipo_movimiento, cantidad, fecha, stock_actual, glosa, usuario_id, producto_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
+         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -131,6 +132,7 @@ public class InventarioDAOImpl extends GenericDAOImpl<Inventario, Long> implemen
             }
             
             int affectedRows = stmt.executeUpdate();
+            System.out.println("Filas afectadas al insertar inventario: " + affectedRows);
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {

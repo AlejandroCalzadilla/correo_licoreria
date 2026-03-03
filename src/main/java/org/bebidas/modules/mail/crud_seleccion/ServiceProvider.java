@@ -36,7 +36,14 @@ import org.bebidas.modules.proveedor.repositories.ProveedorDAO;
 import org.bebidas.modules.proveedor.repositories.ProveedorDAOImpl;
 import org.bebidas.modules.proveedor.services.ProveedorServiceImpl;
 import org.bebidas.modules.service.PagoCuotaService;
-import org.bebidas.modules.service.interfaces.*;
+import org.bebidas.modules.service.interfaces.DetalleCompraService;
+import org.bebidas.modules.service.interfaces.DetalleVentaService;
+import org.bebidas.modules.service.interfaces.InventarioService;
+import org.bebidas.modules.service.interfaces.PagoService;
+import org.bebidas.modules.service.interfaces.ProductoService;
+import org.bebidas.modules.service.interfaces.ProveedorService;
+import org.bebidas.modules.service.interfaces.VendedorService;
+import org.bebidas.modules.service.interfaces.VentaService;
 import org.bebidas.modules.usuarios.repositories.RolDAO;
 import org.bebidas.modules.usuarios.repositories.RolDAOImpl;
 import org.bebidas.modules.usuarios.repositories.UsuarioDAO;
@@ -139,8 +146,12 @@ public class ServiceProvider {
         this.pagoCuotaService = new PagoCuotaServiceImpl();
         this.pagoService = new PagoServiceImpl(pagoDAO);
         this.ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService,
-                creditoService, pagoCuotaService);
+                creditoService, pagoCuotaService, itemCarritoService);
         ((PagoServiceImpl) pagoService).setVentaService(ventaService);
+        ((PagoServiceImpl) pagoService).setCreditoService(creditoService);
+        ((DetalleVentaServiceImpl) detalleVentaService).setVentaService(ventaService);
+        ((DetalleVentaServiceImpl) detalleVentaService).setPagoService(pagoService);
+        ((DetalleVentaServiceImpl) detalleVentaService).setCreditoService(creditoService);
     }
 
     public static ServiceProvider getInstance() {

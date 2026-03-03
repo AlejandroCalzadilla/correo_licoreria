@@ -24,8 +24,6 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         return compraDAO.buscarPorProveedor(proveedorId);
     }
 
-    
-
     @Override
     public List<Compra> buscarPorRangoFechas(Date fechaInicio, Date fechaFin) {
         return compraDAO.buscarPorRangoFechas(fechaInicio, fechaFin);
@@ -42,7 +40,6 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         if (compra.getProveedor() == null) {
             throw new IllegalArgumentException("La compra debe tener un proveedor");
         }
-      
         // Configurar valores por defecto
         if (compra.getFecha() == null) {
             compra.setFecha(LocalDate.now());
@@ -50,10 +47,9 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         if (compra.getEstado() == null) {
             compra.setEstado("PENDIENTE");
         }
-        if (compra.getNroCompra() == null) {
-            // Generar número de compra automático
-            compra.setNroCompra("COMP-" + System.currentTimeMillis());
-        }
+        String nroCompra = generarSiguienteNroCompra();
+        compra.setNroCompra(nroCompra);
+        System.out.println("Número de compra generado: " + nroCompra);
 
         return save(compra);
     }
@@ -103,9 +99,8 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
 
     @Override
     public BigDecimal calcularTotalComprasPorProveedor(Long proveedorId, Date fechaInicio, Date fechaFin) {
-       
-            
-     return null;
+
+        return null;
     }
 
     @Override
@@ -121,5 +116,29 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
     @Override
     public List<Compra> obtenerComprasAnuladas() {
         return buscarPorEstado("ANULADA");
+    }
+
+    private String generarSiguienteNroCompra() {
+        
+            List<Compra> compras = this.findAll();
+           if (compras.isEmpty()) {
+                return "C-000001";
+            }
+            int maxNumero = 0;
+            for (Compra c : compras) {
+                if (c.getNroCompra() != null && c.getNroCompra().startsWith("C-")) {
+                    try {
+                        int numero = Integer.parseInt(c.getNroCompra().substring(2));
+                        if (numero > maxNumero) {
+                            maxNumero = numero;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar si no es válido
+                    }
+                }
+            }
+            int siguiente = maxNumero + 1;
+            return "C-" + String.format("%06d", siguiente);
+            // En caso de error, usar un número por defecto
     }
 }

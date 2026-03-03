@@ -46,15 +46,15 @@ public class InventarioServiceImpl extends GenericServiceImpl<Inventario, Long> 
 
     @Override
     public void registrarEntrada(Inventario movimiento) {
+        System.err.println("llega al inventario?");
         validarMovimiento(movimiento);
+        System.out.println("Movimiento validado para producto ID: " + movimiento.getProducto().getId() + " con cantidad: " + movimiento.getCantidad());
         movimiento.setTipoMovimiento("INGRESO");
         movimiento.setFecha(LocalDate.now());
-        
         // Actualizar stock actual
         int stockActual = obtenerStockActual(movimiento.getProducto().getId());
         movimiento.setStockActual(stockActual + movimiento.getCantidad());
-        
-        save(movimiento);
+        this.inventarioDAO.save(movimiento);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class InventarioServiceImpl extends GenericServiceImpl<Inventario, Long> 
         }
         
         movimiento.setStockActual(stockActual - movimiento.getCantidad());
-        save(movimiento);
+        this.inventarioDAO.save(movimiento);
     }
 
     @Override
