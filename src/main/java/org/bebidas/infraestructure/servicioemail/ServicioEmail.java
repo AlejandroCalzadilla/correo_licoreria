@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +15,22 @@ public class ServicioEmail {
     private boolean conectado;
     private ClientePOP clientePOP;
     private ClienteSMTP clienteSMTP;
+    private ClienteSMTPGoogle clienteSMTPGoogle;
+    private boolean usarSoloTecnoweb;
     private ComandoEmail comandoEmail;
 
     public ServicioEmail() {
         this.conectado = true;
         this.clientePOP = new ClientePOP();
         this.clienteSMTP = new ClienteSMTP();
+        this.usarSoloTecnoweb = false;
+        try {
+            this.clienteSMTPGoogle = ClienteSMTPGoogle.fromConfig();
+            System.out.println("S : SMTP Google habilitado para pruebas.");
+        } catch (IllegalStateException e) {
+            this.clienteSMTPGoogle = null;
+            System.out.println("S : SMTP Google no configurado, se usará SMTP por defecto.");
+        }
         this.comandoEmail = new ComandoEmail();
     }
 
@@ -69,6 +80,25 @@ public class ServicioEmail {
 
     public static void main(String[] args) throws IOException, SQLException {
         ServicioEmail servicioEmail = new ServicioEmail();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Seleccione proveedor SMTP:");
+        System.out.println("1) TecnoWeb");
+        System.out.println("2) Google (si está configurado)");
+        System.out.print("Opción: ");
+        String opcion = scanner.nextLine().trim();
+
+        if ("1".equals(opcion)) {
+            servicioEmail.usarSoloTecnoweb = true;
+            System.out.println("S : Proveedor seleccionado: TecnoWeb");
+        } else {
+            servicioEmail.usarSoloTecnoweb = false;
+            if (servicioEmail.clienteSMTPGoogle != null) {
+                System.out.println("S : Proveedor seleccionado: Google");
+            } else {
+                System.out.println("S : Google no está configurado, se usará TecnoWeb.");
+            }
+        }
         //servicioEmail.revisarCorreos();
 
         // Programar el apagado automático después de 15 segundos
@@ -95,7 +125,11 @@ public class ServicioEmail {
             String respuesta = procesarCorreo(subject);
             if (respuesta != null && !respuesta.isEmpty()) {
                 System.out.println("Respuesta consulta: " + respuesta);
-                clienteSMTP.enviarCorreo(remitente, "Resultado de la Consulta", respuesta);
+                if (!usarSoloTecnoweb && clienteSMTPGoogle != null) {
+                    clienteSMTPGoogle.enviarCorreo(remitente, "Resultado de la Consulta", respuesta);
+                } else {
+                    clienteSMTP.enviarCorreo(remitente, "Resultado de la Consulta", respuesta);
+                }
             } else {
                 System.out.println("No se generó respuesta para el subject: " + subject);
             }

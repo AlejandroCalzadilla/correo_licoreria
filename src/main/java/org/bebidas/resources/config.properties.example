@@ -3,3 +3,8 @@
 db.url=jdbc:postgresql://localhost:5432/tu_base_de_datos
 db.user=tu_usuario
 db.password=tu_password
+
+# SMTP Gmail (pruebas)
+# IMPORTANTE: usar App Password de Google (no tu contraseña normal)
+smtp.gmail.user=tu_correo@gmail.com
+smtp.gmail.appPassword=tu_app_password_de_16_caracteres
