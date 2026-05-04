@@ -1,6 +1,7 @@
 package org.bebidas.modules.inventario;
 
 import org.bebidas.core.util.GenericServiceImpl;
+import org.bebidas.modules.compras.DetalleCompra;
 import org.bebidas.modules.inventario.repositories.interfaces.InventarioDAO;
 import org.bebidas.modules.inventario.repositories.interfaces.ProductoDAO;
 import org.bebidas.modules.service.interfaces.InventarioService;
@@ -51,6 +52,18 @@ public class InventarioServiceImpl extends GenericServiceImpl<Inventario, Long> 
         System.out.println("Movimiento validado para producto ID: " + movimiento.getProducto().getId() + " con cantidad: " + movimiento.getCantidad());
         movimiento.setTipoMovimiento("INGRESO");
         movimiento.setFecha(LocalDate.now());
+        // Actualizar stock actual
+        int stockActual = obtenerStockActual(movimiento.getProducto().getId());
+        movimiento.setStockActual(stockActual + movimiento.getCantidad());
+        this.inventarioDAO.save(movimiento);
+    }
+    public void registrarEntradaCompra(Inventario movimiento,DetalleCompra compra) {
+        System.err.println("llega al inventario?");
+        validarMovimiento(movimiento);
+        System.out.println("Movimiento validado para producto ID: " + movimiento.getProducto().getId() + " con cantidad: " + movimiento.getCantidad());
+        movimiento.setTipoMovimiento("INGRESO");
+        movimiento.setFecha(LocalDate.now());
+        movimiento.setDetalleCompra(compra);
         // Actualizar stock actual
         int stockActual = obtenerStockActual(movimiento.getProducto().getId());
         movimiento.setStockActual(stockActual + movimiento.getCantidad());

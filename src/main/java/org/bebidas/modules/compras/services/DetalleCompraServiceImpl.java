@@ -38,8 +38,9 @@ public class DetalleCompraServiceImpl extends GenericServiceImpl<DetalleCompra, 
         inventario.setProducto(detalle.getProducto());
         inventario.setCantidad(detalle.getCantidad());
 
-        inventarioService.registrarEntrada(inventario);
-        return detalleCompraDAO.insertar(detalle);
+        DetalleCompra detalleInsertado = detalleCompraDAO.insertar(detalle);
+        inventarioService.registrarEntradaCompra(inventario,detalleInsertado);
+        return detalleInsertado;
     }
 
     @Override

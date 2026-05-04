@@ -53,6 +53,7 @@ public class Listar {
                     respuesta = CarritoMapper.obtenerTodosTable(services.getCarritoService().findAll());
                     break;    
                 case "COMPRAS":
+                    System.out.println("LLEGUE A LISTAR COMPRAS" +services.getCompraService().findAll().toString());
                     respuesta = CompraMapper.obtenerTodosTable(services.getCompraService().findAll());
                     break;
                 case "PROVEEDORES":

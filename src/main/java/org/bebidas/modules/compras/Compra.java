@@ -28,6 +28,10 @@ public class Compra extends BaseEntity {
     
     public Proveedor getProveedor() { return proveedor; }
     public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+
+    public Long getProveedorId() {
+        return proveedor != null ? proveedor.getId() : null;
+    }
     
     
     public List<DetalleCompra> getDetalles() { return detalles; }
@@ -37,4 +41,16 @@ public class Compra extends BaseEntity {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    @Override
+    public String toString() {
+        return "Compra{" +
+                "id=" + getId() +
+                ", nroCompra='" + nroCompra + '\'' +
+                ", fecha=" + fecha +
+                ", estado='" + estado + '\'' +
+                ", proveedor=" + (proveedor != null ? proveedor.getNombre() : "null") +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
+    }
 }

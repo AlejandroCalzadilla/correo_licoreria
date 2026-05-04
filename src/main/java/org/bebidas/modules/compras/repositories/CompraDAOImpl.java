@@ -29,17 +29,14 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
     private Compra mapResultSetToCompra(ResultSet rs) throws SQLException {
         Compra compra = new Compra();
         compra.setId(rs.getLong("id"));
+        System.out.println("Nro Compra: " + rs.getString("nro_compra"));
         compra.setNroCompra(rs.getString("nro_compra"));
-        
         Timestamp ts = rs.getTimestamp("fecha");
         if (ts != null) {
             compra.setFecha(ts.toLocalDateTime().toLocalDate());
         }
-        
         compra.setEstado(rs.getString("estado"));
         compra.setDescripcion(rs.getString("descripcion"));
-
-        // Proveedor relationship
         Long proveedorId = rs.getLong("proveedor_id");
         if (rs.wasNull()) {
             proveedorId = null;
@@ -104,13 +101,10 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
         String sql = "INSERT INTO compra (nro_compra, fecha, estado, proveedor_id, descripcion) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            System.out.println("llega el numero de compra: " + compra.getNroCompra());
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, compra.getNroCompra());
             stmt.setTimestamp(2, Timestamp.valueOf(compra.getFecha().atStartOfDay()));
-           
             stmt.setString(3, compra.getEstado());
-
             if (compra.getProveedor() != null) {
                 stmt.setLong(4, compra.getProveedor().getId());
             } else {

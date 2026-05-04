@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements PagoService {
@@ -119,16 +120,23 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                 if (cuotasIniciales <= 0) {
                     throw new IllegalArgumentException("Número de cuotas inválido para la venta");
                 }
-                BigDecimal montoCuotaBase = normalizeAmount(
-                        credito.getMontoTotal().divide(BigDecimal.valueOf(cuotasIniciales), 2, RoundingMode.DOWN));
+                List<BigDecimal> planCompletoCuotas = construirPlanPagosCredito(credito.getMontoTotal(), cuotasIniciales);
+                int numeroCuotaActual = (cuotasIniciales - cuotasRestantes) + 1;
+                if (numeroCuotaActual <= 0 || numeroCuotaActual > cuotasIniciales) {
+                    throw new IllegalArgumentException("No se pudo determinar la cuota actual del crédito");
+                }
                 boolean ultimaCuota = cuotasRestantes == 1;
-                BigDecimal montoEsperado = ultimaCuota ? saldoCreditoActual : montoCuotaBase;
+                BigDecimal montoEsperado = ultimaCuota
+                        ? saldoCreditoActual
+                        : planCompletoCuotas.get(numeroCuotaActual - 1);
 
                 if (normalizeAmount(monto).compareTo(montoEsperado) != 0) {
                     throw new IllegalArgumentException(
                             "RESTRICCIÓN: Para ventas a crédito, el pago debe ser exactamente "
                                     + (ultimaCuota ? "el saldo restante (" + montoEsperado + ")"
-                                            : "el monto de la cuota (" + montoEsperado + ")"));
+                                            : "el monto de la cuota " + numeroCuotaActual + " (" + montoEsperado
+                                                    + ")")
+                                    + ". Plan completo: " + formatearPlanPagos(planCompletoCuotas));
                 }
             } else {
                 throw new IllegalArgumentException("Crédito no encontrado para la venta");
@@ -256,5 +264,41 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
 
     private boolean isResidualCentValue(BigDecimal amount) {
         return amount.abs().compareTo(ONE_CENT) <= 0;
+    }
+
+    private List<BigDecimal> construirPlanPagosCredito(BigDecimal montoTotal, int numeroCuotas) {
+        if (numeroCuotas <= 0) {
+            throw new IllegalArgumentException("El número de cuotas debe ser mayor a cero");
+        }
+
+        BigDecimal totalNormalizado = normalizeAmount(montoTotal);
+        int escalaCuota = totalNormalizado.stripTrailingZeros().scale() <= 0 ? 0 : 2;
+        totalNormalizado = totalNormalizado.setScale(escalaCuota, RoundingMode.HALF_UP);
+
+        BigDecimal cuotaBase = totalNormalizado.divide(BigDecimal.valueOf(numeroCuotas), escalaCuota, RoundingMode.DOWN);
+        List<BigDecimal> cuotas = new ArrayList<>(numeroCuotas);
+
+        for (int i = 1; i <= numeroCuotas; i++) {
+            if (i == numeroCuotas) {
+                BigDecimal acumulado = cuotaBase.multiply(BigDecimal.valueOf(numeroCuotas - 1));
+                BigDecimal ultimaCuota = totalNormalizado.subtract(acumulado).setScale(escalaCuota, RoundingMode.HALF_UP);
+                cuotas.add(ultimaCuota);
+            } else {
+                cuotas.add(cuotaBase);
+            }
+        }
+
+        return cuotas;
+    }
+
+    private String formatearPlanPagos(List<BigDecimal> planCuotas) {
+        StringBuilder plan = new StringBuilder();
+        for (int i = 0; i < planCuotas.size(); i++) {
+            if (i > 0) {
+                plan.append(", ");
+            }
+            plan.append("cuota ").append(i + 1).append(" = ").append(planCuotas.get(i));
+        }
+        return plan.toString();
     }
 }
