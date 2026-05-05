@@ -24,7 +24,7 @@ public class DatabaseConnection {
     private static void loadConfig() {
         Properties props = new Properties();
         try (InputStream input = DatabaseConnection.class.getClassLoader().getResourceAsStream("config.properties")) {
-             if (input != null) {
+            /*  if (input != null) {
                 props.load(input);
                 URL ="jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo12sa";
                 USER = "grupo12sa";
@@ -34,8 +34,8 @@ public class DatabaseConnection {
                 URL = "jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo12sa";
                 USER = "grupo12sa";
                 PASSWORD = "grup012grup012*";
-            } 
-          /*  if (input != null) {
+            }  */
+           if (input != null) {
                 props.load(input);
                 URL ="jdbc:postgresql://localhost:5432/ricardo";
                 USER = "postgres";
@@ -45,7 +45,7 @@ public class DatabaseConnection {
                 URL = "jdbc:postgresql://localhost:5432/ricardo";
                 USER = "postgres";
                 PASSWORD = "ale12345678";
-            } */
+            }  
 
         } catch (IOException e) {
             e.printStackTrace();

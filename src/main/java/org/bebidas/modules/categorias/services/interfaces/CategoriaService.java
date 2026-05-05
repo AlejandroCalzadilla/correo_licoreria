@@ -1,8 +1,6 @@
 package org.bebidas.modules.categorias.services.interfaces;
 
-import java.util.List;
 import java.util.Optional;
-
 import org.bebidas.modules.categorias.Categoria;
 import org.bebidas.modules.service.interfaces.GenericService;
 

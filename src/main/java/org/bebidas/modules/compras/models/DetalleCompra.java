@@ -1,4 +1,4 @@
-package org.bebidas.modules.compras;
+package org.bebidas.modules.compras.models;
 
 import java.math.BigDecimal;
 

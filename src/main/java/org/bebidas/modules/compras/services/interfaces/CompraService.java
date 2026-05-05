@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.models.Compra;
 import org.bebidas.modules.service.interfaces.GenericService;
 
 public interface CompraService extends GenericService<Compra, Long> {

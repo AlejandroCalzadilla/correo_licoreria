@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.bebidas.core.util.GenericDAO;
-import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.models.Compra;
 
 public interface CompraDAO extends GenericDAO<Compra, Long> {
     List<Compra> buscarPorProveedor(Long proveedorId);

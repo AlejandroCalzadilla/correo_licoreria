@@ -2,7 +2,7 @@ package org.bebidas.modules.compras.repositories;
 
 import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
-import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.models.Compra;
 import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.proveedor.Proveedor;
 import org.bebidas.modules.usuarios.Usuario;
