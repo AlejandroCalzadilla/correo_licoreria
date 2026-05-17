@@ -4,6 +4,8 @@ import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.*;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.repositories.interfaces.CarritoDAO;
+import org.bebidas.modules.usuarios.Usuario;
+import org.bebidas.modules.usuarios.repositories.UsuarioDAOImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,11 +22,11 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     public Optional<Carrito> findById(Long id) {
         String sql = "SELECT * FROM carrito WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return Optional.of(mapResultSetToCarrito(rs));
             }
@@ -38,11 +40,11 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     public List<Carrito> findAll() {
         List<Carrito> carritos = new ArrayList<>();
         String sql = "SELECT * FROM carrito";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
                 carritos.add(mapResultSetToCarrito(rs));
             }
@@ -63,17 +65,17 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
 
     private Carrito insert(Carrito carrito) {
         String sql = "INSERT INTO carrito (session_id, usuario_id, created_at, updated_at) VALUES (?, ?, ?, ?)";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, carrito.getSessionId());
             stmt.setLong(2, carrito.getUsuario() != null ? carrito.getUsuario().getId() : null);
             stmt.setTimestamp(3, Timestamp.valueOf(carrito.getCreatedAt()));
             stmt.setTimestamp(4, Timestamp.valueOf(carrito.getUpdatedAt()));
-            
+
             stmt.executeUpdate();
-            
+
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 carrito.setId(rs.getLong(1));
@@ -86,15 +88,15 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
 
     private Carrito update(Carrito carrito) {
         String sql = "UPDATE carrito SET session_id = ?, usuario_id = ?, updated_at = ? WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, carrito.getSessionId());
             stmt.setLong(2, carrito.getUsuario() != null ? carrito.getUsuario().getId() : null);
             stmt.setTimestamp(3, Timestamp.valueOf(carrito.getUpdatedAt()));
             stmt.setLong(4, carrito.getId());
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,10 +107,10 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM carrito WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -125,13 +127,13 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     public List<Carrito> buscarPorCliente(Long clienteId) {
         List<Carrito> carritos = new ArrayList<>();
         String sql = "SELECT * FROM carrito WHERE usuario_id = ? ORDER BY created_at DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, clienteId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 carritos.add(mapResultSetToCarrito(rs));
             }
@@ -141,17 +143,16 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
         return carritos;
     }
 
-   
     @Override
     public Carrito buscarActivoPorCliente(Long clienteId) {
         String sql = "SELECT * FROM carrito WHERE usuario_id = ?  LIMIT 1";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, clienteId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return mapResultSetToCarrito(rs);
             }
@@ -165,14 +166,14 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     public List<Carrito> buscarPorRangoFechas(String fechaInicio, String fechaFin) {
         List<Carrito> carritos = new ArrayList<>();
         String sql = "SELECT * FROM carrito WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, fechaInicio);
             stmt.setString(2, fechaFin);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 carritos.add(mapResultSetToCarrito(rs));
             }
@@ -185,21 +186,23 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     private Carrito mapResultSetToCarrito(ResultSet rs) throws SQLException {
         Carrito carrito = new Carrito();
         carrito.setId(rs.getLong("id"));
-        carrito.setSessionId(rs.getString("session_id"));
-        
+
         Timestamp createdAt = rs.getTimestamp("created_at");
         if (createdAt != null) {
             carrito.setCreatedAt(createdAt.toLocalDateTime());
         }
-        
+
         Timestamp updatedAt = rs.getTimestamp("updated_at");
         if (updatedAt != null) {
             carrito.setUpdatedAt(updatedAt.toLocalDateTime());
         }
-        
-        // TODO: Cargar el usuario si es necesario
-        // Long usuarioId = rs.getLong("usuario_id");
-        
+
+        long usuarioId = rs.getLong("usuario_id");
+        if (!rs.wasNull()) {
+            UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
+            usuarioDAO.findById(usuarioId).ifPresent(carrito::setUsuario);
+        }
+
         return carrito;
     }
 }

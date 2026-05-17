@@ -9,6 +9,8 @@ import org.bebidas.modules.usuarios.repositories.UsuarioDAO;
 
 
 
+import java.util.Optional;
+
 public class ClienteServiceImpl extends GenericServiceImpl<Cliente, Long> implements ClienteService {
 
     private final ClienteDAO clienteDAO;
@@ -51,5 +53,10 @@ public class ClienteServiceImpl extends GenericServiceImpl<Cliente, Long> implem
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));        
         cliente.setVerificadoPor(usuario);
         save(cliente);
+     }
+
+    @Override
+    public Optional<Cliente> findByUsuarioId(Long usuarioId) {
+        return clienteDAO.findByUsuarioId(usuarioId);
     }
 }

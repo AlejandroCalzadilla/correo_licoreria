@@ -28,4 +28,13 @@ public class Carrito extends BaseEntity {
     
     public List<ItemCarrito> getItems() { return items; }
     public void setItems(List<ItemCarrito> items) { this.items = items; }
+
+    // Métodos convenientes para el mapper
+    public String getUsuarioId() {
+        return usuario != null ? String.valueOf(usuario.getId()) : "";
+    }
+
+    public String getUsuarioNombre() {
+        return usuario != null ? usuario.getNombre() : "";
+    }
 }

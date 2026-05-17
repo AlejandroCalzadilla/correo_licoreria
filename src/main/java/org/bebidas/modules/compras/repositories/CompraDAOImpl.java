@@ -29,7 +29,7 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
     private Compra mapResultSetToCompra(ResultSet rs) throws SQLException {
         Compra compra = new Compra();
         compra.setId(rs.getLong("id"));
-        System.out.println("Nro Compra: " + rs.getString("nro_compra"));
+        // System.out.println("Nro Compra: " + rs.getString("nro_compra"));
         compra.setNroCompra(rs.getString("nro_compra"));
         Timestamp ts = rs.getTimestamp("fecha");
         if (ts != null) {
@@ -101,7 +101,7 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
         String sql = "INSERT INTO compra (nro_compra, fecha, estado, proveedor_id, descripcion) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, compra.getNroCompra());
             stmt.setTimestamp(2, Timestamp.valueOf(compra.getFecha().atStartOfDay()));
             stmt.setString(3, compra.getEstado());
@@ -111,7 +111,6 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
                 stmt.setNull(4, java.sql.Types.BIGINT);
             }
             stmt.setString(5, compra.getDescripcion());
-            
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -136,7 +135,7 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
 
             stmt.setString(1, compra.getNroCompra());
             stmt.setTimestamp(2, Timestamp.valueOf(compra.getFecha().atStartOfDay()));
-          
+
             stmt.setString(3, compra.getEstado());
 
             if (compra.getProveedor() != null) {
@@ -144,9 +143,9 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
             } else {
                 stmt.setNull(4, java.sql.Types.BIGINT);
             }
-           
+
             stmt.setString(5, compra.getDescripcion());
-           stmt.setLong(6, compra.getId());
+            stmt.setLong(6, compra.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -210,8 +209,6 @@ public class CompraDAOImpl extends GenericDAOImpl<Compra, Long> implements Compr
 
         return compras;
     }
-
-    
 
     @Override
     public List<Compra> buscarPorRangoFechas(Date fechaInicio, Date fechaFin) {

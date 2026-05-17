@@ -17,6 +17,6 @@ public interface VentaService extends GenericService<Venta, Long> {
     List<Venta> obtenerVentasPendientes();
     List<Venta> obtenerVentasCompletadas();
     List<Venta> obtenerVentasAnuladas();
-    Venta crearVentaConDetalle(Long clienteId, String tipo, Long carritoId, String numeroCuotas, String metodoPago);
+    Venta crearVentaConDetalle(String tipo, Long carritoId, String numeroCuotas, String metodoPago);
     Venta crearVentaBasica(Long clienteId, String tipo, String numeroCuotas, String metodoPago);
 }

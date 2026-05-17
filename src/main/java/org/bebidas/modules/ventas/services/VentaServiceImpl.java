@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+import org.bebidas.modules.clientes.services.interfaces.ClienteService;
+
 public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements VentaService {
 
     private final VentaDAO ventaDAO;
@@ -28,10 +30,12 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     private final CreditoService creditoService;
     private final PagoCuotaService pagoCuotaService;
     private final ItemCarritoService itemCarritoService;
+    private final ClienteService clienteService;
 
     public VentaServiceImpl(VentaDAO ventaDAO, CarritoService carritoService, 
                            DetalleVentaService detalleVentaService, PagoService pagoService,
-                           CreditoService creditoService, PagoCuotaService pagoCuotaService, ItemCarritoService itemCarritoService) {
+                           CreditoService creditoService, PagoCuotaService pagoCuotaService,
+                           ItemCarritoService itemCarritoService, ClienteService clienteService) {
         super(ventaDAO);
         this.ventaDAO = ventaDAO;
         this.carritoService = carritoService;
@@ -40,6 +44,7 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
         this.creditoService = creditoService;
         this.pagoCuotaService = pagoCuotaService;
         this.itemCarritoService = itemCarritoService;
+        this.clienteService = clienteService;
     }
 
    
@@ -92,7 +97,7 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     }
 
     @Override
-    public Venta crearVentaConDetalle(Long clienteId, String tipo, Long carritoId, String numeroCuotas, String metodoPago) {
+    public Venta crearVentaConDetalle(String tipo, Long carritoId, String numeroCuotas, String metodoPago) {
         try {
             Carrito carrito = carritoService.findById(carritoId).orElse(null);
             if (carrito == null)
@@ -105,8 +110,14 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             Venta venta = new Venta();
             String nroVenta = generarSiguienteNroVenta();
             venta.setNroVenta(nroVenta);
-            Cliente cliente = new Cliente();
-            cliente.setId(clienteId);
+            
+            if (carrito.getUsuario() == null) {
+                throw new RuntimeException("El carrito no tiene un usuario asociado");
+            }
+            Long usuarioId = carrito.getUsuario().getId();
+            Cliente cliente = clienteService.findByUsuarioId(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado para el usuario con ID: " + usuarioId));
+            
             venta.setCliente(cliente);
             tipo = tipo.toLowerCase();
             System.out.println("DEBUG: Tipo de venta configurado: " + tipo);

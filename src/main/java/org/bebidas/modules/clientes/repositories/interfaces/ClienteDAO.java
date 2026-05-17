@@ -10,4 +10,5 @@ public interface ClienteDAO extends GenericDAO<Cliente, Long> {
     List<Cliente> buscarPorCi(String ci);
     List<Cliente> buscarPorEstadoVerificacion(String estado);
     List<Cliente> buscarConCreditoAprobado();
+    java.util.Optional<Cliente> findByUsuarioId(Long usuarioId);
 }

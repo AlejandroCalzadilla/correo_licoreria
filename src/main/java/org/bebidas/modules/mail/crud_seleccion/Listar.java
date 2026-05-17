@@ -25,54 +25,59 @@ public class Listar {
         try {
             switch (entidad) {
                 case "ROLES":
-                    //System.out.println("LLEGUE A LISTAR ROLES" +services.getRolService().findAll());
-                    respuesta = RolMapper.obtenerTodosTable(services.getRolService().findAll());
-                    
+                    respuesta = "Roles \n" + RolMapper.obtenerTodosTable(services.getRolService().findAll());
                     break;
 
                 case "USUARIOS":
-                    //System.out.println("LLEGUE A LISTAR USUARIOS" +services.getUsuarioService().findAll());
-                    respuesta = UsuarioMapper.obtenerTodosTable(services.getUsuarioService().findAll());
+                    respuesta = "Usuarios \n"
+                            + UsuarioMapper.obtenerTodosTable(services.getUsuarioService().findAll());
                     break;
                 case "VENDEDORES":
-                    respuesta = VendedorMapper.obtenerTodosTable(services.getVendedorService().findAll());
+                    respuesta = "Vendedores \n"
+                            + VendedorMapper.obtenerTodosTable(services.getVendedorService().findAll());
                     break;
                 case "CATEGORIAS":
-                    respuesta = CategoriaMapper.obtenerTodosTable(services.getCategoriaService().findAll());
+                    respuesta = "Categorias \n"
+                            + CategoriaMapper.obtenerTodosTable(services.getCategoriaService().findAll());
                     break;
                 case "PRODUCTOS":
-                    respuesta = ProductoMapper.obtenerTodosTable(services.getProductoService().findAll());
+                    respuesta = "Productos \n"
+                            + ProductoMapper.obtenerTodosTable(services.getProductoService().findAll());
                     break;
                 case "INVENTARIO":
-                    respuesta = InventarioMapper.obtenerTodosTable(services.getInventarioService().findAll());
+                    respuesta = "Inventario \n"
+                            + InventarioMapper.obtenerTodosTable(services.getInventarioService().findAll());
                     break;
                 case "CARRITOS":
-                    respuesta = CarritoMapper.obtenerTodosTable(services.getCarritoService().findAll());
+                    respuesta = "Carritos \n" + CarritoMapper.obtenerTodosTable(services.getCarritoService().findAll());
                     break;
                 case "ITEMCARRITOS":
-                    respuesta = CarritoMapper.obtenerTodosTable(services.getCarritoService().findAll());
-                    break;    
+                    respuesta = "Item Carritos \n"
+                            + CarritoMapper.obtenerTodosTable(services.getCarritoService().findAll());
+                    break;
                 case "COMPRAS":
-                    System.out.println("LLEGUE A LISTAR COMPRAS" +services.getCompraService().findAll().toString());
-                    respuesta = CompraMapper.obtenerTodosTable(services.getCompraService().findAll());
+                    System.out.println("LLEGUE A LISTAR COMPRAS" + services.getCompraService().findAll().toString());
+                    respuesta = "Compras \n" + CompraMapper.obtenerTodosTable(services.getCompraService().findAll());
                     break;
                 case "PROVEEDORES":
-                    respuesta = ProveedorMapper.obtenerTodosTable(services.getProveedorService().findAll());
+                    respuesta = "Proveeodres \n"
+                            + ProveedorMapper.obtenerTodosTable(services.getProveedorService().findAll());
                     break;
                 case "CLIENTES":
-                    respuesta = ClienteMapper.obtenerTodosTable(services.getClienteService().findAll());
+                    respuesta = "Clientes \n" + ClienteMapper.obtenerTodosTable(services.getClienteService().findAll());
                     break;
                 case "VENTAS":
-                    respuesta = VentaMapper.obtenerTodosTable(services.getVentaService().findAll());
+                    respuesta = "Ventas \n" + VentaMapper.obtenerTodosTable(services.getVentaService().findAll());
                     break;
                 case "DETALLEVENTAS":
-                    respuesta = DetalleVentaMapper.obtenerTodosTable(services.getDetalleVentaService().findAll());
-                    break;    
+                    respuesta = "Detalle de Ventas \n"
+                            + DetalleVentaMapper.obtenerTodosTable(services.getDetalleVentaService().findAll());
+                    break;
                 case "CREDITOS":
-                    respuesta = CreditoMapper.obtenerTodosTable(services.getCreditoService().findAll());
+                    respuesta = "Creditos \n" + CreditoMapper.obtenerTodosTable(services.getCreditoService().findAll());
                     break;
                 case "PAGOS_CUOTAS":
-                    respuesta = CreditoMapper.obtenerTodosTable(services.getCreditoService().findAll());
+                    respuesta = "Pagos \n" + CreditoMapper.obtenerTodosTable(services.getCreditoService().findAll());
                     break;
 
                 default:
