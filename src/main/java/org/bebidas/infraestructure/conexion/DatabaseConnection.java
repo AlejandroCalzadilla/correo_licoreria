@@ -26,14 +26,14 @@ public class DatabaseConnection {
         try (InputStream input = DatabaseConnection.class.getClassLoader().getResourceAsStream("config.properties")) {
              if (input != null) {
                 props.load(input);
-                URL ="jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo12sa";
-                USER = "grupo12sa";
-                PASSWORD = "grup012grup012*";
+                URL ="jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo22sa";
+                USER = "grupo22sa";
+                PASSWORD = "grup022grup022*";
             } else {
                 // Valores por defecto si no se encuentra el archivo
-                URL = "jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo12sa";
-                USER = "grupo12sa";
-                PASSWORD = "grup012grup012*";
+                URL = "jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo22sa";
+                USER = "grupo22sa";
+                PASSWORD = "grup022grup022*";
             } 
           /*  if (input != null) {
                 props.load(input);
