@@ -310,6 +310,10 @@ public class Crear {
             if (cliente.isEmpty())
                 return "Cliente no encontrado con ID: " + params[0];
 
+            Carrito carritoExistente = services.getCarritoService().buscarActivoPorCliente(cliente.get().getId());
+            if (carritoExistente != null)
+                return "Error: El cliente ya tiene un carrito activo con ID: " + carritoExistente.getId();
+
             Usuario usuarioEncontrado = services.getUsuarioService().findById(cliente.get().getUsuario().getId())
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Usuario no encontrado para el cliente ID: " + params[0]));

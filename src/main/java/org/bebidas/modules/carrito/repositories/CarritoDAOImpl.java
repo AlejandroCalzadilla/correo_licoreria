@@ -6,6 +6,7 @@ import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.repositories.interfaces.CarritoDAO;
 import org.bebidas.modules.usuarios.Usuario;
 import org.bebidas.modules.usuarios.repositories.UsuarioDAOImpl;
+import org.bebidas.modules.clientes.repositories.ClienteDAOImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -126,7 +127,7 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
     @Override
     public List<Carrito> buscarPorCliente(Long clienteId) {
         List<Carrito> carritos = new ArrayList<>();
-        String sql = "SELECT * FROM carrito WHERE usuario_id = ? ORDER BY created_at DESC";
+        String sql = "SELECT c.* FROM carrito c JOIN cliente cl ON c.usuario_id = cl.usuario_id WHERE cl.id = ? ORDER BY c.created_at DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -145,7 +146,7 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
 
     @Override
     public Carrito buscarActivoPorCliente(Long clienteId) {
-        String sql = "SELECT * FROM carrito WHERE usuario_id = ?  LIMIT 1";
+        String sql = "SELECT c.* FROM carrito c JOIN cliente cl ON c.usuario_id = cl.usuario_id WHERE cl.id = ? LIMIT 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -201,6 +202,9 @@ public class CarritoDAOImpl extends GenericDAOImpl<Carrito, Long> implements Car
         if (!rs.wasNull()) {
             UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
             usuarioDAO.findById(usuarioId).ifPresent(carrito::setUsuario);
+
+            ClienteDAOImpl clienteDAO = new ClienteDAOImpl();
+            clienteDAO.findByUsuarioId(usuarioId).ifPresent(cliente -> carrito.setClienteId(cliente.getId()));
         }
 
         return carrito;
