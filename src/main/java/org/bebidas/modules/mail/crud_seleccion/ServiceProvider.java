@@ -129,7 +129,9 @@ public class ServiceProvider {
 
         // Inicializar Servicios
         this.clienteService = new ClienteServiceImpl(clienteDAO, usuarioDAO);
-        this.carritoService = new CarritoServiceImpl(carritoDAO, itemCarritoDAO, clienteService);
+        this.rolService = new RolServiceImpl(rolDAO);
+        this.usuarioService = new UsuarioServiceImpl(usuarioDAO);
+        this.carritoService = new CarritoServiceImpl(carritoDAO, itemCarritoDAO, clienteService, usuarioService);
         this.categoriaService = new CategoriaServiceImpl(categoriaDAO);
         this.inventarioService = new InventarioServiceImpl(inventarioDAO, productoDAO);
         this.compraService = new CompraServiceImpl(compraDAO);
@@ -139,14 +141,12 @@ public class ServiceProvider {
         this.itemCarritoService = new ItemCarritoServiceImpl(itemCarritoDAO, carritoService, productoService,
                 (InventarioServiceImpl) inventarioService);
         this.proveedorService = new ProveedorServiceImpl(proveedorDAO);
-        this.rolService = new RolServiceImpl(rolDAO);
-        this.usuarioService = new UsuarioServiceImpl(usuarioDAO);
         this.vendedorService = new VendedorServiceImpl(vendedorDAO);
         this.creditoService = (CreditoService)new CreditoServiceImpl();
         this.pagoCuotaService = new PagoCuotaServiceImpl();
         this.pagoService = new PagoServiceImpl(pagoDAO);
         this.ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService,
-                creditoService, pagoCuotaService, itemCarritoService);
+                creditoService, pagoCuotaService, itemCarritoService, clienteService);
         ((PagoServiceImpl) pagoService).setVentaService(ventaService);
         ((PagoServiceImpl) pagoService).setCreditoService(creditoService);
         ((DetalleVentaServiceImpl) detalleVentaService).setVentaService(ventaService);

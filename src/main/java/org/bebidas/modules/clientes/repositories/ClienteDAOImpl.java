@@ -208,6 +208,24 @@ public class ClienteDAOImpl extends GenericDAOImpl<Cliente, Long> implements Cli
         return clientes;
     }
 
+    @Override
+    public Optional<Cliente> findByUsuarioId(Long usuarioId) {
+        String sql = "SELECT * FROM cliente WHERE usuario_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, usuarioId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapResultSetToCliente(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
     private Cliente mapResultSetToCliente(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setId(rs.getLong("id"));

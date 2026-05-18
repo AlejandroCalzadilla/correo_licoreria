@@ -1,7 +1,7 @@
 package org.bebidas.modules.compras.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.compras.DetalleCompra;
+import org.bebidas.modules.compras.models.DetalleCompra;
 import org.bebidas.modules.compras.repositories.interfaces.DetalleCompraDAO;
 import org.bebidas.modules.inventario.Inventario;
 import org.bebidas.modules.inventario.InventarioServiceImpl;

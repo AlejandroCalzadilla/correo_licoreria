@@ -1,7 +1,7 @@
 package org.bebidas.modules.compras.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
-import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.models.Compra;
 import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.compras.services.interfaces.CompraService;
 

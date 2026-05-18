@@ -24,7 +24,7 @@ public class DatabaseConnection {
     private static void loadConfig() {
         Properties props = new Properties();
         try (InputStream input = DatabaseConnection.class.getClassLoader().getResourceAsStream("config.properties")) {
-             if (input != null) {
+            if (input != null) {
                 props.load(input);
                 URL ="jdbc:postgresql://mail.tecnoweb.org.bo:5432/db_grupo22sa";
                 USER = "grupo22sa";

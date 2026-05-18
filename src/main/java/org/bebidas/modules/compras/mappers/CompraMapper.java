@@ -2,7 +2,7 @@ package org.bebidas.modules.compras.mappers;
 
 import java.util.List;
 import org.bebidas.core.util.TableMapper;
-import org.bebidas.modules.compras.Compra;
+import org.bebidas.modules.compras.models.Compra;
 
 public class CompraMapper {
 

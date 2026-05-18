@@ -2,7 +2,7 @@ package org.bebidas.modules.service.interfaces;
 
 import java.util.List;
 
-import org.bebidas.modules.compras.DetalleCompra;
+import org.bebidas.modules.compras.models.DetalleCompra;
 
 public interface DetalleCompraService extends GenericService<DetalleCompra, Long> {
     List<DetalleCompra> buscarPorCompra(Long compraId);

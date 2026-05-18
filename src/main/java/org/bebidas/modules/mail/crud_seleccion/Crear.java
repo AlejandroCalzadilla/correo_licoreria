@@ -13,9 +13,9 @@ import org.bebidas.modules.categorias.Categoria;
 import org.bebidas.modules.categorias.mappers.CategoriaMapper;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
-import org.bebidas.modules.compras.Compra;
-import org.bebidas.modules.compras.DetalleCompra;
 import org.bebidas.modules.compras.mappers.CompraMapper;
+import org.bebidas.modules.compras.models.Compra;
+import org.bebidas.modules.compras.models.DetalleCompra;
 import org.bebidas.modules.inventario.Inventario;
 import org.bebidas.modules.inventario.Producto;
 import org.bebidas.modules.inventario.mappers.InventarioMapper;
@@ -95,7 +95,7 @@ public class Crear {
                     respuesta = crearVenta(params);
                     break;
                 case "VENTASCONDETALLE":
-                    // CREATEVENTASCONDETALLE[clienteId, tipo, carritoId, numeroCuotas, metodoPago]
+                    // CREATEVENTASCONDETALLE[tipo, carritoId, numeroCuotas, metodoPago]
                     respuesta = crearVentaConDetalle(params);
                     break;
                 case "DETALLECOMPRAS":
@@ -253,6 +253,7 @@ public class Crear {
             return "Error: " + e.getMessage();
         }
     }
+
     private String crearDetalleCompra(String[] params) {
         try {
             if (params.length < 4)
@@ -298,18 +299,24 @@ public class Crear {
             return "Error: " + e.getMessage();
         }
     }
+
     private String crearCarrito(String[] params) {
         try {
             if (params.length < 1)
-                return "Se requieren: usuarioId, [sessionId]";
+                return "Se requieren: clienteId";
             Carrito carrito = new Carrito();
             Usuario usuario = new Usuario();
             Optional<Cliente> cliente = services.getClienteService().findById(Long.parseLong(params[0]));
             if (cliente.isEmpty())
                 return "Cliente no encontrado con ID: " + params[0];
-              
+
+            Carrito carritoExistente = services.getCarritoService().buscarActivoPorCliente(cliente.get().getId());
+            if (carritoExistente != null)
+                return "Error: El cliente ya tiene un carrito activo con ID: " + carritoExistente.getId();
+
             Usuario usuarioEncontrado = services.getUsuarioService().findById(cliente.get().getUsuario().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado para el cliente ID: " + params[0]));
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Usuario no encontrado para el cliente ID: " + params[0]));
             usuario.setId(usuarioEncontrado.getId());
             carrito.setUsuario(usuario);
             carrito.setSessionId(new Random().nextInt(100000, 999999) + "");
@@ -321,6 +328,7 @@ public class Crear {
             return "Error: " + e.getMessage();
         }
     }
+
     private String crearItemCarrito(String[] params) {
         try {
             if (params.length < 4)
@@ -343,7 +351,6 @@ public class Crear {
         }
     }
 
-
     private String crearVenta(String[] params) {
         try {
             if (params.length < 2)
@@ -352,12 +359,13 @@ public class Crear {
             String tipo = params[1];
             String numeroCuotas = params.length > 2 ? params[2] : null;
             String metodoPago = params.length > 3 ? params[3] : null;
-            Venta ventaCreada = services.getVentaService().crearVentaBasica(clienteId, tipo, numeroCuotas, metodoPago); 
+            Venta ventaCreada = services.getVentaService().crearVentaBasica(clienteId, tipo, numeroCuotas, metodoPago);
             return "Venta creada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaCreada);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
+
     private String crearDetalleVenta(String[] params) {
         try {
             System.out.println("DEBUG: crearDetalleVenta - Parámetros recibidos: " + String.join(",", params));
@@ -377,26 +385,23 @@ public class Crear {
         }
     }
 
-    
-
     private String crearVentaConDetalle(String[] params) {
         try {
             System.out.println("DEBUG: crearVentaConDetalle - Parámetros recibidos: " + String.join(",", params));
-            if (params.length < 3)
-                return "Se requieren: clienteId, tipo, carritoId, [numeroCuotas], [metodoPago]";
-            Long clienteId = Long.parseLong(params[0]);
-            String tipo = params[1];
-            Long carritoId = Long.parseLong(params[2]);
-            String numeroCuotas = params.length > 3 ? params[3] : null;
-            String metodoPago = params.length > 4 ? params[4] : null;
-            Venta ventaCreada = services.getVentaService().crearVentaConDetalle(clienteId, tipo, carritoId, numeroCuotas, metodoPago);
+            if (params.length < 2)
+                return "Se requieren: tipo, carritoId, [numeroCuotas], [metodoPago]";
+            String tipo = params[0];
+            Long carritoId = Long.parseLong(params[1]);
+            String numeroCuotas = params.length > 2 ? params[2] : null;
+            String metodoPago = params.length > 3 ? params[3] : null;
+            Venta ventaCreada = services.getVentaService().crearVentaConDetalle(tipo, carritoId,
+                    numeroCuotas, metodoPago);
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +
                     "\nDetalles procesados desde carrito.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
-
 
     private String crearPago(String[] params) {
         try {

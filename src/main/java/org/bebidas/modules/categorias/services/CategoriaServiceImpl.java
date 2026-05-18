@@ -20,9 +20,8 @@ public class CategoriaServiceImpl extends GenericServiceImpl<Categoria, Long> im
         return categoriaDAO.buscarPorNombre(nombre);
     }
 
-
     public void deleteById(Long id) {
-        Categoria categoria = findById(id).orElseThrow(
+        findById(id).orElseThrow(
             () -> new RuntimeException("Categoría no encontrada con ID: " + id)
         );
         super.delete(id);
