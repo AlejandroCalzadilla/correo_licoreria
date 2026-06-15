@@ -50,8 +50,8 @@ public class ClienteSMTP {
             String mensajeFormateado = mensaje.replace("\n", "\r\n");
 
             enviarComando(salida, entrada, "HELO " + SERVIDOR + "\r\n");
-            enviarComando(salida, entrada, "MAIL FROM: " + EMISOR + " \r\n");
-            enviarComando(salida, entrada, "RCPT TO: " + usuarioReceptor + " \r\n");
+            enviarComando(salida, entrada, "MAIL FROM:<" + EMISOR + ">\r\n");
+            enviarComando(salida, entrada, "RCPT TO:<" + usuarioReceptor + ">\r\n");
             enviarComando(salida, entrada, "DATA\r\n");
             
             salida.write("Subject: " + subject + "\r\n");
