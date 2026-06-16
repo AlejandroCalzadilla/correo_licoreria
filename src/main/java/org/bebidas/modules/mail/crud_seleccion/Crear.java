@@ -277,7 +277,7 @@ public class Crear {
     private String crearInventario(String[] params) {
         try {
             if (params.length < 4)
-                return "Se requieren: productoId, cantidad, tipoMovimiento, glosa, [idDetalleCompra], [idDetalleVenta]";
+                return "Se requieren: productoId, cantidad, tipoMovimiento, glosa, [idDetalleCompra] o [idDetalleVenta]";
             Inventario inventario = new Inventario();
             Producto producto = new Producto();
             producto.setId(Long.parseLong(params[0]));
@@ -391,9 +391,18 @@ public class Crear {
             if (params.length < 2)
                 return "Se requieren: tipo, carritoId, [numeroCuotas], [metodoPago]";
             String tipo = params[0];
+            if (tipo != "credito" || tipo != "contado") {
+                return "el tipo no es correcto";
+            }
             Long carritoId = Long.parseLong(params[1]);
-            String numeroCuotas = params.length > 2 ? params[2] : null;
-            String metodoPago = params.length > 3 ? params[3] : null;
+            String numeroCuotas = null;
+            String metodoPago = null;
+            if (tipo == "credito") {
+                numeroCuotas = params[2];
+            }
+            if (tipo == "contado") {
+                metodoPago = params[2];
+            }
             Venta ventaCreada = services.getVentaService().crearVentaConDetalle(tipo, carritoId,
                     numeroCuotas, metodoPago);
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +

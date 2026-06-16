@@ -62,8 +62,8 @@ public class CommandHelpHTML {
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "INVENTARIO",
                                 "Crear un movimiento de inventario",
-                                "productoId, cantidad, tipoMovimiento(ENTRADA/ SALIDA), glosa",
-                                "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial]"));
+                                "productoId, cantidad, tipoMovimiento(ENTRADA/ SALIDA), glosa,[idDetalleCompra]o [idDetalleVenta]",
+                                "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial, 2]"));
 
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "CARRITOS",
@@ -110,8 +110,8 @@ public class CommandHelpHTML {
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "VENTASCONDETALLE",
                                 "Crear venta con detalles desde carrito",
-                                "tipo(credito/contado), carritoId, [numeroCuotas], [metodoPago]",
-                                "CREATEVENTASCONDETALLE[contado, 5, efectivo]"));
+                                "tipo(credito/contado), carritoId, [numeroCuotas] o [metodoPago]",
+                                "CREATEVENTASCONDETALLE[contado, 5,efectivo] o [credito ,5,2]"));
 
                 /*
                  * COMMANDS.add(new CommandExample(

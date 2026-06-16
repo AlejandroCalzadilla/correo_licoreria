@@ -102,9 +102,8 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             Carrito carrito = carritoService.findById(carritoId).orElse(null);
             if (carrito == null)
                 throw new RuntimeException("Carrito no encontrado con ID: " + carritoId);
-            System.out.println("el caroooooo"+carrito);
             List<ItemCarrito> items = itemCarritoService.buscarPorCarrito(carritoId);
-            System.out.println("los items"+items);
+        
             if (items == null || items.isEmpty())
                 throw new RuntimeException("El carrito no tiene items");
             Venta venta = new Venta();
@@ -120,7 +119,6 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             
             venta.setCliente(cliente);
             tipo = tipo.toLowerCase();
-            System.out.println("DEBUG: Tipo de venta configurado: " + tipo);
             if (!tipo.equals("credito") && !tipo.equals("contado")) {
                 throw new IllegalArgumentException("Tipo debe ser 'credito' o 'contado'");
             }
