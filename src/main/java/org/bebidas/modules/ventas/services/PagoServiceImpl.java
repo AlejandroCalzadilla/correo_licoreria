@@ -189,8 +189,8 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                 creditoService.save(credito);
                 System.out.println("Credito guardado: " + credito);
                 if (nuevasCuotas == 0 || nuevoSaldoCredito.compareTo(BigDecimal.ZERO) == 0) {
-                    venta.setEstado("COMPLETO");
-                    venta.setEstadoPago("COMPLETO");
+                    venta.setEstado("completado");
+                    venta.setEstadoPago("completado");
                     venta.setSaldo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
                     ventaService.save(venta);
                 }

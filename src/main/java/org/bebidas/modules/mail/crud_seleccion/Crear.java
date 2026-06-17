@@ -27,6 +27,7 @@ import org.bebidas.modules.usuarios.Rol;
 import org.bebidas.modules.usuarios.Usuario;
 import org.bebidas.modules.usuarios.mappers.UsuarioMapper;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.modules.ventas.mappers.DetalleVentaMapper;
 import org.bebidas.modules.ventas.mappers.VentaMapper;
 
 public class Crear {
@@ -94,7 +95,7 @@ public class Crear {
                     // CREATEVENTAS[clienteId, tipo, numeroCuotas, metodoPago]
                     respuesta = crearVenta(params);
                     break;
-                case "VENTASCONDETALLE":
+                case "VENTASCARRITO":
                     // CREATEVENTASCONDETALLE[tipo, carritoId, numeroCuotas, metodoPago]
                     respuesta = crearVentaConDetalle(params);
                     break;
@@ -354,11 +355,14 @@ public class Crear {
     private String crearVenta(String[] params) {
         try {
             if (params.length < 2)
-                return "Se requieren: clienteId, tipo, [numeroCuotas]";
+                return "Se requieren: clienteId, tipo, si es al credito:[numeroCuotas]";
             Long clienteId = Long.parseLong(params[0]);
             String tipo = params[1];
             String numeroCuotas = null;
             if (tipo.equalsIgnoreCase("credito")) {
+                if (params.length < 3) {
+                    return "Se requiere numeroCuotas";
+                }
                 numeroCuotas = params[2];
             } else {
                 numeroCuotas = "0";
@@ -375,7 +379,7 @@ public class Crear {
 
     private String crearDetalleVenta(String[] params) {
         try {
-            System.out.println("DEBUG: crearDetalleVenta - Parámetros recibidos: " + String.join(",", params));
+
             if (params.length < 4)
                 return "Se requieren: ventaId, productoId, cantidad, precioUnitario";
             Long ventaId = Long.parseLong(params[0]);
@@ -386,7 +390,8 @@ public class Crear {
                     .procesarCreacionDetalleVenta(ventaId, productoId, cantidad, precioUnitario);
             return "DetalleVenta creado correctamente" +
                     "\nVenta actualizada - Monto Total: " + ventaActualizada.getMontoTotal() +
-                    " | Saldo: " + ventaActualizada.getSaldo();
+                    " | Saldo: " + DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)) + "\n"
+                    + ventaActualizada.getSaldo();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

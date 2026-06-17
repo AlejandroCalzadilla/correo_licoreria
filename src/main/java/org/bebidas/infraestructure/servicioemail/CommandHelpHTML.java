@@ -109,9 +109,9 @@ public class CommandHelpHTML {
 
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "VENTASCARRITO",
-                                "Crear venta con detalles desde carrito",
+                                "Crear venta desde carrito",
                                 "tipo(credito/contado), carritoId, [numeroCuotas]",
-                                "CREATEVENTASCONDETALLE[credito ,5,2]"));
+                                "CREATEVENTASCARRITO[credito ,5,2]"));
 
                 /*
                  * COMMANDS.add(new CommandExample(
