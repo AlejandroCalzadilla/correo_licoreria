@@ -1,4 +1,4 @@
-package org.bebidas.modules.ventas.repositories;
+package org.bebidas.modules.pagos.repostiories;
 
 import org.bebidas.core.util.GenericDAO;
 import org.bebidas.modules.creditos.PagoCuota;

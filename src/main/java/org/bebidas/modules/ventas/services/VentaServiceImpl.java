@@ -11,13 +11,12 @@ import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
 import org.bebidas.modules.service.PagoCuotaService;
 import org.bebidas.modules.service.interfaces.*;
-import org.bebidas.modules.ventas.DetalleVenta;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.modules.ventas.models.DetalleVenta;
 import org.bebidas.modules.ventas.repositories.VentaDAO;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 
 import org.bebidas.modules.clientes.services.interfaces.ClienteService;
 
@@ -32,10 +31,10 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     private final ItemCarritoService itemCarritoService;
     private final ClienteService clienteService;
 
-    public VentaServiceImpl(VentaDAO ventaDAO, CarritoService carritoService, 
-                           DetalleVentaService detalleVentaService, PagoService pagoService,
-                           CreditoService creditoService, PagoCuotaService pagoCuotaService,
-                           ItemCarritoService itemCarritoService, ClienteService clienteService) {
+    public VentaServiceImpl(VentaDAO ventaDAO, CarritoService carritoService,
+            DetalleVentaService detalleVentaService, PagoService pagoService,
+            CreditoService creditoService, PagoCuotaService pagoCuotaService,
+            ItemCarritoService itemCarritoService, ClienteService clienteService) {
         super(ventaDAO);
         this.ventaDAO = ventaDAO;
         this.carritoService = carritoService;
@@ -47,7 +46,6 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
         this.clienteService = clienteService;
     }
 
-   
     @Override
     public List<Venta> buscarPorCliente(Long clienteId) {
         return ventaDAO.buscarPorCliente(clienteId);
@@ -60,11 +58,12 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
 
     @Override
     public Venta completarVenta(Long ventaId) {
-        Venta venta = findById(ventaId).orElseThrow(() -> 
-            new RuntimeException("Venta no encontrada con ID: " + ventaId));
+        Venta venta = findById(ventaId)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + ventaId));
         // Validar que la venta se pueda completar
         if (!"PENDIENTE".equals(venta.getEstado())) {
-            throw new IllegalStateException("La venta no puede ser completada desde el estado actual: " + venta.getEstado());
+            throw new IllegalStateException(
+                    "La venta no puede ser completada desde el estado actual: " + venta.getEstado());
         }
         // Actualizar estado a completada
         venta.setEstado("COMPLETADA");
@@ -76,9 +75,9 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     public BigDecimal calcularTotalVentasPorCliente(Long clienteId) {
         List<Venta> ventas = buscarPorCliente(clienteId);
         return ventas.stream()
-            .filter(v -> "COMPLETADA".equals(v.getEstado()))
-            .map(Venta::getMontoTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .filter(v -> "COMPLETADA".equals(v.getEstado()))
+                .map(Venta::getMontoTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
@@ -103,20 +102,21 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             if (carrito == null)
                 throw new RuntimeException("Carrito no encontrado con ID: " + carritoId);
             List<ItemCarrito> items = itemCarritoService.buscarPorCarrito(carritoId);
-        
+
             if (items == null || items.isEmpty())
                 throw new RuntimeException("El carrito no tiene items");
             Venta venta = new Venta();
             String nroVenta = generarSiguienteNroVenta();
             venta.setNroVenta(nroVenta);
-            
+
             if (carrito.getUsuario() == null) {
                 throw new RuntimeException("El carrito no tiene un usuario asociado");
             }
             Long usuarioId = carrito.getUsuario().getId();
             Cliente cliente = clienteService.findByUsuarioId(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado para el usuario con ID: " + usuarioId));
-            
+                    .orElseThrow(
+                            () -> new RuntimeException("Cliente no encontrado para el usuario con ID: " + usuarioId));
+
             venta.setCliente(cliente);
             tipo = tipo.toLowerCase();
             if (!tipo.equals("credito") && !tipo.equals("contado")) {
@@ -163,7 +163,7 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
                         ventaActualizada.getNumeroCuotas() != null ? ventaActualizada.getNumeroCuotas() : "1");
                 credito.setEstado("ACTIVO");
                 credito.setFechaInicio(LocalDate.now());
-                 creditoService.save(credito);
+                creditoService.save(credito);
             } else {
                 System.out.println("DEBUG: No se crea crédito - Tipo de venta: " + venta.getTipo());
             }
@@ -205,7 +205,6 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             throw new RuntimeException("Error al crear venta básica: " + e.getMessage());
         }
     }
-
 
     private String generarSiguienteNroVenta() {
         try {

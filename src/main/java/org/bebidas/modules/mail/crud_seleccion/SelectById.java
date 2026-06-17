@@ -26,10 +26,10 @@ import org.bebidas.modules.usuarios.mappers.UsuarioMapper;
 import org.bebidas.modules.vendedores.Vendedor;
 import org.bebidas.modules.vendedores.mappers.VendedorMapper;
 import org.bebidas.modules.ventas.Venta;
-import org.bebidas.modules.ventas.VentaMapper;
+import org.bebidas.modules.ventas.mappers.VentaMapper;
 
 public class SelectById {
-    
+
     private final ServiceProvider services = ServiceProvider.getInstance();
 
     public String ejecutarConsultaSelectById(String entidad, Long id) throws SQLException {
@@ -43,47 +43,56 @@ public class SelectById {
 
                 case "USUARIOS":
                     Optional<Usuario> usuario = services.getUsuarioService().findById(id);
-                    respuesta = usuario.isPresent() ? UsuarioMapper.obtenerUnoTable(usuario.get()) : "Usuario no encontrado";
+                    respuesta = usuario.isPresent() ? UsuarioMapper.obtenerUnoTable(usuario.get())
+                            : "Usuario no encontrado";
                     break;
 
                 case "VENDEDORES":
                     Optional<Vendedor> vendedor = services.getVendedorService().findById(id);
-                    respuesta = vendedor.isPresent() ? VendedorMapper.obtenerUnoTable(vendedor.get()) : "Vendedor no encontrado";
+                    respuesta = vendedor.isPresent() ? VendedorMapper.obtenerUnoTable(vendedor.get())
+                            : "Vendedor no encontrado";
                     break;
 
                 case "CATEGORIAS":
                     Optional<Categoria> categoria = services.getCategoriaService().findById(id);
-                    respuesta = categoria.isPresent() ? CategoriaMapper.obtenerUnoTable(categoria.get()) : "Categoría no encontrada";
+                    respuesta = categoria.isPresent() ? CategoriaMapper.obtenerUnoTable(categoria.get())
+                            : "Categoría no encontrada";
                     break;
 
                 case "PRODUCTOS":
                     Optional<Producto> producto = services.getProductoService().findById(id);
-                    respuesta = producto.isPresent() ? ProductoMapper.obtenerUnoTable(producto.get()) : "Producto no encontrado";
+                    respuesta = producto.isPresent() ? ProductoMapper.obtenerUnoTable(producto.get())
+                            : "Producto no encontrado";
                     break;
 
                 case "INVENTARIO":
                     Optional<Inventario> inventario = services.getInventarioService().findById(id);
-                    respuesta = inventario.isPresent() ? InventarioMapper.obtenerUnoTable(inventario.get()) : "Inventario no encontrado";
+                    respuesta = inventario.isPresent() ? InventarioMapper.obtenerUnoTable(inventario.get())
+                            : "Inventario no encontrado";
                     break;
 
                 case "CARRITOS":
                     Optional<Carrito> carrito = services.getCarritoService().findById(id);
-                    respuesta = carrito.isPresent() ? CarritoMapper.obtenerUnoTable(carrito.get()) : "Carrito no encontrado";
+                    respuesta = carrito.isPresent() ? CarritoMapper.obtenerUnoTable(carrito.get())
+                            : "Carrito no encontrado";
                     break;
 
                 case "COMPRAS":
                     Optional<Compra> compra = services.getCompraService().findById(id);
-                    respuesta = compra.isPresent() ? CompraMapper.obtenerUnoTable(compra.get()) : "Compra no encontrada";
+                    respuesta = compra.isPresent() ? CompraMapper.obtenerUnoTable(compra.get())
+                            : "Compra no encontrada";
                     break;
 
                 case "PROVEEDORES":
                     Optional<Proveedor> proveedor = services.getProveedorService().findById(id);
-                    respuesta = proveedor.isPresent() ? ProveedorMapper.obtenerUnoTable(proveedor.get()) : "Proveedor no encontrado";
+                    respuesta = proveedor.isPresent() ? ProveedorMapper.obtenerUnoTable(proveedor.get())
+                            : "Proveedor no encontrado";
                     break;
 
                 case "CLIENTES":
                     Optional<Cliente> cliente = services.getClienteService().findById(id);
-                    respuesta = cliente.isPresent() ? ClienteMapper.obtenerUnoTable(cliente.get()) : "Cliente no encontrado";
+                    respuesta = cliente.isPresent() ? ClienteMapper.obtenerUnoTable(cliente.get())
+                            : "Cliente no encontrado";
                     break;
 
                 case "VENTAS":
@@ -93,7 +102,8 @@ public class SelectById {
 
                 case "CREDITOS":
                     Optional<Credito> credito = services.getCreditoService().findById(id);
-                    respuesta = credito.isPresent() ? CreditoMapper.obtenerUnoTable(credito.get()) : "Crédito no encontrado";
+                    respuesta = credito.isPresent() ? CreditoMapper.obtenerUnoTable(credito.get())
+                            : "Crédito no encontrado";
                     break;
 
                 default:

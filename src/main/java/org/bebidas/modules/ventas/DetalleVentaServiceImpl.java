@@ -9,6 +9,7 @@ import org.bebidas.modules.service.interfaces.DetalleVentaService;
 import org.bebidas.modules.service.interfaces.InventarioService;
 import org.bebidas.modules.service.interfaces.PagoService;
 import org.bebidas.modules.service.interfaces.VentaService;
+import org.bebidas.modules.ventas.models.DetalleVenta;
 import org.bebidas.modules.ventas.repositories.DetalleVentaDAO;
 
 import java.math.BigDecimal;
@@ -66,7 +67,8 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
         // Verificar stock disponible
         Integer stockActual = inventarioService.obtenerStockActual(detalle.getProducto().getId());
         if (stockActual < detalle.getCantidad()) {
-            throw new IllegalArgumentException("No hay suficiente stock para el producto " + detalle.getProducto().getNombre());
+            throw new IllegalArgumentException(
+                    "No hay suficiente stock para el producto " + detalle.getProducto().getNombre());
         }
 
         // Registrar salida de inventario
@@ -81,11 +83,12 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
     @Override
     public DetalleVenta actualizar(DetalleVenta detalle) {
         DetalleVenta detalleActual = this.findById(detalle.getId())
-            .orElseThrow(() -> new IllegalArgumentException("El detalle de venta con ID " + detalle.getId() + " no existe"));
-        
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "El detalle de venta con ID " + detalle.getId() + " no existe"));
+
         Integer stockActual = inventarioService.obtenerStockActual(detalle.getProducto().getId());
         Integer difference = detalle.getCantidad() - detalleActual.getCantidad();
-        
+
         if (stockActual < difference) {
             throw new IllegalArgumentException("No hay suficiente stock para actualizar el detalle de venta");
         }
@@ -106,7 +109,7 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
     @Override
     public void eliminar(Long id) {
         DetalleVenta detalleActual = this.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("El detalle de venta con ID " + id + " no existe"));
+                .orElseThrow(() -> new IllegalArgumentException("El detalle de venta con ID " + id + " no existe"));
 
         // Registrar entrada para devolver el stock
         Inventario inventario = new Inventario();
@@ -118,7 +121,8 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
     }
 
     @Override
-    public Venta procesarCreacionDetalleVenta(Long ventaId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
+    public Venta procesarCreacionDetalleVenta(Long ventaId, Long productoId, Integer cantidad,
+            BigDecimal precioUnitario) {
         if (ventaService == null || pagoService == null || creditoService == null) {
             throw new IllegalStateException("Dependencias de negocio no configuradas en DetalleVentaService");
         }
@@ -131,7 +135,8 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
         boolean tienePagos = pagoService.findAll().stream()
                 .anyMatch(p -> p.getVenta().getId().equals(ventaId));
         if (tienePagos) {
-            throw new IllegalStateException("No se puede crear detalle de venta: ya existen pagos asociados a esta venta");
+            throw new IllegalStateException(
+                    "No se puede crear detalle de venta: ya existen pagos asociados a esta venta");
         }
 
         DetalleVenta detalle = new DetalleVenta();
@@ -149,7 +154,7 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
         venta.setMontoTotal(nuevoMonto);
         venta.setSaldo(nuevoMonto);
         ventaService.save(venta);
-
+        System.out.println("debug= venta detalles ");
         if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
             Credito creditoExistente = creditoService.findAll().stream()
                     .filter(c -> c.getVenta().getId().equals(venta.getId()))
@@ -161,6 +166,7 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
                 creditoExistente.setSaldo(nuevoMonto);
                 creditoService.save(creditoExistente);
             } else {
+                System.out.println("debug= el credito se esta creando");
                 Credito credito = new Credito();
                 credito.setVenta(venta);
                 credito.setMontoTotal(nuevoMonto);

@@ -32,6 +32,8 @@ import org.bebidas.modules.inventario.repositories.ProductoDAOImpl;
 import org.bebidas.modules.inventario.repositories.interfaces.InventarioDAO;
 import org.bebidas.modules.inventario.repositories.interfaces.ProductoDAO;
 import org.bebidas.modules.inventario.services.ProductoServiceImpl;
+import org.bebidas.modules.pagos.repostiories.PagoDAO;
+import org.bebidas.modules.pagos.repostiories.PagoDAOImpl;
 import org.bebidas.modules.proveedor.repositories.ProveedorDAO;
 import org.bebidas.modules.proveedor.repositories.ProveedorDAOImpl;
 import org.bebidas.modules.proveedor.services.ProveedorServiceImpl;
@@ -57,16 +59,16 @@ import org.bebidas.modules.vendedores.services.VendedorServiceImpl;
 import org.bebidas.modules.ventas.DetalleVentaServiceImpl;
 import org.bebidas.modules.ventas.repositories.DetalleVentaDAO;
 import org.bebidas.modules.ventas.repositories.DetalleVentaDAOImpl;
-import org.bebidas.modules.ventas.repositories.PagoDAO;
-import org.bebidas.modules.ventas.repositories.PagoDAOImpl;
 import org.bebidas.modules.ventas.repositories.VentaDAO;
 import org.bebidas.modules.ventas.repositories.VentaDAOImpl;
 import org.bebidas.modules.ventas.services.PagoServiceImpl;
 import org.bebidas.modules.ventas.services.VentaServiceImpl;
 
 /**
- * Clase central que provee todos los servicios necesarios para las operaciones CRUD.
- * Evita la duplicación de código en las clases Listar, Actualizar, Eliminar, SelectById.
+ * Clase central que provee todos los servicios necesarios para las operaciones
+ * CRUD.
+ * Evita la duplicación de código en las clases Listar, Actualizar, Eliminar,
+ * SelectById.
  */
 public class ServiceProvider {
 
@@ -142,7 +144,7 @@ public class ServiceProvider {
                 (InventarioServiceImpl) inventarioService);
         this.proveedorService = new ProveedorServiceImpl(proveedorDAO);
         this.vendedorService = new VendedorServiceImpl(vendedorDAO);
-        this.creditoService = (CreditoService)new CreditoServiceImpl();
+        this.creditoService = (CreditoService) new CreditoServiceImpl();
         this.pagoCuotaService = new PagoCuotaServiceImpl();
         this.pagoService = new PagoServiceImpl(pagoDAO);
         this.ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService,

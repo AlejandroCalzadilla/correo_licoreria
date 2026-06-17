@@ -3,11 +3,11 @@ package org.bebidas.modules.ventas.services;
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
+import org.bebidas.modules.pagos.Pago;
+import org.bebidas.modules.pagos.repostiories.PagoDAO;
 import org.bebidas.modules.service.interfaces.PagoService;
 import org.bebidas.modules.service.interfaces.VentaService;
-import org.bebidas.modules.ventas.Pago;
 import org.bebidas.modules.ventas.Venta;
-import org.bebidas.modules.ventas.repositories.PagoDAO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -71,16 +71,20 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
     public Pago registrarPago(Pago pago) {
         // Validar que la venta existe
         Venta venta = ventaService.findById(pago.getVenta().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Venta no encontrada"));
-        
+                .orElseThrow(() -> new IllegalArgumentException("Venta no encontrada"));
+
         // Validar que el monto no sea negativo
         if (pago.getMonto().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
         }
-       /*  if( pago.getMonto() != venta.getSaldo() ){
-            throw new IllegalArgumentException("El monto del pago no puede ser diferente al saldo de la venta");
-        } */
-        
+        /*
+         * if( pago.getMonto() != venta.getSaldo() ){
+         * throw new
+         * IllegalArgumentException("El monto del pago no puede ser diferente al saldo de la venta"
+         * );
+         * }
+         */
+
         // Establecer fecha y estado por defecto
         pago.setFechaPago(LocalDateTime.now());
         String nroPago = generarSiguienteNroPago();
@@ -120,7 +124,8 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                 if (cuotasIniciales <= 0) {
                     throw new IllegalArgumentException("Número de cuotas inválido para la venta");
                 }
-                List<BigDecimal> planCompletoCuotas = construirPlanPagosCredito(credito.getMontoTotal(), cuotasIniciales);
+                List<BigDecimal> planCompletoCuotas = construirPlanPagosCredito(credito.getMontoTotal(),
+                        cuotasIniciales);
                 int numeroCuotaActual = (cuotasIniciales - cuotasRestantes) + 1;
                 if (numeroCuotaActual <= 0 || numeroCuotaActual > cuotasIniciales) {
                     throw new IllegalArgumentException("No se pudo determinar la cuota actual del crédito");
@@ -194,26 +199,26 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
     @Override
     public void anularPago(Long pagoId) {
         Pago pago = findById(pagoId)
-            .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado"));
-        
+                .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado"));
+
         // Solo se pueden anular pagos pendientes o confirmados
         if (!pago.getEstado().equals("PAGO_COMPLETADO") && !pago.getEstado().equals("CONFIRMADO")) {
             throw new IllegalStateException("Solo se pueden anular pagos pendientes o confirmados");
         }
-        
+
         // Marcar como anulado
         pago.setEstado("ANULADO");
         save(pago);
-        
+
         // Actualizar el estado de la venta
         Venta venta = pago.getVenta();
         actualizarEstadoVenta(venta);
     }
-    
+
     private void actualizarEstadoVenta(Venta venta) {
         BigDecimal totalVenta = venta.getMontoTotal();
         BigDecimal totalPagado = obtenerTotalPagosPorVenta(venta.getId());
-        
+
         String nuevoEstado;
         if (totalPagado.compareTo(BigDecimal.ZERO) == 0) {
             nuevoEstado = "PENDIENTE";
@@ -224,13 +229,12 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         } else {
             nuevoEstado = "EXCEDENTE";
         }
-        
+
         if (!venta.getEstado().equals(nuevoEstado)) {
             venta.setEstado(nuevoEstado);
             ventaService.save(venta);
         }
     }
-
 
     private String generarSiguienteNroPago() {
         try {
@@ -275,13 +279,15 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         int escalaCuota = totalNormalizado.stripTrailingZeros().scale() <= 0 ? 0 : 2;
         totalNormalizado = totalNormalizado.setScale(escalaCuota, RoundingMode.HALF_UP);
 
-        BigDecimal cuotaBase = totalNormalizado.divide(BigDecimal.valueOf(numeroCuotas), escalaCuota, RoundingMode.DOWN);
+        BigDecimal cuotaBase = totalNormalizado.divide(BigDecimal.valueOf(numeroCuotas), escalaCuota,
+                RoundingMode.DOWN);
         List<BigDecimal> cuotas = new ArrayList<>(numeroCuotas);
 
         for (int i = 1; i <= numeroCuotas; i++) {
             if (i == numeroCuotas) {
                 BigDecimal acumulado = cuotaBase.multiply(BigDecimal.valueOf(numeroCuotas - 1));
-                BigDecimal ultimaCuota = totalNormalizado.subtract(acumulado).setScale(escalaCuota, RoundingMode.HALF_UP);
+                BigDecimal ultimaCuota = totalNormalizado.subtract(acumulado).setScale(escalaCuota,
+                        RoundingMode.HALF_UP);
                 cuotas.add(ultimaCuota);
             } else {
                 cuotas.add(cuotaBase);

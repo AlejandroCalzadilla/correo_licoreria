@@ -13,8 +13,8 @@ import org.bebidas.modules.proveedor.mappers.ProveedorMapper;
 import org.bebidas.modules.usuarios.mappers.RolMapper;
 import org.bebidas.modules.usuarios.mappers.UsuarioMapper;
 import org.bebidas.modules.vendedores.mappers.VendedorMapper;
-import org.bebidas.modules.ventas.VentaMapper;
-import org.bebidas.modules.ventas.repositories.DetalleVentaMapper;
+import org.bebidas.modules.ventas.mappers.DetalleVentaMapper;
+import org.bebidas.modules.ventas.mappers.VentaMapper;
 
 public class Listar {
 

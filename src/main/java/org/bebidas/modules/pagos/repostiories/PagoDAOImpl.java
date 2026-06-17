@@ -1,8 +1,8 @@
-package org.bebidas.modules.ventas.repositories;
+package org.bebidas.modules.pagos.repostiories;
 
 import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
-import org.bebidas.modules.ventas.Pago;
+import org.bebidas.modules.pagos.Pago;
 import org.bebidas.modules.ventas.Venta;
 
 import java.math.BigDecimal;
@@ -37,12 +37,17 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
         pago.setTelefono(rs.getString("telefono"));
         pago.setNit(rs.getString("nit"));
         pago.setDetallesPago(rs.getString("detalles_pago"));
-        pago.setFechaPago(rs.getTimestamp("fecha_pago") != null ? rs.getTimestamp("fecha_pago").toLocalDateTime() : null);
-        pago.setFechaConfirmacion(rs.getTimestamp("fecha_confirmacion") != null ? rs.getTimestamp("fecha_confirmacion").toLocalDateTime() : null);
+        pago.setFechaPago(
+                rs.getTimestamp("fecha_pago") != null ? rs.getTimestamp("fecha_pago").toLocalDateTime() : null);
+        pago.setFechaConfirmacion(
+                rs.getTimestamp("fecha_confirmacion") != null ? rs.getTimestamp("fecha_confirmacion").toLocalDateTime()
+                        : null);
         pago.setObservaciones(rs.getString("observaciones"));
-        pago.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
-        pago.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
-        
+        pago.setCreatedAt(
+                rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+        pago.setUpdatedAt(
+                rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
+
         // Venta relationship
         Long ventaId = rs.getLong("venta_id");
         if (rs.wasNull()) {
@@ -53,27 +58,27 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
             venta.setId(ventaId);
             pago.setVenta(venta);
         }
-        
+
         return pago;
     }
 
     @Override
     public Optional<Pago> findById(Long id) {
         String sql = "SELECT * FROM pago WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return Optional.of(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return Optional.empty();
     }
 
@@ -81,18 +86,18 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> findAll() {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pago ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -107,10 +112,10 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
 
     private Pago insert(Pago pago) {
         String sql = "INSERT INTO pago (venta_id, nro_pago, tipo_pago, estado, monto, qr_image, nro_transaccion, nombre_persona, email, telefono, nit, detalles_pago, fecha_pago, fecha_confirmacion, observaciones, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             if (pago.getVenta() != null) {
                 stmt.setLong(1, pago.getVenta().getId());
             } else {
@@ -128,11 +133,12 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
             stmt.setString(11, pago.getNit());
             stmt.setString(12, pago.getDetallesPago());
             stmt.setTimestamp(13, pago.getFechaPago() != null ? Timestamp.valueOf(pago.getFechaPago()) : null);
-            stmt.setTimestamp(14, pago.getFechaConfirmacion() != null ? Timestamp.valueOf(pago.getFechaConfirmacion()) : null);
+            stmt.setTimestamp(14,
+                    pago.getFechaConfirmacion() != null ? Timestamp.valueOf(pago.getFechaConfirmacion()) : null);
             stmt.setString(15, pago.getObservaciones());
             stmt.setTimestamp(16, pago.getCreatedAt() != null ? Timestamp.valueOf(pago.getCreatedAt()) : null);
             stmt.setTimestamp(17, pago.getUpdatedAt() != null ? Timestamp.valueOf(pago.getUpdatedAt()) : null);
-            
+
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -144,16 +150,16 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pago;
     }
 
     private Pago update(Pago pago) {
         String sql = "UPDATE pago SET venta_id = ?, nro_pago = ?, tipo_pago = ?, estado = ?, monto = ?, qr_image = ?, nro_transaccion = ?, nombre_persona = ?, email = ?, telefono = ?, nit = ?, detalles_pago = ?, fecha_pago = ?, fecha_confirmacion = ?, observaciones = ?, updated_at = ? WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             if (pago.getVenta() != null) {
                 stmt.setLong(1, pago.getVenta().getId());
             } else {
@@ -171,26 +177,27 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
             stmt.setString(11, pago.getNit());
             stmt.setString(12, pago.getDetallesPago());
             stmt.setTimestamp(13, pago.getFechaPago() != null ? Timestamp.valueOf(pago.getFechaPago()) : null);
-            stmt.setTimestamp(14, pago.getFechaConfirmacion() != null ? Timestamp.valueOf(pago.getFechaConfirmacion()) : null);
+            stmt.setTimestamp(14,
+                    pago.getFechaConfirmacion() != null ? Timestamp.valueOf(pago.getFechaConfirmacion()) : null);
             stmt.setString(15, pago.getObservaciones());
             stmt.setTimestamp(16, pago.getUpdatedAt() != null ? Timestamp.valueOf(pago.getUpdatedAt()) : null);
             stmt.setLong(17, pago.getId());
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pago;
     }
 
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM pago WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -201,20 +208,20 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     @Override
     public boolean existsById(Long id) {
         String sql = "SELECT COUNT(*) FROM pago WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
@@ -222,20 +229,20 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> buscarPorVenta(Long ventaId) {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pago WHERE venta_id = ? ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, ventaId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -243,20 +250,20 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> buscarPorEstado(String estado) {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pago WHERE estado = ? ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, estado);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -264,20 +271,20 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> buscarPorTipoPago(String tipoPago) {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pago WHERE tipo_pago = ? ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, tipoPago);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -285,21 +292,21 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> buscarPorRangoFechas(LocalDate inicio, LocalDate fin) {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pago WHERE DATE(fecha_pago) BETWEEN ? AND ? ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setDate(1, java.sql.Date.valueOf(inicio));
             stmt.setDate(2, java.sql.Date.valueOf(fin));
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -307,40 +314,40 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
     public List<Pago> buscarPorCliente(Long clienteId) {
         List<Pago> pagos = new ArrayList<>();
         String sql = "SELECT p.* FROM pago p JOIN ventas v ON p.venta_id = v.id WHERE v.cliente_id = ? ORDER BY p.fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, clienteId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPago(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
     @Override
     public BigDecimal obtenerTotalPagosPorVenta(Long ventaId) {
         String sql = "SELECT COALESCE(SUM(monto), 0) FROM pago WHERE venta_id = ? AND estado = 'CONFIRMADO'";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, ventaId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getBigDecimal(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return BigDecimal.ZERO;
     }
 }

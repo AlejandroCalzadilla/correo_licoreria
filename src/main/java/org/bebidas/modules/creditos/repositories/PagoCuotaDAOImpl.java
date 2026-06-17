@@ -3,7 +3,7 @@ package org.bebidas.modules.creditos.repositories;
 import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
 import org.bebidas.modules.creditos.PagoCuota;
-import org.bebidas.modules.ventas.repositories.PagoCuotaDAO;
+import org.bebidas.modules.pagos.repostiories.PagoCuotaDAO;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -39,20 +39,20 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
     @Override
     public Optional<PagoCuota> findById(Long id) {
         String sql = "SELECT * FROM pagos WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return Optional.of(mapResultSetToPagoCuota(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return Optional.empty();
     }
 
@@ -60,18 +60,18 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
     public List<PagoCuota> findAll() {
         List<PagoCuota> pagos = new ArrayList<>();
         String sql = "SELECT * FROM pagos ORDER BY fecha_pago DESC";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 pagos.add(mapResultSetToPagoCuota(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
 
@@ -86,10 +86,10 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
 
     private PagoCuota insert(PagoCuota pagoCuota) {
         String sql = "INSERT INTO pagos (credito_id, fecha_pago, monto, metodo, nro_transaccion, observacion, numero_cuota, pago_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setLong(1, pagoCuota.getCreditoId());
             stmt.setDate(2, pagoCuota.getFechaPago() != null ? Date.valueOf(pagoCuota.getFechaPago()) : null);
             stmt.setBigDecimal(3, pagoCuota.getMonto());
@@ -98,9 +98,9 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
             stmt.setString(6, pagoCuota.getObservacion());
             stmt.setInt(7, pagoCuota.getNumeroCuota());
             stmt.setLong(8, pagoCuota.getPagoId());
-            
+
             stmt.executeUpdate();
-            
+
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 pagoCuota.setId(rs.getLong(1));
@@ -108,16 +108,16 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagoCuota;
     }
 
     private PagoCuota update(PagoCuota pagoCuota) {
         String sql = "UPDATE pagos SET credito_id = ?, fecha_pago = ?, monto = ?, metodo = ?, nro_transaccion = ?, observacion = ?, numero_cuota = ?, pago_id = ? WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, pagoCuota.getCreditoId());
             stmt.setDate(2, pagoCuota.getFechaPago() != null ? Date.valueOf(pagoCuota.getFechaPago()) : null);
             stmt.setBigDecimal(3, pagoCuota.getMonto());
@@ -127,22 +127,22 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
             stmt.setInt(7, pagoCuota.getNumeroCuota());
             stmt.setLong(8, pagoCuota.getPagoId());
             stmt.setLong(9, pagoCuota.getId());
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagoCuota;
     }
 
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM pagos WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -153,18 +153,18 @@ public class PagoCuotaDAOImpl extends GenericDAOImpl<PagoCuota, Long> implements
     @Override
     public boolean existsById(Long id) {
         String sql = "SELECT 1 FROM pagos WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 }

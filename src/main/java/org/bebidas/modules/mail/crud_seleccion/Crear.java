@@ -20,14 +20,14 @@ import org.bebidas.modules.inventario.Inventario;
 import org.bebidas.modules.inventario.Producto;
 import org.bebidas.modules.inventario.mappers.InventarioMapper;
 import org.bebidas.modules.inventario.mappers.ProductoMapper;
+import org.bebidas.modules.pagos.Pago;
 import org.bebidas.modules.proveedor.Proveedor;
 import org.bebidas.modules.proveedor.mappers.ProveedorMapper;
 import org.bebidas.modules.usuarios.Rol;
 import org.bebidas.modules.usuarios.Usuario;
 import org.bebidas.modules.usuarios.mappers.UsuarioMapper;
 import org.bebidas.modules.ventas.Venta;
-import org.bebidas.modules.ventas.VentaMapper;
-import org.bebidas.modules.ventas.Pago;
+import org.bebidas.modules.ventas.mappers.VentaMapper;
 
 public class Crear {
 

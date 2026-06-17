@@ -105,10 +105,10 @@ public class CommandHelpHTML {
                                 "CREATE", "VENTAS",
                                 "Crear una nueva venta",
                                 "clienteId, tipo(credito/contado), [numeroCuotas]/[metodoPago]",
-                                "CREATEVENTAS[1, contado,2] o [1, contado,efectivo]"));
+                                "CREATEVENTAS[1, credito,2] o [1, contado,efectivo]"));
 
                 COMMANDS.add(new CommandExample(
-                                "CREATE", "VENTASCONDETALLE",
+                                "CREATE", "VENTASCARRITO",
                                 "Crear venta con detalles desde carrito",
                                 "tipo(credito/contado), carritoId, [numeroCuotas] o [metodoPago]",
                                 "CREATEVENTASCONDETALLE[contado, 5,efectivo] o [credito ,5,2]"));

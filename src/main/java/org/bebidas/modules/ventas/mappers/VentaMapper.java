@@ -1,8 +1,9 @@
-package org.bebidas.modules.ventas;
+package org.bebidas.modules.ventas.mappers;
 
 import java.util.List;
 
 import org.bebidas.core.util.TableMapper;
+import org.bebidas.modules.ventas.Venta;
 
 public class VentaMapper {
 

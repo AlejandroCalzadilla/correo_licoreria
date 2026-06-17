@@ -3,8 +3,8 @@ package org.bebidas.modules.ventas.repositories;
 import org.bebidas.core.util.GenericDAOImpl;
 import org.bebidas.infraestructure.conexion.DatabaseConnection;
 import org.bebidas.modules.inventario.Producto;
-import org.bebidas.modules.ventas.DetalleVenta;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.modules.ventas.models.DetalleVenta;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -28,7 +28,7 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
         detalle.setCantidad(rs.getInt("cantidad"));
         detalle.setPrecioUnitario(rs.getBigDecimal("precio_unitario"));
         detalle.getSubtotal();
-        
+
         // Venta relationship
         Long ventaId = rs.getLong("venta_id");
         if (rs.wasNull()) {
@@ -39,7 +39,7 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
             venta.setId(ventaId);
             detalle.setVenta(venta);
         }
-        
+
         // Producto relationship
         Long productoId = rs.getLong("producto_id");
         if (rs.wasNull()) {
@@ -50,27 +50,27 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
             producto.setId(productoId);
             detalle.setProducto(producto);
         }
-        
+
         return detalle;
     }
 
     @Override
     public Optional<DetalleVenta> findById(Long id) {
         String sql = "SELECT * FROM detalle_venta WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return Optional.of(mapResultSetToDetalleVenta(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return Optional.empty();
     }
 
@@ -78,18 +78,18 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
     public List<DetalleVenta> findAll() {
         List<DetalleVenta> detalles = new ArrayList<>();
         String sql = "SELECT * FROM detalle_venta";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 detalles.add(mapResultSetToDetalleVenta(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return detalles;
     }
 
@@ -104,10 +104,10 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
 
     private DetalleVenta insert(DetalleVenta detalle) {
         String sql = "INSERT INTO detalle_venta (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             if (detalle.getVenta() != null) {
                 stmt.setLong(1, detalle.getVenta().getId());
             } else {
@@ -121,7 +121,7 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
             stmt.setInt(3, detalle.getCantidad());
             stmt.setBigDecimal(4, detalle.getPrecioUnitario());
             stmt.setBigDecimal(5, detalle.getSubtotal());
-            
+
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -133,16 +133,16 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return detalle;
     }
 
     private DetalleVenta update(DetalleVenta detalle) {
         String sql = "UPDATE detalle_venta SET venta_id = ?, producto_id = ?, cantidad = ?, precio_unitario = ?, subtotal = ? WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             if (detalle.getVenta() != null) {
                 stmt.setLong(1, detalle.getVenta().getId());
             } else {
@@ -157,22 +157,22 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
             stmt.setBigDecimal(4, detalle.getPrecioUnitario());
             stmt.setBigDecimal(5, detalle.getSubtotal());
             stmt.setLong(6, detalle.getId());
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return detalle;
     }
 
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM detalle_venta WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -183,20 +183,20 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
     @Override
     public boolean existsById(Long id) {
         String sql = "SELECT COUNT(*) FROM detalle_venta WHERE id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
@@ -204,20 +204,20 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
     public List<DetalleVenta> buscarPorVenta(Long ventaId) {
         List<DetalleVenta> detalles = new ArrayList<>();
         String sql = "SELECT * FROM detalle_venta WHERE venta_id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, ventaId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 detalles.add(mapResultSetToDetalleVenta(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return detalles;
     }
 
@@ -225,60 +225,60 @@ public class DetalleVentaDAOImpl extends GenericDAOImpl<DetalleVenta, Long> impl
     public List<DetalleVenta> buscarPorProducto(Long productoId) {
         List<DetalleVenta> detalles = new ArrayList<>();
         String sql = "SELECT * FROM detalle_venta WHERE producto_id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, productoId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 detalles.add(mapResultSetToDetalleVenta(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return detalles;
     }
 
     @Override
     public BigDecimal obtenerTotalVentasPorProducto(Long productoId) {
         String sql = "SELECT COALESCE(SUM(subtotal), 0) FROM detalle_venta WHERE producto_id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, productoId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getBigDecimal(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return BigDecimal.ZERO;
     }
 
     @Override
     public Integer obtenerCantidadVendidaPorProducto(Long productoId) {
         String sql = "SELECT COALESCE(SUM(cantidad), 0) FROM detalle_venta WHERE producto_id = ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, productoId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
 }
