@@ -354,11 +354,16 @@ public class Crear {
     private String crearVenta(String[] params) {
         try {
             if (params.length < 2)
-                return "Se requieren: clienteId, tipo, [numeroCuotas], [metodoPago]";
+                return "Se requieren: clienteId, tipo, [numeroCuotas]";
             Long clienteId = Long.parseLong(params[0]);
             String tipo = params[1];
-            String numeroCuotas = params.length > 2 ? params[2] : null;
-            String metodoPago = params.length > 3 ? params[3] : null;
+            String numeroCuotas = null;
+            if (tipo.equalsIgnoreCase("credito")) {
+                numeroCuotas = params[2];
+            } else {
+                numeroCuotas = "0";
+            }
+            String metodoPago = null;
             if (services.getClienteService().findById(clienteId).isEmpty())
                 return "Cliente no encontrado con ID: " + clienteId;
             Venta ventaCreada = services.getVentaService().crearVentaBasica(clienteId, tipo, numeroCuotas, metodoPago);
@@ -391,7 +396,7 @@ public class Crear {
         try {
             System.out.println("DEBUG: crearVentaConDetalle - Parámetros recibidos: " + String.join(",", params));
             if (params.length < 2)
-                return "Se requieren: tipo, carritoId, [numeroCuotas], [metodoPago]";
+                return "Se requieren: tipo, carritoId, [numeroCuotas]";
             String tipo = params[0];
             if (tipo != "credito" || tipo != "contado") {
                 return "el tipo no es correcto";
@@ -402,9 +407,7 @@ public class Crear {
             if (tipo == "credito") {
                 numeroCuotas = params[2];
             }
-            if (tipo == "contado") {
-                metodoPago = params[2];
-            }
+            metodoPago = null;
             Venta ventaCreada = services.getVentaService().crearVentaConDetalle(tipo, carritoId,
                     numeroCuotas, metodoPago);
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +
