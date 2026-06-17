@@ -10,6 +10,7 @@ import org.bebidas.modules.usuarios.Usuario;
 import org.bebidas.modules.ventas.models.DetalleVenta;
 
 public class Venta extends BaseEntity {
+
     private String nroVenta;
     private LocalDate fecha;
     private String tipo;

@@ -359,6 +359,8 @@ public class Crear {
             String tipo = params[1];
             String numeroCuotas = params.length > 2 ? params[2] : null;
             String metodoPago = params.length > 3 ? params[3] : null;
+            if (services.getClienteService().findById(clienteId).isEmpty())
+                return "Cliente no encontrado con ID: " + clienteId;
             Venta ventaCreada = services.getVentaService().crearVentaBasica(clienteId, tipo, numeroCuotas, metodoPago);
             return "Venta creada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaCreada);
         } catch (Exception e) {

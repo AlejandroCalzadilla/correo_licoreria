@@ -9,7 +9,7 @@ import org.bebidas.modules.carrito.services.interfaces.ItemCarritoService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.creditos.Credito;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
-import org.bebidas.modules.service.PagoCuotaService;
+import org.bebidas.modules.pagos.PagoCuotaService;
 import org.bebidas.modules.service.interfaces.*;
 import org.bebidas.modules.ventas.Venta;
 import org.bebidas.modules.ventas.models.DetalleVenta;
@@ -179,8 +179,7 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
             Venta venta = new Venta();
             String nroVenta = generarSiguienteNroVenta();
             venta.setNroVenta(nroVenta);
-            Cliente cliente = new Cliente();
-            cliente.setId(clienteId);
+            Cliente cliente = clienteService.findById(clienteId).orElseThrow();
             venta.setCliente(cliente);
             tipo = tipo.toLowerCase();
             if (!tipo.equals("credito") && !tipo.equals("contado")) {

@@ -1,4 +1,4 @@
-package org.bebidas.modules.service;
+package org.bebidas.modules.pagos;
 
 import org.bebidas.modules.creditos.PagoCuota;
 import org.bebidas.modules.service.interfaces.GenericService;

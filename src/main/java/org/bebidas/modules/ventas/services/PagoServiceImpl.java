@@ -89,7 +89,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         pago.setFechaPago(LocalDateTime.now());
         String nroPago = generarSiguienteNroPago();
         pago.setNroPago(nroPago);
-        pago.setEstado("PAGO_COMPLETADO");
+        pago.setEstado("completado");
         // Guardar el pago
         Pago pagoGuardado = save(pago);
         // Actualizar el estado de la venta si es necesario
@@ -158,7 +158,9 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         pago.setFechaPago(LocalDateTime.now());
         pago.setCreatedAt(LocalDateTime.now());
         pago.setUpdatedAt(LocalDateTime.now());
-
+        // estado::text = ANY (ARRAY['pendiente'::character varying,
+        // 'procesando'::character varying, 'completado'::character varying,
+        // 'rechazado'::character varying, 'cancelado'::character varying]::text[])
         Pago pagoCreado = registrarPago(pago);
 
         BigDecimal nuevoSaldo = normalizeAmount(venta.getSaldo().subtract(monto));
@@ -175,6 +177,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                     .orElse(null);
 
             if (credito != null) {
+                System.out.println("Credito encontrado: " + credito);
                 BigDecimal nuevoSaldoCredito = normalizeAmount(credito.getSaldo().subtract(monto));
                 int nuevasCuotas = Math.max(0, Integer.parseInt(credito.getNumeroCuotas()) - 1);
                 if (isResidualCentValue(nuevoSaldoCredito) || nuevasCuotas == 0) {
@@ -184,6 +187,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                 credito.setSaldo(nuevoSaldoCredito);
                 credito.setNumeroCuotas(String.valueOf(nuevasCuotas));
                 creditoService.save(credito);
+                System.out.println("Credito guardado: " + credito);
                 if (nuevasCuotas == 0 || nuevoSaldoCredito.compareTo(BigDecimal.ZERO) == 0) {
                     venta.setEstado("COMPLETO");
                     venta.setEstadoPago("COMPLETO");
