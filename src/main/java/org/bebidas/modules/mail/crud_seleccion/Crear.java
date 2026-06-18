@@ -408,18 +408,20 @@ public class Crear {
         try {
             System.out.println("DEBUG: crearVentaConDetalle - Parámetros recibidos: " + String.join(",", params));
             if (params.length < 2)
-                return "Se requieren: tipo, carritoId, [numeroCuotas]";
-            String tipo = params[0];
-            if (tipo != "credito" || tipo != "contado") {
-                return "el tipo no es correcto";
+                return "Se requieren: tipo, carritoId, [numeroCuotas] si es credito";
+
+            String tipo = params[0].trim().toLowerCase();
+            if (!tipo.equals("credito") && !tipo.equals("contado")) {
+                return "Tipo de venta invalido";
             }
-            Long carritoId = Long.parseLong(params[1]);
+            Long carritoId = Long.parseLong(params[1].trim());
             String numeroCuotas = null;
             String metodoPago = null;
-            if (tipo == "credito") {
-                numeroCuotas = params[2];
+            if (tipo.equals("credito")) {
+                if (params.length < 3)
+                    return "Se requiere numeroCuotas si es credito";
+                numeroCuotas = params[2].trim();
             }
-            metodoPago = null;
             Venta ventaCreada = services.getVentaService().crearVentaConDetalle(tipo, carritoId,
                     numeroCuotas, metodoPago);
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +

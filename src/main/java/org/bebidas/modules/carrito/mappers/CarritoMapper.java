@@ -11,7 +11,6 @@ public class CarritoMapper {
             .addColumn("id", "ID", 10)
             .addColumn("usuarioId", "Usuario ID", 12)
             .addColumn("clienteId", "Cliente ID", 12)
-            .addColumn("usuarioNombre", "Usuario", 20)
             .addColumn("createdAt", "Creado", 15)
             .addColumn("updatedAt", "Actualizado", 15);
 

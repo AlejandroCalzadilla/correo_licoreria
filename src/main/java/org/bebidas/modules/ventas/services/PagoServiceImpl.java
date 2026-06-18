@@ -148,6 +148,12 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
             }
         }
 
+        if (venta.getTipo().equals("contado")) {
+            if (normalizeAmount(monto).compareTo(normalizeAmount(venta.getMontoTotal())) != 0) {
+                throw new IllegalArgumentException("El monto del pago debe ser igual al monto total de la venta");
+            }
+        }
+
         Pago pago = new Pago();
         pago.setVenta(venta);
         pago.setTipoPago(tipoPago);
@@ -158,10 +164,15 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         pago.setFechaPago(LocalDateTime.now());
         pago.setCreatedAt(LocalDateTime.now());
         pago.setUpdatedAt(LocalDateTime.now());
+
         // estado::text = ANY (ARRAY['pendiente'::character varying,
         // 'procesando'::character varying, 'completado'::character varying,
         // 'rechazado'::character varying, 'cancelado'::character varying]::text[])
         Pago pagoCreado = registrarPago(pago);
+        if (venta.getTipo().equals("contado")) {
+            venta.setEstado("completado");
+            ventaService.save(venta);
+        }
 
         BigDecimal nuevoSaldo = normalizeAmount(venta.getSaldo().subtract(monto));
         if (isResidualCentValue(nuevoSaldo)) {

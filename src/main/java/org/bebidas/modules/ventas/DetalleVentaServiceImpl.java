@@ -136,7 +136,7 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
                 .anyMatch(p -> p.getVenta().getId().equals(ventaId));
         if (tienePagos) {
             throw new IllegalStateException(
-                    "No se puede crear detalle de venta: ya existen pagos asociados a esta venta");
+                    "No se puede crear detalle de venta: ya existen pagos asociados a esta venta o problemas con la venta");
         }
 
         DetalleVenta detalle = new DetalleVenta();

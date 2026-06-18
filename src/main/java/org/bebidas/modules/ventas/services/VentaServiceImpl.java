@@ -117,6 +117,7 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
                             () -> new RuntimeException("Cliente no encontrado para el usuario con ID: " + usuarioId));
 
             venta.setCliente(cliente);
+            venta.setMetodoPago(metodoPago);
             tipo = tipo.toLowerCase();
             if (!tipo.equals("credito") && !tipo.equals("contado")) {
                 throw new IllegalArgumentException("Tipo debe ser 'credito' o 'contado'");
@@ -126,11 +127,6 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
                 if (numeroCuotas == null)
                     throw new IllegalArgumentException("Se requiere numeroCuotas para tipo credito");
                 venta.setNumeroCuotas(numeroCuotas);
-            }
-            if (tipo.equals("contado")) {
-                if (metodoPago == null)
-                    throw new IllegalArgumentException("Se requiere metodoPago para tipo contado");
-                venta.setMetodoPago(metodoPago);
             }
             venta.setEstado("pendiente");
             venta.setEstadoPago("pendiente");
@@ -191,11 +187,10 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
                 venta.setNumeroCuotas(numeroCuotas);
             }
             if (tipo.equals("contado")) {
-                if (metodoPago == null)
-                    throw new IllegalArgumentException("Se requiere metodoPago para tipo contado");
-                venta.setMetodoPago(metodoPago);
+                venta.setMetodoPago(null);
+                venta.setNumeroCuotas("0");
             }
-            venta.setEstado("pendiente");
+            venta.setEstado("pendiente|");
             venta.setEstadoPago("pendiente");
             venta.setFecha(LocalDate.now());
             return save(venta);
