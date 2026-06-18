@@ -51,8 +51,8 @@ public class CommandHelpHTML {
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "PRODUCTOS",
                                 "Crear un nuevo producto",
-                                "categoriaId,nombre, precio, codigo, descripcion, marca",
-                                "CREATEPRODUCTOS[1, Cerveza Pilsen, 25.50, CER001, Cerveza pilsen premium, Pilsen]"));
+                                "codigo, nombre, descripcion, precio, marca, categoriaId",
+                                "CREATEPRODUCTOS[CER001, Cerveza Pilsen, Cerveza pilsen premium, 25.50, Pilsen, 1]"));
 
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "VENTAS",

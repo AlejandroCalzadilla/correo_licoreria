@@ -171,16 +171,16 @@ public class Crear {
     private String crearProducto(String[] params) {
         try {
             if (params.length < 6)
-                return "Se requieren: nombre, precio,codigo, categoriaId, descripcion";
+                return "Se requieren:codigo, nombre,descripcion , precio, marca, categoriaId";
             Producto producto = new Producto();
             Categoria categoria = new Categoria();
-            categoria.setId(Long.parseLong(params[0]));
+            producto.setCodigo(params[0]);
             producto.setNombre(params[1]);
-            producto.setPrecio(new BigDecimal(params[2]));
-            producto.setCodigo(params[3]);
+            producto.setDescripcion(params[2]);
+            producto.setPrecio(new BigDecimal(params[3]));
+            producto.setMarca(params[4]);
+            categoria.setId(Long.parseLong(params[5]));
             producto.setCategoria(categoria);
-            producto.setDescripcion(params[4]);
-            producto.setMarca(params[5]);
             Producto productoCreado = services.getProductoService().save(producto);
             return "Producto creado correctamente con ID: \n" + ProductoMapper.obtenerUnoTable(productoCreado);
         } catch (Exception e) {
