@@ -102,7 +102,7 @@ public class CommandHelpHTML {
                                 "CREATE", "VENTASCARRITO",
                                 "Crear venta desde carrito",
                                 "tipo(credito/contado), carritoId, [numeroCuotas]",
-                                "CREATEVENTASCARRITO[credito ,5,2]"));
+                                "CREATEVENTASCARRITO[credito,5,2]"));
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "COMPRAS",
                                 "Crear una nueva compra a proveedor",
@@ -154,11 +154,11 @@ public class CommandHelpHTML {
                                 "id, nombre, correo, clave, estado, rolId",
                                 "UPDATEUSUARIOS[1, Juan Perez, juan@email.com, newpass, activo, 1]"));
 
-                COMMANDS.add(new CommandExample(
-                                "UPDATE", "VENDEDORES",
-                                "Actualizar un vendedor",
-                                "id, ci, nombre",
-                                "UPDATEVENDEDORES[1, 12345678, Carlos Lopez]"));
+                // COMMANDS.add(new CommandExample(
+                // "UPDATE", "VENDEDORES",
+                // "Actualizar un vendedor",
+                // "id, ci, nombre",
+                // "UPDATEVENDEDORES[1, 12345678, Carlos Lopez]"));
 
                 COMMANDS.add(new CommandExample(
                                 "UPDATE", "CATEGORIAS",
