@@ -4,9 +4,7 @@ import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.compras.models.Compra;
 import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.compras.services.interfaces.ICompraService;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implements ICompraService {
@@ -67,12 +65,6 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         // Cambiar estado a completada
         compra.setEstado("COMPLETADA");
         save(compra);
-    }
-
-    @Override
-    public BigDecimal calcularTotalComprasPorProveedor(Long proveedorId, Date fechaInicio, Date fechaFin) {
-
-        return null;
     }
 
     private String generarSiguienteNroCompra() {

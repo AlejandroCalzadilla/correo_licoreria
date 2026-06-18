@@ -2,7 +2,7 @@ package org.bebidas.modules.ventas.services;
 
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.creditos.Credito;
-import org.bebidas.modules.creditos.services.interfaces.CreditoService;
+import org.bebidas.modules.creditos.services.CreditoServiceImpl;
 import org.bebidas.modules.pagos.Pago;
 import org.bebidas.modules.pagos.repostiories.PagoDAO;
 import org.bebidas.modules.service.interfaces.PagoService;
@@ -22,7 +22,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
 
     private final PagoDAO pagoDAO;
     private VentaService ventaService;
-    private CreditoService creditoService;
+    private CreditoServiceImpl creditoService;
 
     public PagoServiceImpl(PagoDAO pagoDAO) {
         super(pagoDAO);
@@ -33,7 +33,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         this.ventaService = ventaService;
     }
 
-    public void setCreditoService(CreditoService creditoService) {
+    public void setCreditoService(CreditoServiceImpl creditoService) {
         this.creditoService = creditoService;
     }
 

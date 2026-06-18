@@ -16,6 +16,4 @@ public interface ICompraService extends GenericService<Compra, Long> {
 
     void completarCompra(Long compraId);
 
-    BigDecimal calcularTotalComprasPorProveedor(Long proveedorId, Date fechaInicio, Date fechaFin);
-
 }

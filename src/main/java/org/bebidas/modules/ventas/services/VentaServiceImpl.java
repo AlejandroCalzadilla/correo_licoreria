@@ -8,7 +8,7 @@ import org.bebidas.modules.carrito.services.interfaces.CarritoService;
 import org.bebidas.modules.carrito.services.interfaces.ItemCarritoService;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.creditos.Credito;
-import org.bebidas.modules.creditos.services.interfaces.CreditoService;
+import org.bebidas.modules.creditos.services.CreditoServiceImpl;
 import org.bebidas.modules.pagos.PagoCuotaService;
 import org.bebidas.modules.service.interfaces.*;
 import org.bebidas.modules.ventas.Venta;
@@ -26,14 +26,14 @@ public class VentaServiceImpl extends GenericServiceImpl<Venta, Long> implements
     private final CarritoService carritoService;
     private final DetalleVentaService detalleVentaService;
     private final PagoService pagoService;
-    private final CreditoService creditoService;
+    private final CreditoServiceImpl creditoService;
     private final PagoCuotaService pagoCuotaService;
     private final ItemCarritoService itemCarritoService;
     private final ClienteService clienteService;
 
     public VentaServiceImpl(VentaDAO ventaDAO, CarritoService carritoService,
             DetalleVentaService detalleVentaService, PagoService pagoService,
-            CreditoService creditoService, PagoCuotaService pagoCuotaService,
+            CreditoServiceImpl creditoService, PagoCuotaService pagoCuotaService,
             ItemCarritoService itemCarritoService, ClienteService clienteService) {
         super(ventaDAO);
         this.ventaDAO = ventaDAO;

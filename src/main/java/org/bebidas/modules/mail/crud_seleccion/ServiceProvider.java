@@ -25,7 +25,6 @@ import org.bebidas.modules.compras.services.DetalleCompraServiceImpl;
 import org.bebidas.modules.compras.services.interfaces.ICompraService;
 import org.bebidas.modules.creditos.PagoCuotaServiceImpl;
 import org.bebidas.modules.creditos.services.CreditoServiceImpl;
-import org.bebidas.modules.creditos.services.interfaces.CreditoService;
 import org.bebidas.modules.inventario.InventarioServiceImpl;
 import org.bebidas.modules.inventario.repositories.InventarioDAOImpl;
 import org.bebidas.modules.inventario.repositories.ProductoDAOImpl;
@@ -103,10 +102,10 @@ public class ServiceProvider {
     private final RolServiceImpl rolService;
     private final UsuarioService usuarioService;
     private final VendedorService vendedorService;
-    private final CreditoService creditoService;
     private final PagoCuotaService pagoCuotaService;
     private final PagoService pagoService;
     private final VentaService ventaService;
+    private final CreditoServiceImpl creditoService;
 
     // Instancia única (Singleton)
     private static ServiceProvider instance;
@@ -144,7 +143,7 @@ public class ServiceProvider {
                 (InventarioServiceImpl) inventarioService);
         this.proveedorService = new ProveedorServiceImpl(proveedorDAO);
         this.vendedorService = new VendedorServiceImpl(vendedorDAO);
-        this.creditoService = (CreditoService) new CreditoServiceImpl();
+        this.creditoService = new CreditoServiceImpl();
         this.pagoCuotaService = new PagoCuotaServiceImpl();
         this.pagoService = new PagoServiceImpl(pagoDAO);
         this.ventaService = new VentaServiceImpl(ventaDAO, carritoService, detalleVentaService, pagoService,
@@ -216,7 +215,7 @@ public class ServiceProvider {
         return vendedorService;
     }
 
-    public CreditoService getCreditoService() {
+    public CreditoServiceImpl getCreditoService() {
         return creditoService;
     }
 
