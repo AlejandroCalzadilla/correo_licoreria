@@ -22,7 +22,7 @@ import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
 import org.bebidas.modules.compras.repositories.interfaces.DetalleCompraDAO;
 import org.bebidas.modules.compras.services.CompraServiceImpl;
 import org.bebidas.modules.compras.services.DetalleCompraServiceImpl;
-import org.bebidas.modules.compras.services.interfaces.CompraService;
+import org.bebidas.modules.compras.services.interfaces.ICompraService;
 import org.bebidas.modules.creditos.PagoCuotaServiceImpl;
 import org.bebidas.modules.creditos.services.CreditoServiceImpl;
 import org.bebidas.modules.creditos.services.interfaces.CreditoService;
@@ -94,7 +94,7 @@ public class ServiceProvider {
     private final CarritoService carritoService;
     private final CategoriaService categoriaService;
     private final InventarioService inventarioService;
-    private final CompraService compraService;
+    private final ICompraService compraService;
     private final DetalleCompraService detalleCompraService;
     private final DetalleVentaService detalleVentaService;
     private final ProductoService productoService;
@@ -130,7 +130,7 @@ public class ServiceProvider {
         this.inventarioDAO = new InventarioDAOImpl();
 
         // Inicializar Servicios
-        this.clienteService = new ClienteServiceImpl(clienteDAO, usuarioDAO);
+        this.clienteService = new ClienteServiceImpl(clienteDAO);
         this.rolService = new RolServiceImpl(rolDAO);
         this.usuarioService = new UsuarioServiceImpl(usuarioDAO);
         this.carritoService = new CarritoServiceImpl(carritoDAO, itemCarritoDAO, clienteService, usuarioService);
@@ -180,7 +180,7 @@ public class ServiceProvider {
         return inventarioService;
     }
 
-    public CompraService getCompraService() {
+    public ICompraService getCompraService() {
         return compraService;
     }
 

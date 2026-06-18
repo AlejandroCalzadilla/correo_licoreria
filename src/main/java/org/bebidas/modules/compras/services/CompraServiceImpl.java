@@ -3,35 +3,19 @@ package org.bebidas.modules.compras.services;
 import org.bebidas.core.util.GenericServiceImpl;
 import org.bebidas.modules.compras.models.Compra;
 import org.bebidas.modules.compras.repositories.interfaces.CompraDAO;
-import org.bebidas.modules.compras.services.interfaces.CompraService;
-
+import org.bebidas.modules.compras.services.interfaces.ICompraService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implements CompraService {
+public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implements ICompraService {
 
     private final CompraDAO compraDAO;
 
     public CompraServiceImpl(CompraDAO compraDAO) {
         super(compraDAO);
         this.compraDAO = compraDAO;
-    }
-
-    @Override
-    public List<Compra> buscarPorProveedor(Long proveedorId) {
-        return compraDAO.buscarPorProveedor(proveedorId);
-    }
-
-    @Override
-    public List<Compra> buscarPorRangoFechas(Date fechaInicio, Date fechaFin) {
-        return compraDAO.buscarPorRangoFechas(fechaInicio, fechaFin);
-    }
-
-    @Override
-    public List<Compra> buscarPorEstado(String estado) {
-        return compraDAO.buscarPorEstado(estado);
     }
 
     @Override
@@ -66,15 +50,9 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         if ("COMPLETADA".equals(compra.getEstado())) {
             throw new IllegalStateException("No se puede anular una compra completada");
         }
-
         // Cambiar estado a anulada
         compra.setEstado("ANULADA");
         save(compra);
-
-        // Aquí podrías agregar lógica adicional como:
-        // - Revertir movimientos de inventario
-        // - Actualizar saldos de proveedores
-        // - Registrar el motivo de anulación
     }
 
     @Override
@@ -86,15 +64,9 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         if (!"PENDIENTE".equals(compra.getEstado())) {
             throw new IllegalStateException("Solo se pueden completar compras en estado PENDIENTE");
         }
-
         // Cambiar estado a completada
         compra.setEstado("COMPLETADA");
         save(compra);
-
-        // Aquí podrías agregar lógica adicional como:
-        // - Actualizar inventario de productos
-        // - Registrar movimientos de inventario
-        // - Actualizar cuentas por pagar
     }
 
     @Override
@@ -103,42 +75,27 @@ public class CompraServiceImpl extends GenericServiceImpl<Compra, Long> implemen
         return null;
     }
 
-    @Override
-    public List<Compra> obtenerComprasPendientes() {
-        return buscarPorEstado("PENDIENTE");
-    }
-
-    @Override
-    public List<Compra> obtenerComprasCompletadas() {
-        return buscarPorEstado("COMPLETADA");
-    }
-
-    @Override
-    public List<Compra> obtenerComprasAnuladas() {
-        return buscarPorEstado("ANULADA");
-    }
-
     private String generarSiguienteNroCompra() {
-        
-            List<Compra> compras = this.findAll();
-           if (compras.isEmpty()) {
-                return "C-000001";
-            }
-            int maxNumero = 0;
-            for (Compra c : compras) {
-                if (c.getNroCompra() != null && c.getNroCompra().startsWith("C-")) {
-                    try {
-                        int numero = Integer.parseInt(c.getNroCompra().substring(2));
-                        if (numero > maxNumero) {
-                            maxNumero = numero;
-                        }
-                    } catch (NumberFormatException e) {
-                        // Ignorar si no es válido
+
+        List<Compra> compras = this.findAll();
+        if (compras.isEmpty()) {
+            return "C-000001";
+        }
+        int maxNumero = 0;
+        for (Compra c : compras) {
+            if (c.getNroCompra() != null && c.getNroCompra().startsWith("C-")) {
+                try {
+                    int numero = Integer.parseInt(c.getNroCompra().substring(2));
+                    if (numero > maxNumero) {
+                        maxNumero = numero;
                     }
+                } catch (NumberFormatException e) {
+                    // Ignorar si no es válido
                 }
             }
-            int siguiente = maxNumero + 1;
-            return "C-" + String.format("%06d", siguiente);
-            // En caso de error, usar un número por defecto
+        }
+        int siguiente = maxNumero + 1;
+        return "C-" + String.format("%06d", siguiente);
+        // En caso de error, usar un número por defecto
     }
 }

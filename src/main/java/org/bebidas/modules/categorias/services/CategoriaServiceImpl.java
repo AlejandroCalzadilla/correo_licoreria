@@ -6,7 +6,6 @@ import org.bebidas.modules.categorias.repositories.interfaces.CategoriaDAO;
 import org.bebidas.modules.categorias.services.interfaces.CategoriaService;
 import java.util.Optional;
 
-
 public class CategoriaServiceImpl extends GenericServiceImpl<Categoria, Long> implements CategoriaService {
 
     private final CategoriaDAO categoriaDAO;
@@ -22,8 +21,7 @@ public class CategoriaServiceImpl extends GenericServiceImpl<Categoria, Long> im
 
     public void deleteById(Long id) {
         findById(id).orElseThrow(
-            () -> new RuntimeException("Categoría no encontrada con ID: " + id)
-        );
+                () -> new RuntimeException("Categoría no encontrada con ID: " + id));
         super.delete(id);
     }
 }

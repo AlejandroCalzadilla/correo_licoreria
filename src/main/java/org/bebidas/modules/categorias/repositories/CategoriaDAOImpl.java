@@ -137,10 +137,6 @@ public class CategoriaDAOImpl extends GenericDAOImpl<Categoria, Long> implements
         Categoria categoria = new Categoria();
         categoria.setId(rs.getLong("id"));
         categoria.setNombre(rs.getString("nombre"));
-
-        // TODO: Cargar categoria padre si es necesario
-        // Long categoriaPadreId = rs.getLong("categoria_padre_id");
-
         return categoria;
     }
 }

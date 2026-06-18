@@ -1,6 +1,5 @@
 package org.bebidas.modules.compras.models;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,31 +15,57 @@ public class Compra extends BaseEntity {
     private List<DetalleCompra> detalles;
 
     // Getters and Setters
-    public String getNroCompra() { return nroCompra; }
-    public void setNroCompra(String nroCompra) { this.nroCompra = nroCompra; }
-    
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-    
-  
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-    
-    public Proveedor getProveedor() { return proveedor; }
-    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+    public String getNroCompra() {
+        return nroCompra;
+    }
+
+    public void setNroCompra(String nroCompra) {
+        this.nroCompra = nroCompra;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
 
     public Long getProveedorId() {
         return proveedor != null ? proveedor.getId() : null;
     }
-    
-    
-    public List<DetalleCompra> getDetalles() { return detalles; }
-    public void setDetalles(List<DetalleCompra> detalles) { this.detalles = detalles; }
 
+    public List<DetalleCompra> getDetalles() {
+        return detalles;
+    }
 
+    public void setDetalles(List<DetalleCompra> detalles) {
+        this.detalles = detalles;
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
     @Override
     public String toString() {
