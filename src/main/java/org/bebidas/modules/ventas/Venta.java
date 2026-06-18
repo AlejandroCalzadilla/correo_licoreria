@@ -2,6 +2,7 @@ package org.bebidas.modules.ventas;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bebidas.core.util.BaseEntity;
@@ -22,7 +23,7 @@ public class Venta extends BaseEntity {
     private String metodoPago;
     private String estadoPago;
     private Usuario usuario;
-    private List<DetalleVenta> detalles;
+    private List<DetalleVenta> detalles = new ArrayList<>();
 
     // Getters and Setters
     public String getNroVenta() {

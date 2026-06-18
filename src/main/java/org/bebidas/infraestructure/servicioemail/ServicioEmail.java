@@ -101,11 +101,17 @@ public class ServicioEmail {
         }
         //servicioEmail.revisarCorreos();
 
-        // Programar el apagado automático después de 15 segundos
+        // Programar el apagado automático después de 600 segundos
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.schedule(servicioEmail::detener, 600, TimeUnit.SECONDS);
         while (servicioEmail.conectado) {
-            servicioEmail.revisarCorreos();
+            try {
+                servicioEmail.revisarCorreos();
+            } catch (IOException e) {
+                System.err.println("Error de conexión con el servidor POP: " + e.getMessage());
+            } catch (SQLException e) {
+                System.err.println("Error de base de datos en revisión de correos: " + e.getMessage());
+            }
 
             try {
                 Thread.sleep(10000); // Esperar 10 segundos entre revisiones

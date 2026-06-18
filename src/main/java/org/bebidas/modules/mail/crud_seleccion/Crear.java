@@ -388,10 +388,15 @@ public class Crear {
             BigDecimal precioUnitario = new BigDecimal(params[3]);
             Venta ventaActualizada = services.getDetalleVentaService()
                     .procesarCreacionDetalleVenta(ventaId, productoId, cantidad, precioUnitario);
-            return "DetalleVenta creado correctamente" +
+            System.out.println("DetalleVenta creado correctamente" +
                     "\nVenta actualizada - Monto Total: " + ventaActualizada.getMontoTotal() +
                     " | Saldo: " + DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)) + "\n"
-                    + ventaActualizada.getSaldo();
+                    + ventaActualizada.getSaldo());
+            return "DetalleVenta creado correctamente" +
+                    "\nVenta actualizada - Monto Total: " + ventaActualizada.getMontoTotal() +
+                    " | Saldo: " + ventaActualizada.getSaldo() + " \n"
+                    + DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0))
+                    + "\n";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

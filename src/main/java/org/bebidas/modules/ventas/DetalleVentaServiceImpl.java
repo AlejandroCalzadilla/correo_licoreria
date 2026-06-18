@@ -146,7 +146,7 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
         detalle.setProducto(producto);
         detalle.setCantidad(cantidad);
         detalle.setPrecioUnitario(precioUnitario);
-        save(detalle);
+        DetalleVenta detalleGuardado = save(detalle);
 
         BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
         BigDecimal montoActual = venta.getMontoTotal() != null ? venta.getMontoTotal() : BigDecimal.ZERO;
@@ -177,7 +177,10 @@ public class DetalleVentaServiceImpl extends GenericServiceImpl<DetalleVenta, Lo
                 creditoService.save(credito);
             }
         }
-
+        if (venta.getDetalles() == null) {
+            venta.setDetalles(new java.util.ArrayList<>());
+        }
+        venta.getDetalles().add(detalleGuardado);
         return venta;
     }
 }

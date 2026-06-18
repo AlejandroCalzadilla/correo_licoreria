@@ -15,54 +15,52 @@ public class ComandoEmail {
         // (=?UTF-8?Q?...?=)
         subject = decodeMimeSubject(subject);
         System.out.println("Subject decodificado: " + subject);
-        if (Objects.equals(subject, "HELP")) {
+        if (subject != null && subject.trim().equalsIgnoreCase("HELP")) {
             // return CommandHelp.obtenerComandosDisponibles();
             return CommandHelpHTML.obtenerComandosDisponibles();
         }
         // Verificar si es un comando de reporte DASHBOARD
         /*
-         * if (subject.equals("REPORTEDASHBOARD")) {
+         * if (subject.equalsIgnoreCase("REPORTEDASHBOARD")) {
          * return wrapInHTML(ejecutarReporteDashboard());
          * }
          */
 
         String respuestaConsulta;
 
-        // Definir patrones para cada operación CRUD (usando [^\\[\\]] para aceptar
-        // cualquier caracter excepto corchetes)
-        Pattern listarPatron = Pattern.compile("^LISTAR([A-Z]+)\\[\\*\\]$"); // Ej: LISTARCLIENTES[*]
-        Pattern crearPatron = Pattern.compile("^CREATE([A-Z]+)\\[(.+)\\]$"); // Ej: CREATECLIENTES[nombre, apellido,
-                                                                             // otros]
-        Pattern actualizarPatron = Pattern.compile("^UPDATE([A-Z]+)\\[(.+)\\]$"); // Ej: UPDATECLIENTES[param1, param2]
-        Pattern eliminarPatron = Pattern.compile("^DELETE([A-Z]+)\\[(.+)\\]$"); // Ej: DELETECLIENTES[id]
-        Pattern getPatron = Pattern.compile("^GET([A-Z]+)\\[(\\d+)\\]$"); // Ej: GETMEDICAMENTOS[2]
-        Pattern reportePatron = Pattern.compile("^REPORTE([A-Z]+)\\[(.+)\\]$"); // Ej: REPORTEINGRESOS[2025, 10]
+        // Definir patrones para cada operación CRUD en modo CASE_INSENSITIVE
+        Pattern listarPatron = Pattern.compile("^LISTAR([A-Z]+)\\[\\*\\]$", Pattern.CASE_INSENSITIVE); // Ej: LISTARCLIENTES[*]
+        Pattern crearPatron = Pattern.compile("^CREATE([A-Z]+)\\[(.+)\\]$", Pattern.CASE_INSENSITIVE); // Ej: CREATECLIENTES[nombre, apellido, otros]
+        Pattern actualizarPatron = Pattern.compile("^UPDATE([A-Z]+)\\[(.+)\\]$", Pattern.CASE_INSENSITIVE); // Ej: UPDATECLIENTES[param1, param2]
+        Pattern eliminarPatron = Pattern.compile("^DELETE([A-Z]+)\\[(.+)\\]$", Pattern.CASE_INSENSITIVE); // Ej: DELETECLIENTES[id]
+        Pattern getPatron = Pattern.compile("^GET([A-Z]+)\\[(\\d+)\\]$", Pattern.CASE_INSENSITIVE); // Ej: GETMEDICAMENTOS[2]
+        Pattern reportePatron = Pattern.compile("^REPORTE([A-Z]+)\\[(.+)\\]$", Pattern.CASE_INSENSITIVE); // Ej: REPORTEINGRESOS[2025, 10]
 
         Matcher matcher;
         System.out.println("Evaluando subject: " + subject);
         // Evaluar cada patrón
-        if ((matcher = listarPatron.matcher(subject)).matches()) {
-            String entidad = matcher.group(1);
+        if (subject != null && (matcher = listarPatron.matcher(subject)).matches()) {
+            String entidad = matcher.group(1).toUpperCase();
             respuestaConsulta = ejecutarConsultaListar(entidad);
-        } else if ((matcher = crearPatron.matcher(subject)).matches()) {
-            String entidad = matcher.group(1);
+        } else if (subject != null && (matcher = crearPatron.matcher(subject)).matches()) {
+            String entidad = matcher.group(1).toUpperCase();
             String parametros = matcher.group(2);
             respuestaConsulta = ejecutarConsultaCrear(entidad, parametros);
-        } else if ((matcher = actualizarPatron.matcher(subject)).matches()) {
+        } else if (subject != null && (matcher = actualizarPatron.matcher(subject)).matches()) {
             System.out.println("Patron de actualizacion coincide");
-            String entidad = matcher.group(1);
+            String entidad = matcher.group(1).toUpperCase();
             String parametros = matcher.group(2);
             respuestaConsulta = ejecutarConsultaActualizar(entidad, parametros);
-        } else if ((matcher = eliminarPatron.matcher(subject)).matches()) {
-            String entidad = matcher.group(1);
+        } else if (subject != null && (matcher = eliminarPatron.matcher(subject)).matches()) {
+            String entidad = matcher.group(1).toUpperCase();
             String id = matcher.group(2);
             respuestaConsulta = ejecutarConsultaEliminar(entidad, id);
-        } else if ((matcher = getPatron.matcher(subject)).matches()) {
-            String entidad = matcher.group(1);
+        } else if (subject != null && (matcher = getPatron.matcher(subject)).matches()) {
+            String entidad = matcher.group(1).toUpperCase();
             String id = matcher.group(2);
             respuestaConsulta = ejecutarConsultaGet(entidad, id);
-        } else if ((matcher = reportePatron.matcher(subject)).matches()) {
-            String tipoReporte = matcher.group(1);
+        } else if (subject != null && (matcher = reportePatron.matcher(subject)).matches()) {
+            String tipoReporte = matcher.group(1).toUpperCase();
             String parametros = matcher.group(2);
             // respuestaConsulta = ejecutarReporte(tipoReporte, parametros);
             respuestaConsulta = " wrapInHTML(respuestaConsulta);";

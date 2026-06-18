@@ -23,27 +23,43 @@ public class ClientePOP {
     private DataOutputStream salida;
 
     public void conectar() throws IOException {
-        socket = new Socket(HOST, PORT);
-        entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        salida = new DataOutputStream(socket.getOutputStream());
-        System.out.println("S : " + entrada.readLine());
+        try {
+            socket = new Socket(HOST, PORT);
+            entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            salida = new DataOutputStream(socket.getOutputStream());
+            System.out.println("S : " + entrada.readLine());
 
-        enviarComando(salida, entrada, "USER " + USER + "\r\n");
-        enviarComando(salida, entrada, "PASS " + PASS + "\r\n");
+            enviarComando(salida, entrada, "USER " + USER + "\r\n");
+            enviarComando(salida, entrada, "PASS " + PASS + "\r\n");
+        } catch (java.net.SocketException e) {
+            System.err.println("S : Error al conectar al servidor POP (SocketException): " + e.getMessage());
+            throw new IOException("No se pudo conectar al servidor POP (Socket reset/refused)", e);
+        } catch (IOException e) {
+            System.err.println("S : Error de E/S al conectar al servidor POP: " + e.getMessage());
+            throw e;
+        }
     }
 
     private static String enviarComando(DataOutputStream salida, BufferedReader entrada, String comando) throws IOException {
-        System.out.print("C : " + comando);
-        salida.writeBytes(comando);
-        String response;
-        if (comando.startsWith("RETR") || comando.startsWith("LIST")) {
-            response = leerRespuestaMultilinea(entrada);
-            if (comando.startsWith("RETR")) {
-                //evaluarCorreo(response);
+        try {
+            System.out.print("C : " + comando);
+            salida.writeBytes(comando);
+            String response;
+            if (comando.startsWith("RETR") || comando.startsWith("LIST")) {
+                response = leerRespuestaMultilinea(entrada);
+                if (comando.startsWith("RETR")) {
+                    //evaluarCorreo(response);
+                }
+                return response;
             }
-            return response;
+            return entrada.readLine();
+        } catch (java.net.SocketException e) {
+            System.err.println("\nS : Error de conexión POP - Socket cerrado o reset por el servidor.");
+            throw new IOException("Socket cerrado o reset por el servidor: " + e.getMessage(), e);
+        } catch (IOException e) {
+            System.err.println("\nS : Error de E/S en la comunicación POP: " + e.getMessage());
+            throw e;
         }
-        return entrada.readLine();
     }
 
     static protected String leerRespuestaMultilinea(BufferedReader in) throws IOException {

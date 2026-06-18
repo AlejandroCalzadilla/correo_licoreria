@@ -56,6 +56,10 @@ public class DetalleVenta extends BaseEntity {
         this.subtotal = subtotal;
     }
 
+    public Long getVenta_id() {
+        return venta != null ? venta.getId() : null;
+    }
+
     private void calcularSubtotal() {
         if (precioUnitario != null) {
             this.subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
