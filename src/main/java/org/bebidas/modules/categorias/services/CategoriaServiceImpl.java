@@ -15,6 +15,12 @@ public class CategoriaServiceImpl extends GenericServiceImpl<Categoria, Long> im
         this.categoriaDAO = categoriaDAO;
     }
 
+    @Override
+    public Categoria save(Categoria categoria) {
+        // TODO Auto-generated method stub
+        return super.save(categoria);
+    }
+
     public Optional<Categoria> buscarPorNombre(String nombre) {
         return categoriaDAO.buscarPorNombre(nombre);
     }

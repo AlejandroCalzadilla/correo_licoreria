@@ -11,6 +11,8 @@ import org.bebidas.modules.carrito.ItemCarrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.Categoria;
 import org.bebidas.modules.categorias.mappers.CategoriaMapper;
+import org.bebidas.modules.categorias.validators.CategoriaValidator;
+import org.bebidas.modules.compras.validators.CompraValidator;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
 import org.bebidas.modules.compras.mappers.CompraMapper;
@@ -122,11 +124,10 @@ public class Crear {
 
     private String crearCategoria(String[] params) {
         try {
-            if (params.length < 1)
-                return "Se requieren: nombre,";
-            Categoria categoria = new Categoria();
-            categoria.setNombre(params[0]);
-            Categoria categoriaCreada = services.getCategoriaService().save(categoria);
+            String error = CategoriaValidator.validarCrear(params);
+            if (error != null)
+                return error;
+            Categoria categoriaCreada = services.getCategoriaService().save(new Categoria(params[0]));
             return "Categoría creada correctamente con ID: \n" + CategoriaMapper.obtenerUnoTable(categoriaCreada);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
@@ -238,8 +239,9 @@ public class Crear {
 
     private String crearCompra(String[] params) {
         try {
-            if (params.length < 2)
-                return "Se requieren: proveedorId, descripcion";
+            String error = CompraValidator.validarCrear(params);
+            if (error != null)
+                return error;
             Compra compra = new Compra();
             Proveedor proveedor = new Proveedor();
             proveedor.setId(Long.parseLong(params[0]));

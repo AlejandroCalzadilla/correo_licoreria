@@ -26,17 +26,6 @@ public class CommandHelpHTML {
 
         static {
                 // CREATE commands
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "ROLES",
-                                "Crear un nuevo rol",
-                                "nombre, descripcion",
-                                "CREATEROLES[Administrador, Rol de administrador]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "USUARIOS",
-                                "Crear un nuevo usuario",
-                                "nombre, correo, clave, estado, rolId",
-                                "CREATEUSUARIOS[Juan Perez, juan@email.com, pass123, activo, 1]"));
 
                 /*
                  * COMMANDS.add(new CommandExample(
@@ -46,6 +35,12 @@ public class CommandHelpHTML {
                  * "CREATEVENDEDORES[12345678, Carlos Lopez, carlos, carlos@email.com, pass123, 1]"
                  * ));
                  */
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "CLIENTES",
+                                "Crear un nuevo cliente con usuario",
+                                "ci, nombre, telefono, direccion, estado, nombreUsuario, correoUsuario, claveUsuario, [rolId]",
+                                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, A, maria, maria@email.com, pass123, 1]"));
 
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "CATEGORIAS",
@@ -60,58 +55,10 @@ public class CommandHelpHTML {
                                 "CREATEPRODUCTOS[1, Cerveza Pilsen, 25.50, CER001, Cerveza pilsen premium, Pilsen]"));
 
                 COMMANDS.add(new CommandExample(
-                                "CREATE", "INVENTARIO",
-                                "Crear un movimiento de inventario",
-                                "productoId, cantidad, tipoMovimiento(ENTRADA/ SALIDA), glosa,[idDetalleCompra]o [idDetalleVenta]",
-                                "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial, 2]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "CARRITOS",
-                                "Crear un nuevo carrito de compras",
-                                "clienteId",
-                                "CREATECARRITOS[1]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "ITEMCARRITOS",
-                                "Crear un item en el carrito de compras",
-                                "carritoId, productoId, cantidad, precio",
-                                "CREATEITEMCARRITOS[1, 1, 2, 25.50]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "COMPRAS",
-                                "Crear una nueva compra a proveedor",
-                                "proveedorId, descripcion",
-                                "CREATECOMPRAS[1, Compra de cervezas]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "DETALLECOMPRAS",
-                                "Crear un detalle de compra",
-                                "compraId, productoId, cantidad, precioUnitario",
-                                "CREATEDETALLECOMPRAS[1, 1, 10, 25.50]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "PROVEEDORES",
-                                "Crear un nuevo proveedor",
-                                "nombre, telefono, direccion, nit, correo",
-                                "CREATEPROVEEDORES[Cerveceria Nacional, 555-1234, Calle Principal 123, 123456789, proveedor@email.com]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "CLIENTES",
-                                "Crear un nuevo cliente con usuario",
-                                "ci, nombre, telefono, direccion, estado, nombreUsuario, correoUsuario, claveUsuario, [rolId]",
-                                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, A, maria, maria@email.com, pass123, 1]"));
-
-                COMMANDS.add(new CommandExample(
                                 "CREATE", "VENTAS",
                                 "Crear una nueva venta",
                                 "clienteId, tipo(credito/contado), [numeroCuotas]",
                                 "CREATEVENTAS[1, credito,2]"));
-
-                COMMANDS.add(new CommandExample(
-                                "CREATE", "VENTASCARRITO",
-                                "Crear venta desde carrito",
-                                "tipo(credito/contado), carritoId, [numeroCuotas]",
-                                "CREATEVENTASCARRITO[credito ,5,2]"));
 
                 /*
                  * COMMANDS.add(new CommandExample(
@@ -133,6 +80,58 @@ public class CommandHelpHTML {
                                 "ventaId, tipoPago(qr,efectivo), monto, nombrePersona, email",
                                 "CREATEPAGOS[1, efectivo, 100.00, Juan Perez, juan@email.com]"));
 
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "INVENTARIO",
+                                "Crear un movimiento de inventario",
+                                "productoId, cantidad, tipoMovimiento(ENTRADA/ SALIDA), glosa,[idDetalleCompra]o [idDetalleVenta]",
+                                "CREATEINVENTARIO[1, 100, ENTRADA, Compra inicial, 2]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "CARRITOS",
+                                "Crear un nuevo carrito de compras",
+                                "clienteId",
+                                "CREATECARRITOS[1]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "ITEMCARRITOS",
+                                "Crear un item en el carrito de compras",
+                                "carritoId, productoId, cantidad, precio",
+                                "CREATEITEMCARRITOS[1, 1, 2, 25.50]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "VENTASCARRITO",
+                                "Crear venta desde carrito",
+                                "tipo(credito/contado), carritoId, [numeroCuotas]",
+                                "CREATEVENTASCARRITO[credito ,5,2]"));
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "COMPRAS",
+                                "Crear una nueva compra a proveedor",
+                                "proveedorId, descripcion",
+                                "CREATECOMPRAS[1, Compra de cervezas]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "DETALLECOMPRAS",
+                                "Crear un detalle de compra",
+                                "compraId, productoId, cantidad, precioUnitario",
+                                "CREATEDETALLECOMPRAS[1, 1, 10, 25.50]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "PROVEEDORES",
+                                "Crear un nuevo proveedor",
+                                "nombre, telefono, direccion, nit, correo",
+                                "CREATEPROVEEDORES[Cerveceria Nacional, 555-1234, Calle Principal 123, 123456789, proveedor@email.com]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "ROLES",
+                                "Crear un nuevo rol",
+                                "nombre, descripcion",
+                                "CREATEROLES[Administrador, Rol de administrador]"));
+
+                COMMANDS.add(new CommandExample(
+                                "CREATE", "USUARIOS",
+                                "Crear un nuevo usuario",
+                                "nombre, correo, clave, estado, rolId",
+                                "CREATEUSUARIOS[Juan Perez, juan@email.com, pass123, activo, 1]"));
                 /*
                  * COMMANDS.add(new CommandExample(
                  * "CREATE", "VENTA_COMPLETA",

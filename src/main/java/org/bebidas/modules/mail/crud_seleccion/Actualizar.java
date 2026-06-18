@@ -7,6 +7,9 @@ import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.Categoria;
 import org.bebidas.modules.categorias.mappers.CategoriaMapper;
+import org.bebidas.modules.categorias.validators.CategoriaValidator;
+import org.bebidas.modules.compras.validators.CompraValidator;
+import org.bebidas.modules.creditos.validators.CreditoValidator;
 import org.bebidas.modules.clientes.Cliente;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
 import org.bebidas.modules.compras.mappers.CompraMapper;
@@ -169,13 +172,12 @@ public class Actualizar {
 
     private String actualizarCategoria(String[] params) {
         try {
-            if (params.length < 1)
-                return "Se requiere: id";
+            String error = CategoriaValidator.validarActualizar(params, services);
+            if (error != null)
+                return error;
 
             Long id = Long.parseLong(params[0]);
             Categoria categoria = services.getCategoriaService().findById(id).orElse(null);
-            if (categoria == null)
-                return "Categoría no encontrada con ID: " + id;
 
             if (params.length > 1)
                 categoria.setNombre(params[1]);
@@ -289,12 +291,12 @@ public class Actualizar {
 
     private String actualizarCompra(String[] params) {
         try {
-            if (params.length < 1)
-                return "Se requiere: id";
+            String error = CompraValidator.validarActualizar(params, services);
+            if (error != null)
+                return error;
+
             Long id = Long.parseLong(params[0]);
             Compra compra = services.getCompraService().findById(id).orElse(null);
-            if (compra == null)
-                return "Compra no encontrada con ID: " + id;
             if (params.length > 1) {
                 Proveedor proveedor = new Proveedor();
                 proveedor.setId(Long.parseLong(params[1]));
@@ -407,12 +409,12 @@ public class Actualizar {
 
     private String actualizarCredito(String[] params) {
         try {
-            if (params.length < 1)
-                return "Se requiere: id";
+            String error = CreditoValidator.validarActualizar(params, services);
+            if (error != null)
+                return error;
+
             Long id = Long.parseLong(params[0]);
             Credito credito = services.getCreditoService().findById(id).orElse(null);
-            if (credito == null)
-                return "Crédito no encontrado con ID: " + id;
             if (params.length > 1) {
                 Venta venta = new Venta();
                 venta.setId(Long.parseLong(params[1]));
