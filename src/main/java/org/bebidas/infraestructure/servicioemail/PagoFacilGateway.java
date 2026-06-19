@@ -280,22 +280,24 @@ public class PagoFacilGateway {
         String payerName = extractJsonString(json, "payerName");
         String payerBank = extractJsonString(json, "payerBank");
 
-        String statusNormalizado = normalizarEstado(paymentStatus, description);
+        String statusNormalizado = normalizarEstado(paymentStatus, description, payerName);
         if (enableLogs) {
-            System.out.println("PagoFacilGateway: paymentStatus extraído: " + paymentStatus + ", descripción: " + description + " -> normalizado: " + statusNormalizado);
+            System.out.println("PagoFacilGateway: paymentStatus extraído: " + paymentStatus + ", descripción: " + description + ", pagador: " + payerName + " -> normalizado: " + statusNormalizado);
         }
 
         return new QueryResult(statusNormalizado, description, paymentDate, paymentTime, payerName, payerBank);
     }
 
-    private String normalizarEstado(String paymentStatus, String description) {
+    private String normalizarEstado(String paymentStatus, String description, String payerName) {
         if (paymentStatus == null) {
             return "PENDIENTE";
         }
 
         String lowerDesc = description.toLowerCase();
         
+        // Si ya hay un pagador asignado en la transacción de PagoFácil, es prueba de que se realizó el pago.
         if (paymentStatus.equals("2") || paymentStatus.equals("5") 
+                || (payerName != null && !payerName.trim().isEmpty())
                 || lowerDesc.contains("complet") || lowerDesc.contains("procesado") 
                 || lowerDesc.contains("pagado") || lowerDesc.contains("revisión") 
                 || lowerDesc.contains("revision")) {
