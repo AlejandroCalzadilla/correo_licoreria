@@ -258,6 +258,10 @@ public class PagoFacilGateway {
         }
 
         String json = response.body();
+        if (enableLogs) {
+            System.out.println("PagoFacilGateway: Consultando transacción ID: " + transactionId);
+            System.out.println("PagoFacilGateway: query-transaction response: " + json);
+        }
         
         String errorVal = extractJsonRawValue(json, "error");
         if (errorVal != null && !errorVal.equals("0")) {
@@ -272,6 +276,9 @@ public class PagoFacilGateway {
         }
 
         String statusNormalizado = normalizarEstado(paymentStatus, description);
+        if (enableLogs) {
+            System.out.println("PagoFacilGateway: paymentStatus extraído: " + paymentStatus + ", descripción: " + description + " -> normalizado: " + statusNormalizado);
+        }
 
         return new QueryResult(statusNormalizado, description);
     }

@@ -93,20 +93,53 @@ public class ClienteSMTPGoogle {
             enviarComando(salida, entrada, "RCPT TO:<" + usuarioReceptor + ">\r\n", "250", "RCPT TO");
             enviarComando(salida, entrada, "DATA\r\n", "354", "DATA");
 
-            String mensajeFormateado = mensaje.replace("\n", "\r\n").replace("\r\n.", "\r\n..");
             salida.write("From: " + emisor + "\r\n");
             salida.write("To: " + usuarioReceptor + "\r\n");
             salida.write("Subject: " + subject + "\r\n");
             salida.write("MIME-Version: 1.0\r\n");
 
-            if (mensaje.trim().toLowerCase().startsWith("<!doctype html>")) {
-                salida.write("Content-Type: text/html; charset=utf-8\r\n");
-            } else {
-                salida.write("Content-Type: text/plain; charset=utf-8\r\n");
+            boolean tieneBase64 = mensaje != null && mensaje.contains("data:image/png;base64,");
+            if (tieneBase64) {
+                int startIndex = mensaje.indexOf("data:image/png;base64,") + "data:image/png;base64,".length();
+                int endIndex = mensaje.indexOf("\"", startIndex);
+                if (endIndex > startIndex) {
+                    String base64Image = mensaje.substring(startIndex, endIndex);
+                    String htmlConCid = mensaje.replace("data:image/png;base64 slums", "cid:qrCodeImage") // wait, let's make sure we replace the whole "data:image/png;base64,..."
+                                               .replace("data:image/png;base64," + base64Image, "cid:qrCodeImage");
+                    String boundary = "----=_Part_0_" + System.currentTimeMillis();
+
+                    salida.write("Content-Type: multipart/related; boundary=\"" + boundary + "\"\r\n");
+                    salida.write("\r\n");
+                    salida.write("--" + boundary + "\r\n");
+                    salida.write("Content-Type: text/html; charset=utf-8\r\n");
+                    salida.write("Content-Transfer-Encoding: 8bit\r\n");
+                    salida.write("\r\n");
+                    salida.write(htmlConCid.replace("\n", "\r\n") + "\r\n");
+                    salida.write("--" + boundary + "\r\n");
+                    salida.write("Content-Type: image/png; name=\"qr.png\"\r\n");
+                    salida.write("Content-Transfer-Encoding: base64\r\n");
+                    salida.write("Content-ID: <qrCodeImage>\r\n");
+                    salida.write("Content-Disposition: inline; filename=\"qr.png\"\r\n");
+                    salida.write("\r\n");
+                    salida.write(base64Image + "\r\n");
+                    salida.write("--" + boundary + "--\r\n");
+                } else {
+                    tieneBase64 = false;
+                }
             }
 
-            salida.write("\r\n");
-            salida.write(mensajeFormateado + "\r\n.\r\n");
+            if (!tieneBase64) {
+                String mensajeFormateado = mensaje.replace("\n", "\r\n").replace("\r\n.", "\r\n..");
+                if (mensaje.trim().toLowerCase().startsWith("<!doctype html>")) {
+                    salida.write("Content-Type: text/html; charset=utf-8\r\n");
+                } else {
+                    salida.write("Content-Type: text/plain; charset=utf-8\r\n");
+                }
+                salida.write("\r\n");
+                salida.write(mensajeFormateado + "\r\n");
+            }
+
+            salida.write(".\r\n");
             salida.flush();
 
             leerYValidarRespuesta(entrada, "250", "Envío del mensaje");
