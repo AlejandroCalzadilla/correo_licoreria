@@ -48,12 +48,15 @@ public class ClienteSMTP {
 
             System.out.println("S : " + entrada.readLine());
 
-            enviarComando(salida, entrada, "HELO " + SERVIDOR + "\r\n");
+            enviarComando(salida, entrada, "EHLO " + SERVIDOR + "\r\n");
             enviarComando(salida, entrada, "MAIL FROM:<" + EMISOR + ">\r\n");
             enviarComando(salida, entrada, "RCPT TO:<" + usuarioReceptor + ">\r\n");
             enviarComando(salida, entrada, "DATA\r\n");
 
+            salida.write("From: <" + EMISOR + ">\r\n");
+            salida.write("To: <" + usuarioReceptor + ">\r\n");
             salida.write("Subject: " + subject + "\r\n");
+            salida.write("Date: " + java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now()) + "\r\n");
             salida.write("MIME-Version: 1.0\r\n");
 
             boolean tieneBase64 = mensaje != null && mensaje.contains("data:image/png;base64,");
