@@ -228,6 +228,12 @@ public class PagoFacilGateway {
             throw new IOException("No se pudo obtener el QR o ID de transacción. Respuesta de PagoFácil: " + json);
         }
 
+        // Unescape backslash-escaped forward slashes and other common escape chars in base64 string
+        qrBase64 = qrBase64.replace("\\/", "/")
+                           .replace("\\n", "")
+                           .replace("\\r", "")
+                           .replace(" ", "");
+
         return new QrResult(qrBase64, transactionId);
     }
 
