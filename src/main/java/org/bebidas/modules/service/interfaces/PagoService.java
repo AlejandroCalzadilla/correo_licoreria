@@ -24,4 +24,6 @@ public interface PagoService extends GenericService<Pago, Long> {
     Pago procesarPagoVenta(Long ventaId, String tipoPago, BigDecimal monto, String nombrePersona, String email);
 
     void anularPago(Long pagoId);
+
+    String obtenerPlanPagosFormateado(BigDecimal montoTotal, int numeroCuotas);
 }

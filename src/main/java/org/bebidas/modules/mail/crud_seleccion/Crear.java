@@ -207,15 +207,15 @@ public class Crear {
 
     private String crearCliente(String[] params) {
         try {
-            if (params.length < 7)
-                return "Se requieren: ci, nombre, telefono, direccion, estado, nombreUsuario, correoUsuario, claveUsuario, [rolId]";
+            if (params.length < 5)
+                return "Se requieren: ci, nombre, telefono, direccion, nombreUsuario, correoUsuario, claveUsuario";
             // Crear usuario primero
             Usuario usuario = new Usuario();
-            usuario.setNombre(params[5]);
-            usuario.setCorreo(params[6]);
-            usuario.setClave(params[7]);
+            usuario.setNombre(params[4]);
+            usuario.setCorreo(params[5]);
+            usuario.setClave(params[6]);
             usuario.setEstado("activo");
-            Rol rol = services.getRolService().findById(Long.parseLong(params[8])).orElse(null);
+            Rol rol = services.getRolService().findById(4L).orElse(null);
             if (rol == null)
                 return "Rol no encontrado con ID: " + params[8];
             usuario.setRol(rol);
@@ -226,7 +226,7 @@ public class Crear {
             cliente.setNombre(params[1]);
             cliente.setTelefono(params[2]);
             cliente.setDireccion(params[3]);
-            cliente.setEstado(params[4].charAt(0));
+            cliente.setEstado('A');
             cliente.setCreditoAprobado(false);
             cliente.setLimiteCredito(0.0);
             cliente.setUsuario(usuarioCreado);
@@ -309,7 +309,7 @@ public class Crear {
                 return "Se requieren: clienteId";
             Carrito carrito = new Carrito();
             Usuario usuario = new Usuario();
-            Optional<Cliente> cliente = services.getClienteService().findById(Long.parseLong(params[0]));
+            Optional<Cliente> cliente = services.getClienteService().findById(Long.parseLong(params[0].trim()));
             if (cliente.isEmpty())
                 return "Cliente no encontrado con ID: " + params[0];
 
@@ -322,6 +322,7 @@ public class Crear {
                             "Usuario no encontrado para el cliente ID: " + params[0]));
             usuario.setId(usuarioEncontrado.getId());
             carrito.setUsuario(usuario);
+            carrito.setClienteId(cliente.get().getId());
             carrito.setSessionId(new Random().nextInt(100000, 999999) + "");
             carrito.setCreatedAt(LocalDateTime.now());
             carrito.setUpdatedAt(LocalDateTime.now());
@@ -390,15 +391,32 @@ public class Crear {
             BigDecimal precioUnitario = new BigDecimal(params[3]);
             Venta ventaActualizada = services.getDetalleVentaService()
                     .procesarCreacionDetalleVenta(ventaId, productoId, cantidad, precioUnitario);
+
+            String planPagosMsg = "";
+            if (ventaActualizada.getTipo() != null && ventaActualizada.getTipo().equals("credito")) {
+                try {
+                    int numCuotas = Integer.parseInt(ventaActualizada.getNumeroCuotas());
+                    String plan = services.getPagoService().obtenerPlanPagosFormateado(ventaActualizada.getMontoTotal(),
+                            numCuotas);
+                    planPagosMsg = "\nRESTRICCIÓN: Para ventas a crédito, cada pago de cuota debe ser exacto según el plan.\nPlan completo: "
+                            + plan + " esto se actualiza por cada detalle creado" + "\n";
+                } catch (Exception ex) {
+                    // Ignorar
+                }
+            }
+
             System.out.println("DetalleVenta creado correctamente" +
                     "\nVenta actualizada - Monto Total: " + ventaActualizada.getMontoTotal() +
-                    " | Saldo: " + DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)) + "\n"
-                    + ventaActualizada.getSaldo());
+                    " | Saldo: " + ventaActualizada.getSaldo() + "\n"
+                    + (ventaActualizada.getDetalles().isEmpty() ? ""
+                            : DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)))
+                    + planPagosMsg);
             return "DetalleVenta creado correctamente" +
                     "\nVenta actualizada - Monto Total: " + ventaActualizada.getMontoTotal() +
                     " | Saldo: " + ventaActualizada.getSaldo() + " \n"
-                    + DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0))
-                    + "\n";
+                    + (ventaActualizada.getDetalles().isEmpty() ? ""
+                            : DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)))
+                    + planPagosMsg;
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -424,8 +442,22 @@ public class Crear {
             }
             Venta ventaCreada = services.getVentaService().crearVentaConDetalle(tipo, carritoId,
                     numeroCuotas, metodoPago);
+
+            String planPagosMsg = "";
+            if (tipo.equals("credito") && ventaCreada.getNumeroCuotas() != null) {
+                try {
+                    int numCuotas = Integer.parseInt(ventaCreada.getNumeroCuotas());
+                    String plan = services.getPagoService().obtenerPlanPagosFormateado(ventaCreada.getMontoTotal(),
+                            numCuotas);
+                    planPagosMsg = "\nRESTRICCIÓN: Para ventas a crédito, cada pago de cuota debe ser exacto según el plan.\nPlan completo: "
+                            + plan + "\n";
+                } catch (Exception ex) {
+                    // Ignorar
+                }
+            }
+
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +
-                    "\nDetalles procesados desde carrito.";
+                    planPagosMsg + "\nDetalles procesados desde carrito.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

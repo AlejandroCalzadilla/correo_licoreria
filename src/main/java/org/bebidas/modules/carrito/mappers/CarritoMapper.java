@@ -9,7 +9,6 @@ public class CarritoMapper {
 
     private static final TableMapper<Carrito> tableMapper = new TableMapper<>(Carrito.class)
             .addColumn("id", "ID", 10)
-            .addColumn("usuarioId", "Usuario ID", 12)
             .addColumn("clienteId", "Cliente ID", 12)
             .addColumn("createdAt", "Creado", 15)
             .addColumn("updatedAt", "Actualizado", 15);

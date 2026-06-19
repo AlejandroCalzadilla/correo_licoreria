@@ -285,6 +285,12 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         return amount.abs().compareTo(ONE_CENT) <= 0;
     }
 
+    @Override
+    public String obtenerPlanPagosFormateado(BigDecimal montoTotal, int numeroCuotas) {
+        List<BigDecimal> cuotas = construirPlanPagosCredito(montoTotal, numeroCuotas);
+        return formatearPlanPagos(cuotas);
+    }
+
     private List<BigDecimal> construirPlanPagosCredito(BigDecimal montoTotal, int numeroCuotas) {
         if (numeroCuotas <= 0) {
             throw new IllegalArgumentException("El número de cuotas debe ser mayor a cero");
