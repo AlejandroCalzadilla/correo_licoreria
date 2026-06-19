@@ -111,8 +111,18 @@ public class SelectById {
                 case "PAGOS":
                     services.getPagoService().verificarYActualizarPagoQR(id);
                     Optional<Pago> pago = services.getPagoService().findById(id);
-                    respuesta = pago.isPresent() ? PagoMapper.obtenerUnoTable(pago.get())
-                            : "Pago no encontrado";
+                    if (pago.isPresent()) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(PagoMapper.obtenerUnoTable(pago.get()));
+                        String obs = pago.get().getObservaciones();
+                        if (obs != null && !obs.isEmpty()) {
+                            sb.append("\n\n=== INFORMACIÓN DE LA TRANSACCIÓN ===\n");
+                            sb.append(obs);
+                        }
+                        respuesta = sb.toString();
+                    } else {
+                        respuesta = "Pago no encontrado";
+                    }
                     break;
 
                 default:

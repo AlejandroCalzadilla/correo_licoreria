@@ -275,12 +275,17 @@ public class PagoFacilGateway {
             description = "";
         }
 
+        String paymentDate = extractJsonString(json, "paymentDate");
+        String paymentTime = extractJsonString(json, "paymentTime");
+        String payerName = extractJsonString(json, "payerName");
+        String payerBank = extractJsonString(json, "payerBank");
+
         String statusNormalizado = normalizarEstado(paymentStatus, description);
         if (enableLogs) {
             System.out.println("PagoFacilGateway: paymentStatus extraído: " + paymentStatus + ", descripción: " + description + " -> normalizado: " + statusNormalizado);
         }
 
-        return new QueryResult(statusNormalizado, description);
+        return new QueryResult(statusNormalizado, description, paymentDate, paymentTime, payerName, payerBank);
     }
 
     private String normalizarEstado(String paymentStatus, String description) {
@@ -290,7 +295,10 @@ public class PagoFacilGateway {
 
         String lowerDesc = description.toLowerCase();
         
-        if (paymentStatus.equals("2") || lowerDesc.contains("complet") || lowerDesc.contains("procesado") || lowerDesc.contains("pagado")) {
+        if (paymentStatus.equals("2") || paymentStatus.equals("5") 
+                || lowerDesc.contains("complet") || lowerDesc.contains("procesado") 
+                || lowerDesc.contains("pagado") || lowerDesc.contains("revisión") 
+                || lowerDesc.contains("revision")) {
             return "PAGADO";
         }
 
@@ -349,10 +357,18 @@ public class PagoFacilGateway {
     public static class QueryResult {
         public final String status;
         public final String description;
+        public final String paymentDate;
+        public final String paymentTime;
+        public final String payerName;
+        public final String payerBank;
 
-        public QueryResult(String status, String description) {
+        public QueryResult(String status, String description, String paymentDate, String paymentTime, String payerName, String payerBank) {
             this.status = status;
             this.description = description;
+            this.paymentDate = paymentDate;
+            this.paymentTime = paymentTime;
+            this.payerName = payerName;
+            this.payerBank = payerBank;
         }
     }
 }

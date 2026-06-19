@@ -271,7 +271,19 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
             if ("PAGADO".equalsIgnoreCase(result.status)) {
                 pago.setEstado("completado");
                 pago.setFechaConfirmacion(LocalDateTime.now());
-                pago.setObservaciones("Confirmado mediante consulta a PagoFácil API (" + result.description + ")");
+                
+                String obs = String.format(
+                    "Confirmado mediante consulta a PagoFácil API (%s).\n" +
+                    "Fecha Pago: %s %s\n" +
+                    "Pagador: %s\n" +
+                    "Banco: %s",
+                    result.description,
+                    result.paymentDate != null ? result.paymentDate : "",
+                    result.paymentTime != null ? result.paymentTime : "",
+                    result.payerName != null ? result.payerName : "",
+                    result.payerBank != null ? result.payerBank : ""
+                );
+                pago.setObservaciones(obs);
                 Pago pagoActualizado = save(pago);
 
                 Venta venta = ventaService.findById(pago.getVenta().getId()).orElse(null);
