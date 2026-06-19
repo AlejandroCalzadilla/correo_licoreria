@@ -333,7 +333,7 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
 
     @Override
     public BigDecimal obtenerTotalPagosPorVenta(Long ventaId) {
-        String sql = "SELECT COALESCE(SUM(monto), 0) FROM pago WHERE venta_id = ? AND estado = 'CONFIRMADO'";
+        String sql = "SELECT COALESCE(SUM(monto), 0) FROM pago WHERE venta_id = ? AND estado = 'completado'";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

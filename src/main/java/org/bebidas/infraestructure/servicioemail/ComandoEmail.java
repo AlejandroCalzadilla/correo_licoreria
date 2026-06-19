@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bebidas.modules.mail.crud_seleccion.Crear;
 import org.bebidas.modules.mail.crud_seleccion.Listar;
+import org.bebidas.modules.mail.crud_seleccion.SelectById;
 
 public class ComandoEmail {
     // private CommandHelp commandHelp = new CommandHelp();
@@ -99,9 +100,13 @@ public class ComandoEmail {
         html.append("</style>\n");
         html.append("</head>\n<body>\n");
         html.append("<div class='container'>\n");
-        html.append("<pre>");
-        html.append(escapeHTML(content));
-        html.append("</pre>\n");
+        if (content != null && (content.contains("<div") || content.contains("<img") || content.contains("<!-- HTML -->"))) {
+            html.append(content);
+        } else {
+            html.append("<pre>");
+            html.append(escapeHTML(content));
+            html.append("</pre>\n");
+        }
         html.append("</div>\n</body>\n</html>");
 
         return html.toString();
@@ -259,12 +264,12 @@ public class ComandoEmail {
     }
 
     private String ejecutarConsultaGet(String entidad, String stringId) {
-        int id = Integer.parseInt(stringId);
-        if (id <= 0)
-            return "ID inválido";
         try {
-            String respuesta = "";
-            return respuesta;
+            Long id = Long.parseLong(stringId);
+            if (id <= 0)
+                return "ID inválido";
+            SelectById selectById = new SelectById();
+            return selectById.ejecutarConsultaSelectById(entidad, id);
         } catch (Exception e) {
             return "Error al obtener " + entidad + ": " + e.getMessage();
         }

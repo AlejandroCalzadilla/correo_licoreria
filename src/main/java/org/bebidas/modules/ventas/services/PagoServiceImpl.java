@@ -8,6 +8,7 @@ import org.bebidas.modules.pagos.repostiories.PagoDAO;
 import org.bebidas.modules.service.interfaces.PagoService;
 import org.bebidas.modules.service.interfaces.VentaService;
 import org.bebidas.modules.ventas.Venta;
+import org.bebidas.infraestructure.servicioemail.PagoFacilGateway;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -89,7 +90,9 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         pago.setFechaPago(LocalDateTime.now());
         String nroPago = generarSiguienteNroPago();
         pago.setNroPago(nroPago);
-        pago.setEstado("completado");
+        if (pago.getEstado() == null || !pago.getEstado().equals("pendiente")) {
+            pago.setEstado("completado");
+        }
         // Guardar el pago
         Pago pagoGuardado = save(pago);
         // Actualizar el estado de la venta si es necesario
@@ -108,6 +111,9 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         if (venta == null) {
             throw new IllegalArgumentException("Venta no encontrada con ID: " + ventaId);
         }
+
+        // Normalizar tipoPago to lowercase to comply with DB check constraint
+        String normalizedTipoPago = tipoPago != null ? tipoPago.trim().toLowerCase() : "efectivo";
 
         if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
             Credito credito = creditoService.findAll().stream()
@@ -156,19 +162,50 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
 
         Pago pago = new Pago();
         pago.setVenta(venta);
-        pago.setTipoPago(tipoPago);
+        pago.setTipoPago(normalizedTipoPago);
         pago.setMonto(monto);
         pago.setNombrePersona(nombrePersona);
         pago.setEmail(email);
-        pago.setEstado("pendiente");
         pago.setFechaPago(LocalDateTime.now());
         pago.setCreatedAt(LocalDateTime.now());
         pago.setUpdatedAt(LocalDateTime.now());
 
-        // estado::text = ANY (ARRAY['pendiente'::character varying,
-        // 'procesando'::character varying, 'completado'::character varying,
-        // 'rechazado'::character varying, 'cancelado'::character varying]::text[])
-        Pago pagoCreado = registrarPago(pago);
+        if (normalizedTipoPago.equals("qr")) {
+            try {
+                PagoFacilGateway gateway = new PagoFacilGateway();
+                String nextNroPago = generarSiguienteNroPago();
+                pago.setNroPago(nextNroPago);
+
+                String concepto = "Pago Venta " + venta.getId() + " - " + (venta.getTipo().equals("credito") ? "Cuota Credito" : "Contado");
+                Long clienteId = venta.getCliente() != null ? venta.getCliente().getId() : 0L;
+                
+                PagoFacilGateway.QrResult qrResult = gateway.generarQr(
+                    nextNroPago,
+                    monto,
+                    concepto,
+                    clienteId,
+                    nombrePersona,
+                    "0",
+                    "0",
+                    email
+                );
+                pago.setQrImage(qrResult.qrImage);
+                pago.setNroTransaccion(qrResult.transactionId);
+                pago.setEstado("pendiente");
+            } catch (Exception e) {
+                throw new RuntimeException("Error al generar el QR con PagoFácil: " + e.getMessage(), e);
+            }
+
+            return registrarPago(pago);
+        } else {
+            pago.setEstado("completado");
+            Pago pagoCreado = registrarPago(pago);
+            aplicarConfirmacionPago(pagoCreado, venta, monto);
+            return pagoCreado;
+        }
+    }
+
+    private void aplicarConfirmacionPago(Pago pago, Venta venta, BigDecimal monto) {
         if (venta.getTipo().equals("contado")) {
             venta.setEstado("completado");
             ventaService.save(venta);
@@ -183,7 +220,7 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
 
         if (venta.getTipo() != null && venta.getTipo().equals("credito")) {
             Credito credito = creditoService.findAll().stream()
-                    .filter(c -> c.getVenta().getId().equals(ventaId))
+                    .filter(c -> c.getVenta().getId().equals(venta.getId()))
                     .findFirst()
                     .orElse(null);
 
@@ -207,8 +244,51 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
                 }
             }
         }
+    }
 
-        return pagoCreado;
+    @Override
+    public Pago verificarYActualizarPagoQR(Long pagoId) {
+        Pago pago = findById(pagoId)
+                .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado con ID: " + pagoId));
+
+        if (!"qr".equalsIgnoreCase(pago.getTipoPago())) {
+            return pago;
+        }
+
+        if (!"pendiente".equalsIgnoreCase(pago.getEstado())) {
+            return pago;
+        }
+
+        String transaccionId = pago.getNroTransaccion();
+        if (transaccionId == null || transaccionId.isEmpty()) {
+            return pago;
+        }
+
+        try {
+            PagoFacilGateway gateway = new PagoFacilGateway();
+            PagoFacilGateway.QueryResult result = gateway.consultarTransaccion(transaccionId);
+
+            if ("PAGADO".equalsIgnoreCase(result.status)) {
+                pago.setEstado("completado");
+                pago.setFechaConfirmacion(LocalDateTime.now());
+                pago.setObservaciones("Confirmado mediante consulta a PagoFácil API (" + result.description + ")");
+                Pago pagoActualizado = save(pago);
+
+                Venta venta = ventaService.findById(pago.getVenta().getId()).orElse(null);
+                if (venta != null) {
+                    aplicarConfirmacionPago(pagoActualizado, venta, pago.getMonto());
+                }
+                return pagoActualizado;
+            } else if ("CANCELADO".equalsIgnoreCase(result.status)) {
+                pago.setEstado("cancelado");
+                pago.setObservaciones("Cancelado según PagoFácil API (" + result.description + ")");
+                return save(pago);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al verificar pago QR " + pagoId + ": " + e.getMessage());
+        }
+
+        return pago;
     }
 
     @Override
@@ -216,13 +296,13 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         Pago pago = findById(pagoId)
                 .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado"));
 
-        // Solo se pueden anular pagos pendientes o confirmados
-        if (!pago.getEstado().equals("PAGO_COMPLETADO") && !pago.getEstado().equals("CONFIRMADO")) {
-            throw new IllegalStateException("Solo se pueden anular pagos pendientes o confirmados");
+        // Solo se pueden anular pagos pendientes o completados
+        if (!pago.getEstado().equalsIgnoreCase("completado") && !pago.getEstado().equalsIgnoreCase("pendiente")) {
+            throw new IllegalStateException("Solo se pueden anular pagos pendientes o completados");
         }
 
-        // Marcar como anulado
-        pago.setEstado("ANULADO");
+        // Marcar como cancelado
+        pago.setEstado("cancelado");
         save(pago);
 
         // Actualizar el estado de la venta

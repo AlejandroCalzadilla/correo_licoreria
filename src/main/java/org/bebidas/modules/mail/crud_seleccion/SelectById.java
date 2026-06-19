@@ -27,6 +27,8 @@ import org.bebidas.modules.vendedores.Vendedor;
 import org.bebidas.modules.vendedores.mappers.VendedorMapper;
 import org.bebidas.modules.ventas.Venta;
 import org.bebidas.modules.ventas.mappers.VentaMapper;
+import org.bebidas.modules.pagos.Pago;
+import org.bebidas.modules.pagos.mappers.PagoMapper;
 
 public class SelectById {
 
@@ -104,6 +106,13 @@ public class SelectById {
                     Optional<Credito> credito = services.getCreditoService().findById(id);
                     respuesta = credito.isPresent() ? CreditoMapper.obtenerUnoTable(credito.get())
                             : "Crédito no encontrado";
+                    break;
+ 
+                case "PAGOS":
+                    services.getPagoService().verificarYActualizarPagoQR(id);
+                    Optional<Pago> pago = services.getPagoService().findById(id);
+                    respuesta = pago.isPresent() ? PagoMapper.obtenerUnoTable(pago.get())
+                            : "Pago no encontrado";
                     break;
 
                 default:

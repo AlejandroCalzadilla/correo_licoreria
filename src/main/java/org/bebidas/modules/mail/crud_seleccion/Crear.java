@@ -468,11 +468,34 @@ public class Crear {
             if (params.length < 5)
                 return "Se requieren: ventaId, tipoPago, monto, nombrePersona, email";
             Long ventaId = Long.parseLong(params[0]);
+            String tipoPago = params[1].trim().toLowerCase();
             BigDecimal monto = new BigDecimal(params[2]);
             Pago pagoCreado = services.getPagoService()
-                    .procesarPagoVenta(ventaId, params[1], monto, params[3], params[4]);
+                    .procesarPagoVenta(ventaId, tipoPago, monto, params[3], params[4]);
             Venta venta = services.getVentaService().findById(ventaId).orElse(null);
             BigDecimal nuevoSaldo = venta != null ? venta.getSaldo() : BigDecimal.ZERO;
+
+            if (tipoPago.equals("qr")) {
+                String qrSrc = pagoCreado.getQrImage();
+                if (qrSrc != null && !qrSrc.startsWith("data:image")) {
+                    qrSrc = "data:image/png;base64," + qrSrc;
+                }
+                
+                return "<!-- HTML -->\n" +
+                       "<div style=\"font-family: Arial, sans-serif; text-align: center; color: #2c3e50; padding: 20px;\">\n" +
+                       "  <h2 style=\"color: #27ae60;\">¡Pago QR Generado Exitosamente!</h2>\n" +
+                       "  <p>Escaneá este código QR con la app de tu banco para realizar el pago:</p>\n" +
+                       "  <div style=\"margin: 20px 0;\">\n" +
+                       "    <img src=\"" + qrSrc + "\" alt=\"Código QR de Pago\" style=\"max-width: 300px; border: 1px solid #ddd; padding: 10px; border-radius: 5px;\"/>\n" +
+                       "  </div>\n" +
+                       "  <p style=\"font-size: 14px; color: #7f8c8d;\"><strong>ID Pago:</strong> " + pagoCreado.getId() + " | <strong>Nro Pago:</strong> " + pagoCreado.getNroPago() + "</p>\n" +
+                       "  <p style=\"font-size: 14px; color: #7f8c8d;\"><strong>Monto:</strong> Bs. " + pagoCreado.getMonto() + " | <strong>Estado:</strong> " + pagoCreado.getEstado() + "</p>\n" +
+                       "  <p style=\"font-size: 14px; color: #7f8c8d;\"><strong>Nro Transacción:</strong> " + pagoCreado.getNroTransaccion() + "</p>\n" +
+                       "  <hr style=\"border: none; border-top: 1px solid #eee; margin: 20px 0;\"/>\n" +
+                       "  <p style=\"font-size: 12px; color: #95a5a6;\">Una vez que realices el pago, podés verificar el estado respondiendo con el comando <code>GETPAGOS[" + pagoCreado.getId() + "]</code>.</p>\n" +
+                       "</div>";
+            }
+
             return "Pago creado correctamente con ID: " + pagoCreado.getId() +
                     "\nNúmero de pago: " + pagoCreado.getNroPago() +
                     "\nNuevo saldo: " + nuevoSaldo;

@@ -26,4 +26,6 @@ public interface PagoService extends GenericService<Pago, Long> {
     void anularPago(Long pagoId);
 
     String obtenerPlanPagosFormateado(BigDecimal montoTotal, int numeroCuotas);
+
+    Pago verificarYActualizarPagoQR(Long pagoId);
 }
