@@ -104,16 +104,58 @@ public class PagoFacilGateway {
         return token;
     }
 
+    private int obtenerPaymentMethodId(String accessToken) {
+        String url = baseUrl + "/list-enabled-services";
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String json = response.body();
+                String[] blocks = json.split("\\{");
+                for (String block : blocks) {
+                    if (block.contains("paymentMethodId") && block.contains("paymentMethodName")) {
+                        String idStr = extractJsonRawValue("{" + block, "paymentMethodId");
+                        String nameStr = extractJsonString("{" + block, "paymentMethodName");
+                        if (idStr != null && nameStr != null && nameStr.toUpperCase().contains("QR")) {
+                            int id = Integer.parseInt(idStr);
+                            if (enableLogs) {
+                                System.out.println("PagoFacilGateway: Encontrado método QR habilitado: ID=" + id + ", Nombre=" + nameStr);
+                            }
+                            return id;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            if (enableLogs) {
+                System.out.println("PagoFacilGateway: Warning al listar servicios habilitados: " + e.getMessage());
+            }
+        }
+        
+        if (enableLogs) {
+            System.out.println("PagoFacilGateway: Usando ID de método por defecto (4)");
+        }
+        return 4; // default
+    }
+
     public QrResult generarQr(String paymentNumber, BigDecimal amount, String concepto, 
                               Long clientId, String clientName, String clientCi, 
                               String clientPhone, String clientEmail) throws Exception {
         String accessToken = obtenerToken();
+        int paymentMethodId = obtenerPaymentMethodId(accessToken);
         String url = baseUrl + "/generate-qr";
 
         // Cuerpo JSON construido a mano para evitar dependencias
         String jsonBody = String.format(
             "{" +
-            "\"paymentMethod\": 4," +
+            "\"paymentMethod\": %d," +
             "\"clientName\": \"%s\"," +
             "\"documentType\": 1," +
             "\"documentId\": \"%s\"," +
@@ -133,6 +175,7 @@ public class PagoFacilGateway {
                 "\"total\": %s" +
             "}]" +
             "}",
+            paymentMethodId,
             escapeJson(clientName),
             escapeJson(clientCi != null ? clientCi : "0"),
             escapeJson(clientPhone != null ? clientPhone : "0"),
@@ -251,7 +294,7 @@ public class PagoFacilGateway {
         if (matcher.find()) {
             return matcher.group(1);
         }
-        return null;
+        return extractJsonRawValue(json, key);
     }
 
     private String extractJsonRawValue(String json, String key) {

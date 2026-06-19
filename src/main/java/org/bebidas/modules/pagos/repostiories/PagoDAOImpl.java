@@ -125,7 +125,7 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
             stmt.setString(3, pago.getTipoPago());
             stmt.setString(4, pago.getEstado());
             stmt.setBigDecimal(5, pago.getMonto());
-            stmt.setString(6, pago.getQrImage());
+            stmt.setNull(6, java.sql.Types.VARCHAR);
             stmt.setString(7, pago.getNroTransaccion());
             stmt.setString(8, pago.getNombrePersona());
             stmt.setString(9, pago.getEmail());
@@ -169,7 +169,7 @@ public class PagoDAOImpl extends GenericDAOImpl<Pago, Long> implements PagoDAO {
             stmt.setString(3, pago.getTipoPago());
             stmt.setString(4, pago.getEstado());
             stmt.setBigDecimal(5, pago.getMonto());
-            stmt.setString(6, pago.getQrImage());
+            stmt.setNull(6, java.sql.Types.VARCHAR);
             stmt.setString(7, pago.getNroTransaccion());
             stmt.setString(8, pago.getNombrePersona());
             stmt.setString(9, pago.getEmail());
