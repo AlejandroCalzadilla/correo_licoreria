@@ -256,7 +256,13 @@ public class PagoServiceImpl extends GenericServiceImpl<Pago, Long> implements P
         }
 
         if (!"pendiente".equalsIgnoreCase(pago.getEstado())) {
-            return pago;
+            String obs = pago.getObservaciones();
+            boolean esQrConfirmadoSinDetalles = obs != null 
+                && obs.contains("Confirmado mediante consulta a PagoFácil") 
+                && !obs.contains("Pagador:");
+            if (!esQrConfirmadoSinDetalles) {
+                return pago;
+            }
         }
 
         String transaccionId = pago.getNroTransaccion();
