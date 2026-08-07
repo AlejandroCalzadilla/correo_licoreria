@@ -39,8 +39,8 @@ public class CommandHelpHTML {
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "CLIENTES",
                                 "Crear un nuevo cliente con usuario",
-                                "ci, nombre, telefono, direccion, nombreUsuario, correoUsuario, claveUsuario",
-                                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, maria, maria@email.com, pass123]"));
+                                "ci, nombre, telefono, direccion, nombreUsuario, correoUsuario, claveUsuario,rol-Id",
+                                "CREATECLIENTES[87654321, Maria Garcia, 555-5678, Calle Secundaria 456, maria, maria@email.com, pass123,8]"));
 
                 COMMANDS.add(new CommandExample(
                                 "CREATE", "CATEGORIAS",

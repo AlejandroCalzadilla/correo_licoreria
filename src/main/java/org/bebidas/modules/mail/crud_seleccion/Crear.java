@@ -207,17 +207,18 @@ public class Crear {
 
     private String crearCliente(String[] params) {
         try {
-            if (params.length < 5)
-                return "Se requieren: ci, nombre, telefono, direccion, nombreUsuario, correoUsuario, claveUsuario";
+            if (params.length < 8)
+                return "Se requieren: ci, nombre, telefono, direccion, nombreUsuario, correoUsuario, claveUsuario, [rolId]";
             // Crear usuario primero
             Usuario usuario = new Usuario();
             usuario.setNombre(params[4]);
             usuario.setCorreo(params[5]);
             usuario.setClave(params[6]);
             usuario.setEstado("activo");
-            Rol rol = services.getRolService().findById(4L).orElse(null);
+            Long rolId = params.length > 7 && !params[7].trim().isEmpty() ? Long.parseLong(params[7].trim()) : 4L;
+            Rol rol = services.getRolService().findById(rolId).orElse(null);
             if (rol == null)
-                return "Rol no encontrado con ID: " + params[8];
+                return "Rol no encontrado con ID: " + rolId;
             usuario.setRol(rol);
             Usuario usuarioCreado = services.getUsuarioService().save(usuario);
             // Crear cliente
