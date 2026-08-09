@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.bebidas.core.util.MensajesError;
+
 public class ClientePOP {
     static final String HOST = "mail.tecnoweb.org.bo";
     static final int PORT = 110;
@@ -32,10 +34,10 @@ public class ClientePOP {
             enviarComando(salida, entrada, "USER " + USER + "\r\n");
             enviarComando(salida, entrada, "PASS " + PASS + "\r\n");
         } catch (java.net.SocketException e) {
-            System.err.println("S : Error al conectar al servidor POP (SocketException): " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL CONECTAR AL SERVIDOR POP", e);
             throw new IOException("No se pudo conectar al servidor POP (Socket reset/refused)", e);
         } catch (IOException e) {
-            System.err.println("S : Error de E/S al conectar al servidor POP: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR DE E/S AL CONECTAR AL SERVIDOR POP", e);
             throw e;
         }
     }
@@ -54,10 +56,10 @@ public class ClientePOP {
             }
             return entrada.readLine();
         } catch (java.net.SocketException e) {
-            System.err.println("\nS : Error de conexión POP - Socket cerrado o reset por el servidor.");
+            MensajesError.imprimirErrorTerminal("ERROR DE CONEXIÓN POP - SOCKET CERRADO O RESET", e);
             throw new IOException("Socket cerrado o reset por el servidor: " + e.getMessage(), e);
         } catch (IOException e) {
-            System.err.println("\nS : Error de E/S en la comunicación POP: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR DE E/S EN LA COMUNICACIÓN POP", e);
             throw e;
         }
     }
@@ -66,7 +68,7 @@ public class ClientePOP {
         StringBuilder lines = new StringBuilder();
         while (true) {
             String line = in.readLine();
-            if (line == null) throw new IOException("S : Server unawares closed the connection.");
+            if (line == null) throw new IOException("S : El servidor cerró la conexión inesperadamente.");
             if (line.equals(".")) break;
             if (line.startsWith(".")) line = line.substring(1);
             lines.append("\n").append(line);
@@ -111,7 +113,7 @@ public class ClientePOP {
                 //ClienteSMTP.enviarCorreo(SMTP_SERVER, SMTP_PORT, SMTP_USER_EMISOR, SMTP_USER_RECEPTOR, "Resultado de la Consulta", queryResult.toString());
                 System.out.print(queryResult.toString());
             } catch (Exception e) {
-                System.out.println("Error ejecutando la consulta: " + e.getMessage());
+                MensajesError.imprimirErrorTerminal("ERROR AL EJECUTAR CONSULTA EN LA BASE DE DATOS AGENDA", e);
             }
         }
     }
@@ -144,7 +146,7 @@ public class ClientePOP {
             socket.close();
             System.out.println("S : Conexión finalizada.");
         } catch (IOException e) {
-            System.out.println("Error al cerrar la conexión: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL CERRAR LA CONEXIÓN POP", e);
         }
     }
 
@@ -156,7 +158,7 @@ public class ClientePOP {
             System.out.println(x);
             desconectar();
         } catch (Exception e) {
-            System.out.println("Error al revisar correos: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL REVISAR CORREOS POP", e);
         }
     }
 
@@ -164,7 +166,7 @@ public class ClientePOP {
         try {
             return enviarComando(salida, entrada, "RETR " + posicion + "\r\n");
         } catch (IOException e) {
-            System.out.println("Error al obtener el correo: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL OBTENER EL CORREO POP", e);
             return null;
         }
     }
@@ -175,7 +177,7 @@ public class ClientePOP {
             enviarComando(salida, entrada, "DELE " + posicion + "\r\n");
             return correo;
         } catch (IOException e) {
-            System.out.println("Error al obtener el correo: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL OBTENER EL CORREO POP", e);
             return null;
         }
     }
@@ -194,7 +196,7 @@ public class ClientePOP {
             desconectar();
             System.out.println("Todos los correos han sido marcados para eliminación y la conexión cerrada.");
         } catch (IOException e) {
-            System.out.println("Error al eliminar todos los correos: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL ELIMINAR CORREOS POP", e);
             throw e;
         }
     }
@@ -207,8 +209,7 @@ public class ClientePOP {
             cliente.eliminarTodosLosCorreos();
             System.out.println("Eliminación completada exitosamente.");
         } catch (IOException e) {
-            System.err.println("Error durante la eliminación: " + e.getMessage());
-            e.printStackTrace();
+            MensajesError.imprimirErrorTerminal("ERROR DURANTE LA ELIMINACIÓN DE CORREOS POP", e);
         }
     }
 

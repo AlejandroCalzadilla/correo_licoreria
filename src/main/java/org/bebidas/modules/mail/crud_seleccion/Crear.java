@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import org.bebidas.core.util.MensajesError;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.ItemCarrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
@@ -114,11 +115,11 @@ public class Crear {
                     respuesta = crearPago(params);
                     break;
                 default:
-                    respuesta = "Entidad no encontrada";
+                    respuesta = "Entidad no encontrada 'Comando Incorrecto Favor Revisar Help'";
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al crear " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("crear " + entidad, e);
         }
     }
 
@@ -130,7 +131,7 @@ public class Crear {
             Categoria categoriaCreada = services.getCategoriaService().save(new Categoria(params[0]));
             return "Categoría creada correctamente con ID: \n" + CategoriaMapper.obtenerUnoTable(categoriaCreada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -144,7 +145,7 @@ public class Crear {
             Rol rolCreado = services.getRolService().save(rol);
             return "Rol creado correctamente con ID: " + rolCreado.getId();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -164,7 +165,7 @@ public class Crear {
             Usuario usuarioCreado = services.getUsuarioService().save(usuario);
             return "Usuario creado correctamente con ID: \n" + UsuarioMapper.obtenerUnoTable(usuarioCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -184,7 +185,7 @@ public class Crear {
             Producto productoCreado = services.getProductoService().save(producto);
             return "Producto creado correctamente con ID: \n" + ProductoMapper.obtenerUnoTable(productoCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -201,7 +202,7 @@ public class Crear {
             Proveedor proveedorCreado = services.getProveedorService().save(proveedor);
             return "Proveedor creado correctamente con ID: \n" + ProveedorMapper.obtenerUnoTable(proveedorCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -234,7 +235,7 @@ public class Crear {
             Cliente clienteCreado = services.getClienteService().save(cliente);
             return "Cliente creado correctamente con ID: \n" + ClienteMapper.obtenerUnoTable(clienteCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -254,7 +255,7 @@ public class Crear {
 
             return "Compra creada correctamente con ID: \n" + CompraMapper.obtenerUnoTable(compraCreada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -274,7 +275,7 @@ public class Crear {
             DetalleCompra detalleCreado = services.getDetalleCompraService().insertar(detalle);
             return "DetalleCompra creado correctamente con ID: " + detalleCreado.getId();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -300,7 +301,7 @@ public class Crear {
             Inventario inventarioCreado = services.getInventarioService().save(inventario);
             return "Inventario creado correctamente con ID: \n" + InventarioMapper.obtenerUnoTable(inventarioCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -330,7 +331,7 @@ public class Crear {
             Carrito carritoCreado = services.getCarritoService().save(carrito);
             return "Carrito creado correctamente con ID: \n" + CarritoMapper.obtenerUnoTable(carritoCreado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -352,7 +353,7 @@ public class Crear {
             ItemCarrito itemCreado = services.getItemCarritoService().save(item);
             return "ItemCarrito creado correctamente con ID: " + itemCreado.getId();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -377,7 +378,7 @@ public class Crear {
             Venta ventaCreada = services.getVentaService().crearVentaBasica(clienteId, tipo, numeroCuotas, metodoPago);
             return "Venta creada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaCreada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -419,7 +420,7 @@ public class Crear {
                             : DetalleVentaMapper.obtenerUnoTable(ventaActualizada.getDetalles().get(0)))
                     + planPagosMsg;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -460,7 +461,7 @@ public class Crear {
             return "Venta con detalle creada correctamente:\n" + VentaMapper.obtenerUnoTable(ventaCreada) +
                     planPagosMsg + "\nDetalles procesados desde carrito.";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -501,7 +502,7 @@ public class Crear {
                     "\nNúmero de pago: " + pagoCreado.getNroPago() +
                     "\nNuevo saldo: " + nuevoSaldo;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 

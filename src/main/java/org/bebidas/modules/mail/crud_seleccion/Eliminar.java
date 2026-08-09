@@ -2,6 +2,8 @@ package org.bebidas.modules.mail.crud_seleccion;
 
 import java.sql.SQLException;
 
+import org.bebidas.core.util.MensajesError;
+
 public class Eliminar {
     
     private final ServiceProvider services = ServiceProvider.getInstance();
@@ -71,11 +73,11 @@ public class Eliminar {
                     break;
 
                 default:
-                    respuesta = "Entidad no encontrada";
+                    respuesta = "Entidad no encontrada 'Comando Incorrecto Favor Revisar Help' ";
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al eliminar " + entidad + " con ID " + id + ": " + e.getMessage();
+            return MensajesError.paraCliente("eliminar " + entidad + " con ID " + id, e);
         }
     }
 

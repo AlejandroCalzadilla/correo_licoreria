@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bebidas.core.util.MensajesError;
 import org.bebidas.modules.mail.crud_seleccion.Crear;
 import org.bebidas.modules.mail.crud_seleccion.Listar;
 import org.bebidas.modules.mail.crud_seleccion.SelectById;
@@ -102,6 +103,16 @@ public class ComandoEmail {
         html.append("<div class='container'>\n");
         if (content != null && (content.contains("<div") || content.contains("<img") || content.contains("<!-- HTML -->"))) {
             html.append(content);
+        } else if (content != null && content.contains(MensajesError.PREFIJO_DETALLE)) {
+            int indiceDetalle = content.indexOf(MensajesError.PREFIJO_DETALLE);
+            String principal = content.substring(0, indiceDetalle).trim();
+            String detalle = content.substring(indiceDetalle).trim();
+            html.append("<pre style=\"border-left: 4px solid #e74c3c;\">");
+            html.append(escapeHTML(principal));
+            html.append("</pre>\n");
+            html.append("<div style=\"font-size: 11px; color: #7f8c8d; margin-top: 6px;\">");
+            html.append(escapeHTML(detalle));
+            html.append("</div>\n");
         } else {
             html.append("<pre>");
             html.append(escapeHTML(content));
@@ -225,7 +236,7 @@ public class ComandoEmail {
             Listar listar = new Listar();
             return listar.ejecutarConsultaListar(entidad);
         } catch (Exception e) {
-            return "Error al obtener listado de " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("listar " + entidad, e);
         }
     }
 
@@ -234,7 +245,7 @@ public class ComandoEmail {
             Crear crear = new Crear();
             return crear.ejecutarCrear(entidad, parametros);
         } catch (Exception e) {
-            return "Error al crear " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("crear " + entidad, e);
         }
     }
 
@@ -247,7 +258,7 @@ public class ComandoEmail {
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al actualizar " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("actualizar " + entidad, e);
         }
     }
 
@@ -259,7 +270,7 @@ public class ComandoEmail {
             String respuesta = "";
             return respuesta;
         } catch (Exception e) {
-            return "Error al eliminar " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("eliminar " + entidad, e);
         }
     }
 
@@ -271,7 +282,7 @@ public class ComandoEmail {
             SelectById selectById = new SelectById();
             return selectById.ejecutarConsultaSelectById(entidad, id);
         } catch (Exception e) {
-            return "Error al obtener " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("obtener " + entidad, e);
         }
     }
 

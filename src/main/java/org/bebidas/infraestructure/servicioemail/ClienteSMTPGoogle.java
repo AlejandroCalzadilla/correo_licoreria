@@ -15,6 +15,8 @@ import java.util.Properties;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.bebidas.core.util.MensajesError;
+
 public class ClienteSMTPGoogle {
 
     private static final String SERVIDOR = "smtp.gmail.com";
@@ -147,7 +149,7 @@ public class ClienteSMTPGoogle {
 
             System.out.println("S : Correo enviado por Gmail a " + usuarioReceptor);
         } catch (Exception e) {
-            System.out.println("S : Error enviando correo por Gmail: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL ENVIAR CORREO POR SMTP (Google)", e);
         }
     }
 
@@ -162,7 +164,7 @@ public class ClienteSMTPGoogle {
             throws IOException {
         String respuesta = leerRespuesta(in);
         if (!respuesta.startsWith(codigoEsperado)) {
-            throw new IOException("Fallo en " + etapa + ". Esperado " + codigoEsperado + " pero llegó: " + respuesta);
+            throw new IOException("Falló " + etapa + ". Se esperaba " + codigoEsperado + " pero llegó: " + respuesta);
         }
     }
 

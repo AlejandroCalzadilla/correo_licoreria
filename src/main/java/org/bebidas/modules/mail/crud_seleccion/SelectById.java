@@ -3,6 +3,7 @@ package org.bebidas.modules.mail.crud_seleccion;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.bebidas.core.util.MensajesError;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.Categoria;
@@ -126,11 +127,11 @@ public class SelectById {
                     break;
 
                 default:
-                    respuesta = "Entidad no encontrada";
+                    respuesta = " Entidad no encontrada 'Comando Incorrecto Favor Revisar Help'";
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al obtener " + entidad + " con ID " + id + ": " + e.getMessage();
+            return MensajesError.paraCliente("obtener " + entidad + " con ID " + id, e);
         }
     }
 

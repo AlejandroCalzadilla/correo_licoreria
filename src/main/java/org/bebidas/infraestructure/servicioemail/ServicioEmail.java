@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bebidas.core.util.MensajesError;
+
 public class ServicioEmail {
     private boolean conectado;
     private ClientePOP clientePOP;
@@ -108,15 +110,15 @@ public class ServicioEmail {
             try {
                 servicioEmail.revisarCorreos();
             } catch (IOException e) {
-                System.err.println("Error de conexión con el servidor POP: " + e.getMessage());
+                MensajesError.imprimirErrorTerminal("ERROR DE CONEXIÓN CON EL SERVIDOR POP", e);
             } catch (SQLException e) {
-                System.err.println("Error de base de datos en revisión de correos: " + e.getMessage());
+                MensajesError.imprimirErrorTerminal("ERROR DE BASE DE DATOS AL REVISAR CORREOS", e);
             }
 
             try {
                 Thread.sleep(10000); // Esperar 10 segundos entre revisiones
             } catch (InterruptedException e) {
-                System.out.println("Interrupción en el ciclo de revisión: " + e.getMessage());
+                System.out.println("Interrupción en el ciclo de revisión de correos: " + e.getMessage());
             }
         }
         scheduler.shutdown();

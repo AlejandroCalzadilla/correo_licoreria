@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import org.bebidas.core.util.MensajesError;
+
 public class ClienteSMTP {
 
     private static final String SERVIDOR = "mail.tecnoweb.org.bo";
@@ -22,7 +24,7 @@ public class ClienteSMTP {
         int codigoRespuesta = Integer.parseInt(respuesta.substring(0, 3));
         if (codigoRespuesta >= 400) {
             throw new IOException(
-                    "No se pudo enviar el correo, error durante el comando: " + comando + ".\nError" + respuesta);
+                    "No se pudo enviar el correo. Error durante el comando: " + comando.trim() + ".\n" + respuesta);
         }
     }
 
@@ -35,7 +37,7 @@ public class ClienteSMTP {
                 break;
         }
         if (line == null) {
-            throw new IOException("S : Server unawares closed the connection.");
+            throw new IOException("S : El servidor cerró la conexión inesperadamente.");
         }
         return lines.toString();
     }
@@ -106,7 +108,7 @@ public class ClienteSMTP {
             enviarComando(salida, entrada, "QUIT\r\n");
 
         } catch (Exception e) {
-            System.out.println("S : No se pudo conectar con el servidor, error: " + e.getMessage());
+            MensajesError.imprimirErrorTerminal("ERROR AL ENVIAR CORREO POR SMTP (TecnoWeb)", e);
         }
     }
 }

@@ -2,6 +2,7 @@ package org.bebidas.modules.mail.crud_seleccion;
 
 import java.sql.SQLException;
 
+import org.bebidas.core.util.MensajesError;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.mappers.CategoriaMapper;
 import org.bebidas.modules.clientes.mappers.ClienteMapper;
@@ -81,11 +82,11 @@ public class Listar {
                     break;
 
                 default:
-                    respuesta = "Entidad no encontrada";
+                    respuesta = "Entidad no encontrada 'Comando Incorrecto Favor Revisar Help'";
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al obtener listado de " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("listar " + entidad, e);
         }
     }
 

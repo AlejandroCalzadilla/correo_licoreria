@@ -3,6 +3,7 @@ package org.bebidas.modules.mail.crud_seleccion;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import org.bebidas.core.util.MensajesError;
 import org.bebidas.modules.carrito.Carrito;
 import org.bebidas.modules.carrito.mappers.CarritoMapper;
 import org.bebidas.modules.categorias.Categoria;
@@ -87,11 +88,11 @@ public class Actualizar {
                     break;
 
                 default:
-                    respuesta = "Entidad no encontrada";
+                    respuesta = "Entidad no encontrada 'Comando Incorrecto Favor Revisar Help'";
             }
             return respuesta;
         } catch (Exception e) {
-            return "Error al actualizar " + entidad + ": " + e.getMessage();
+            return MensajesError.paraCliente("actualizar " + entidad, e);
         }
     }
 
@@ -112,7 +113,7 @@ public class Actualizar {
             Rol rolActualizado = services.getRolService().save(rol);
             return "Rol actualizado correctamente con ID: " + rolActualizado.getId();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -141,7 +142,7 @@ public class Actualizar {
             Usuario usuarioActualizado = services.getUsuarioService().save(usuario);
             return "Usuario actualizado correctamente con ID: \n" + UsuarioMapper.obtenerUnoTable(usuarioActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -166,7 +167,7 @@ public class Actualizar {
             return "Vendedor actualizado correctamente con ID: \n"
                     + VendedorMapper.obtenerUnoTable(vendedorActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -186,7 +187,7 @@ public class Actualizar {
             return "Categoría actualizada correctamente con ID: \n"
                     + CategoriaMapper.obtenerUnoTable(categoriaActualizada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -220,7 +221,7 @@ public class Actualizar {
             return "Producto actualizado correctamente con ID: \n"
                     + ProductoMapper.obtenerUnoTable(productoActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -259,7 +260,7 @@ public class Actualizar {
             return "Inventario actualizado correctamente con ID: \n"
                     + InventarioMapper.obtenerUnoTable(inventarioActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -285,7 +286,7 @@ public class Actualizar {
             Carrito carritoActualizado = services.getCarritoService().save(carrito);
             return "Carrito actualizado correctamente con ID: \n" + CarritoMapper.obtenerUnoTable(carritoActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -309,7 +310,7 @@ public class Actualizar {
             Compra compraActualizada = services.getCompraService().save(compra);
             return "Compra actualizada correctamente con ID: \n" + CompraMapper.obtenerUnoTable(compraActualizada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -335,7 +336,7 @@ public class Actualizar {
             return "Proveedor actualizado correctamente con ID: \n"
                     + ProveedorMapper.obtenerUnoTable(proveedorActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -372,7 +373,7 @@ public class Actualizar {
             Cliente clienteActualizado = services.getClienteService().save(cliente);
             return "Cliente actualizado correctamente con ID: \n" + ClienteMapper.obtenerUnoTable(clienteActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -403,7 +404,7 @@ public class Actualizar {
             Venta ventaActualizada = services.getVentaService().save(venta);
             return "Venta actualizada correctamente con ID: \n" + VentaMapper.obtenerUnoTable(ventaActualizada);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
@@ -431,7 +432,7 @@ public class Actualizar {
             Credito creditoActualizado = services.getCreditoService().save(credito);
             return "Crédito actualizado correctamente con ID: \n" + CreditoMapper.obtenerUnoTable(creditoActualizado);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return MensajesError.paraCliente(e);
         }
     }
 
